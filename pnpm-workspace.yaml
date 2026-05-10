@@ -1,0 +1,10 @@
+packages:
+  - "."
+  - "lib/db"
+  - "lib/api-zod"
+
+autoInstallPeers: false
+
+onlyBuiltDependencies:
+  - "@clerk/shared"
+  - esbuild

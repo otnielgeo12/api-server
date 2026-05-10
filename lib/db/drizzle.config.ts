@@ -13,9 +13,8 @@ if (!DATABASE_URL) {
 }
 
 export default defineConfig({
-  // Gunakan relative path langsung, tidak butuh path.join(__dirname, ...)
   schema: "./src/schema/index.ts",
-  dialect: "postgresql",
+  dialect: "mysql2",
   dbCredentials: {
     url: DATABASE_URL,
   },

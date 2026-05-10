@@ -10,6 +10,18 @@ globalThis.require = createRequire(import.meta.url);
 
 const artifactDir = path.dirname(fileURLToPath(import.meta.url));
 
+// Plugin untuk resolve @workspace/* paths
+const workspacePlugin = {
+  name: "workspace-resolver",
+  setup(build) {
+    build.onResolve({ filter: /^@workspace\// }, (args) => {
+      const packageName = args.path.split("/")[1];
+      const packagePath = path.resolve(artifactDir, `lib/${packageName}/src/index.ts`);
+      return { path: packagePath };
+    });
+  },
+};
+
 async function buildAll() {
   const distDir = path.resolve(artifactDir, "dist");
   await rm(distDir, { recursive: true, force: true });
@@ -103,6 +115,7 @@ async function buildAll() {
     ],
     sourcemap: "linked",
     plugins: [
+      workspacePlugin,
       esbuildPluginPino({ transports: ["pino-pretty"] })
     ],
     banner: {

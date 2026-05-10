@@ -15616,7 +15616,7 @@ var require_mime_types = __commonJS({
       }
       return exports.types[extension2] || false;
     }
-    function populateMaps(extensions, types3) {
+    function populateMaps(extensions, types) {
       Object.keys(db2).forEach(function forEachMimeType(type) {
         var mime = db2[type];
         var exts = mime.extensions;
@@ -15626,14 +15626,14 @@ var require_mime_types = __commonJS({
         extensions[type] = exts;
         for (var i = 0; i < exts.length; i++) {
           var extension2 = exts[i];
-          types3[extension2] = _preferredType(extension2, types3[extension2], type);
+          types[extension2] = _preferredType(extension2, types[extension2], type);
           const legacyType = _preferredTypeLegacy(
             extension2,
-            types3[extension2],
+            types[extension2],
             type
           );
-          if (legacyType !== types3[extension2]) {
-            exports._extensionConflicts.push([extension2, legacyType, types3[extension2]]);
+          if (legacyType !== types[extension2]) {
+            exports._extensionConflicts.push([extension2, legacyType, types[extension2]]);
           }
         }
       });
@@ -15739,23 +15739,23 @@ var require_type_is = __commonJS({
     module.exports.match = mimeMatch;
     function typeis(value, types_) {
       var i;
-      var types3 = types_;
+      var types = types_;
       var val = tryNormalizeType(value);
       if (!val) {
         return false;
       }
-      if (types3 && !Array.isArray(types3)) {
-        types3 = new Array(arguments.length - 1);
-        for (i = 0; i < types3.length; i++) {
-          types3[i] = arguments[i + 1];
+      if (types && !Array.isArray(types)) {
+        types = new Array(arguments.length - 1);
+        for (i = 0; i < types.length; i++) {
+          types[i] = arguments[i + 1];
         }
       }
-      if (!types3 || !types3.length) {
+      if (!types || !types.length) {
         return val;
       }
       var type;
-      for (i = 0; i < types3.length; i++) {
-        if (mimeMatch(normalize(type = types3[i]), val)) {
+      for (i = 0; i < types.length; i++) {
+        if (mimeMatch(normalize(type = types[i]), val)) {
           return type[0] === "+" || type.indexOf("*") !== -1 ? val : type;
         }
       }
@@ -15766,9 +15766,9 @@ var require_type_is = __commonJS({
     }
     function typeofrequest(req, types_) {
       if (!hasbody(req)) return null;
-      var types3 = arguments.length > 2 ? Array.prototype.slice.call(arguments, 1) : types_;
+      var types = arguments.length > 2 ? Array.prototype.slice.call(arguments, 1) : types_;
       var value = req.headers["content-type"];
-      return typeis(value, types3);
+      return typeis(value, types);
     }
     function normalize(type) {
       if (typeof type !== "string") {
@@ -18091,7 +18091,7 @@ var require_stringify = __commonJS({
     };
     var toISO = Date.prototype.toISOString;
     var defaultFormat = formats["default"];
-    var defaults2 = {
+    var defaults = {
       addQueryPrefix: false,
       allowDots: false,
       allowEmptyArrays: false,
@@ -18152,14 +18152,14 @@ var require_stringify = __commonJS({
       }
       if (obj === null) {
         if (strictNullHandling) {
-          return encoder && !encodeValuesOnly ? encoder(prefix, defaults2.encoder, charset, "key", format) : prefix;
+          return encoder && !encodeValuesOnly ? encoder(prefix, defaults.encoder, charset, "key", format) : prefix;
         }
         obj = "";
       }
       if (isNonNullishPrimitive(obj) || utils.isBuffer(obj)) {
         if (encoder) {
-          var keyValue = encodeValuesOnly ? prefix : encoder(prefix, defaults2.encoder, charset, "key", format);
-          return [formatter(keyValue) + "=" + formatter(encoder(obj, defaults2.encoder, charset, "value", format))];
+          var keyValue = encodeValuesOnly ? prefix : encoder(prefix, defaults.encoder, charset, "key", format);
+          return [formatter(keyValue) + "=" + formatter(encoder(obj, defaults.encoder, charset, "value", format))];
         }
         return [formatter(prefix) + "=" + formatter(String(obj))];
       }
@@ -18220,7 +18220,7 @@ var require_stringify = __commonJS({
     };
     var normalizeStringifyOptions = function normalizeStringifyOptions2(opts) {
       if (!opts) {
-        return defaults2;
+        return defaults;
       }
       if (typeof opts.allowEmptyArrays !== "undefined" && typeof opts.allowEmptyArrays !== "boolean") {
         throw new TypeError("`allowEmptyArrays` option can only be `true` or `false`, when provided");
@@ -18231,7 +18231,7 @@ var require_stringify = __commonJS({
       if (opts.encoder !== null && typeof opts.encoder !== "undefined" && typeof opts.encoder !== "function") {
         throw new TypeError("Encoder has to be a function.");
       }
-      var charset = opts.charset || defaults2.charset;
+      var charset = opts.charset || defaults.charset;
       if (typeof opts.charset !== "undefined" && opts.charset !== "utf-8" && opts.charset !== "iso-8859-1") {
         throw new TypeError("The charset option must be either utf-8, iso-8859-1, or undefined");
       }
@@ -18243,7 +18243,7 @@ var require_stringify = __commonJS({
         format = opts.format;
       }
       var formatter = formats.formatters[format];
-      var filter = defaults2.filter;
+      var filter = defaults.filter;
       if (typeof opts.filter === "function" || isArray(opts.filter)) {
         filter = opts.filter;
       }
@@ -18253,32 +18253,32 @@ var require_stringify = __commonJS({
       } else if ("indices" in opts) {
         arrayFormat = opts.indices ? "indices" : "repeat";
       } else {
-        arrayFormat = defaults2.arrayFormat;
+        arrayFormat = defaults.arrayFormat;
       }
       if ("commaRoundTrip" in opts && typeof opts.commaRoundTrip !== "boolean") {
         throw new TypeError("`commaRoundTrip` must be a boolean, or absent");
       }
-      var allowDots = typeof opts.allowDots === "undefined" ? opts.encodeDotInKeys === true ? true : defaults2.allowDots : !!opts.allowDots;
+      var allowDots = typeof opts.allowDots === "undefined" ? opts.encodeDotInKeys === true ? true : defaults.allowDots : !!opts.allowDots;
       return {
-        addQueryPrefix: typeof opts.addQueryPrefix === "boolean" ? opts.addQueryPrefix : defaults2.addQueryPrefix,
+        addQueryPrefix: typeof opts.addQueryPrefix === "boolean" ? opts.addQueryPrefix : defaults.addQueryPrefix,
         allowDots,
-        allowEmptyArrays: typeof opts.allowEmptyArrays === "boolean" ? !!opts.allowEmptyArrays : defaults2.allowEmptyArrays,
+        allowEmptyArrays: typeof opts.allowEmptyArrays === "boolean" ? !!opts.allowEmptyArrays : defaults.allowEmptyArrays,
         arrayFormat,
         charset,
-        charsetSentinel: typeof opts.charsetSentinel === "boolean" ? opts.charsetSentinel : defaults2.charsetSentinel,
+        charsetSentinel: typeof opts.charsetSentinel === "boolean" ? opts.charsetSentinel : defaults.charsetSentinel,
         commaRoundTrip: !!opts.commaRoundTrip,
-        delimiter: typeof opts.delimiter === "undefined" ? defaults2.delimiter : opts.delimiter,
-        encode: typeof opts.encode === "boolean" ? opts.encode : defaults2.encode,
-        encodeDotInKeys: typeof opts.encodeDotInKeys === "boolean" ? opts.encodeDotInKeys : defaults2.encodeDotInKeys,
-        encoder: typeof opts.encoder === "function" ? opts.encoder : defaults2.encoder,
-        encodeValuesOnly: typeof opts.encodeValuesOnly === "boolean" ? opts.encodeValuesOnly : defaults2.encodeValuesOnly,
+        delimiter: typeof opts.delimiter === "undefined" ? defaults.delimiter : opts.delimiter,
+        encode: typeof opts.encode === "boolean" ? opts.encode : defaults.encode,
+        encodeDotInKeys: typeof opts.encodeDotInKeys === "boolean" ? opts.encodeDotInKeys : defaults.encodeDotInKeys,
+        encoder: typeof opts.encoder === "function" ? opts.encoder : defaults.encoder,
+        encodeValuesOnly: typeof opts.encodeValuesOnly === "boolean" ? opts.encodeValuesOnly : defaults.encodeValuesOnly,
         filter,
         format,
         formatter,
-        serializeDate: typeof opts.serializeDate === "function" ? opts.serializeDate : defaults2.serializeDate,
-        skipNulls: typeof opts.skipNulls === "boolean" ? opts.skipNulls : defaults2.skipNulls,
+        serializeDate: typeof opts.serializeDate === "function" ? opts.serializeDate : defaults.serializeDate,
+        skipNulls: typeof opts.skipNulls === "boolean" ? opts.skipNulls : defaults.skipNulls,
         sort: typeof opts.sort === "function" ? opts.sort : null,
-        strictNullHandling: typeof opts.strictNullHandling === "boolean" ? opts.strictNullHandling : defaults2.strictNullHandling
+        strictNullHandling: typeof opts.strictNullHandling === "boolean" ? opts.strictNullHandling : defaults.strictNullHandling
       };
     };
     module.exports = function(object2, opts) {
@@ -18354,7 +18354,7 @@ var require_parse = __commonJS({
     var utils = require_utils2();
     var has = Object.prototype.hasOwnProperty;
     var isArray = Array.isArray;
-    var defaults2 = {
+    var defaults = {
       allowDots: false,
       allowEmptyArrays: false,
       allowPrototypes: false,
@@ -18432,10 +18432,10 @@ var require_parse = __commonJS({
         var key;
         var val;
         if (pos === -1) {
-          key = options.decoder(part, defaults2.decoder, charset, "key");
+          key = options.decoder(part, defaults.decoder, charset, "key");
           val = options.strictNullHandling ? null : "";
         } else {
-          key = options.decoder(part.slice(0, pos), defaults2.decoder, charset, "key");
+          key = options.decoder(part.slice(0, pos), defaults.decoder, charset, "key");
           if (key !== null) {
             val = utils.maybeMap(
               parseArrayValue(
@@ -18444,7 +18444,7 @@ var require_parse = __commonJS({
                 isArray(obj[key]) ? obj[key].length : 0
               ),
               function(encodedVal) {
-                return options.decoder(encodedVal, defaults2.decoder, charset, "value");
+                return options.decoder(encodedVal, defaults.decoder, charset, "value");
               }
             );
           }
@@ -18576,7 +18576,7 @@ var require_parse = __commonJS({
     };
     var normalizeParseOptions = function normalizeParseOptions2(opts) {
       if (!opts) {
-        return defaults2;
+        return defaults;
       }
       if (typeof opts.allowEmptyArrays !== "undefined" && typeof opts.allowEmptyArrays !== "boolean") {
         throw new TypeError("`allowEmptyArrays` option can only be `true` or `false`, when provided");
@@ -18593,35 +18593,35 @@ var require_parse = __commonJS({
       if (typeof opts.throwOnLimitExceeded !== "undefined" && typeof opts.throwOnLimitExceeded !== "boolean") {
         throw new TypeError("`throwOnLimitExceeded` option must be a boolean");
       }
-      var charset = typeof opts.charset === "undefined" ? defaults2.charset : opts.charset;
-      var duplicates = typeof opts.duplicates === "undefined" ? defaults2.duplicates : opts.duplicates;
+      var charset = typeof opts.charset === "undefined" ? defaults.charset : opts.charset;
+      var duplicates = typeof opts.duplicates === "undefined" ? defaults.duplicates : opts.duplicates;
       if (duplicates !== "combine" && duplicates !== "first" && duplicates !== "last") {
         throw new TypeError("The duplicates option must be either combine, first, or last");
       }
-      var allowDots = typeof opts.allowDots === "undefined" ? opts.decodeDotInKeys === true ? true : defaults2.allowDots : !!opts.allowDots;
+      var allowDots = typeof opts.allowDots === "undefined" ? opts.decodeDotInKeys === true ? true : defaults.allowDots : !!opts.allowDots;
       return {
         allowDots,
-        allowEmptyArrays: typeof opts.allowEmptyArrays === "boolean" ? !!opts.allowEmptyArrays : defaults2.allowEmptyArrays,
-        allowPrototypes: typeof opts.allowPrototypes === "boolean" ? opts.allowPrototypes : defaults2.allowPrototypes,
-        allowSparse: typeof opts.allowSparse === "boolean" ? opts.allowSparse : defaults2.allowSparse,
-        arrayLimit: typeof opts.arrayLimit === "number" ? opts.arrayLimit : defaults2.arrayLimit,
+        allowEmptyArrays: typeof opts.allowEmptyArrays === "boolean" ? !!opts.allowEmptyArrays : defaults.allowEmptyArrays,
+        allowPrototypes: typeof opts.allowPrototypes === "boolean" ? opts.allowPrototypes : defaults.allowPrototypes,
+        allowSparse: typeof opts.allowSparse === "boolean" ? opts.allowSparse : defaults.allowSparse,
+        arrayLimit: typeof opts.arrayLimit === "number" ? opts.arrayLimit : defaults.arrayLimit,
         charset,
-        charsetSentinel: typeof opts.charsetSentinel === "boolean" ? opts.charsetSentinel : defaults2.charsetSentinel,
-        comma: typeof opts.comma === "boolean" ? opts.comma : defaults2.comma,
-        decodeDotInKeys: typeof opts.decodeDotInKeys === "boolean" ? opts.decodeDotInKeys : defaults2.decodeDotInKeys,
-        decoder: typeof opts.decoder === "function" ? opts.decoder : defaults2.decoder,
-        delimiter: typeof opts.delimiter === "string" || utils.isRegExp(opts.delimiter) ? opts.delimiter : defaults2.delimiter,
+        charsetSentinel: typeof opts.charsetSentinel === "boolean" ? opts.charsetSentinel : defaults.charsetSentinel,
+        comma: typeof opts.comma === "boolean" ? opts.comma : defaults.comma,
+        decodeDotInKeys: typeof opts.decodeDotInKeys === "boolean" ? opts.decodeDotInKeys : defaults.decodeDotInKeys,
+        decoder: typeof opts.decoder === "function" ? opts.decoder : defaults.decoder,
+        delimiter: typeof opts.delimiter === "string" || utils.isRegExp(opts.delimiter) ? opts.delimiter : defaults.delimiter,
         // eslint-disable-next-line no-implicit-coercion, no-extra-parens
-        depth: typeof opts.depth === "number" || opts.depth === false ? +opts.depth : defaults2.depth,
+        depth: typeof opts.depth === "number" || opts.depth === false ? +opts.depth : defaults.depth,
         duplicates,
         ignoreQueryPrefix: opts.ignoreQueryPrefix === true,
-        interpretNumericEntities: typeof opts.interpretNumericEntities === "boolean" ? opts.interpretNumericEntities : defaults2.interpretNumericEntities,
-        parameterLimit: typeof opts.parameterLimit === "number" ? opts.parameterLimit : defaults2.parameterLimit,
+        interpretNumericEntities: typeof opts.interpretNumericEntities === "boolean" ? opts.interpretNumericEntities : defaults.interpretNumericEntities,
+        parameterLimit: typeof opts.parameterLimit === "number" ? opts.parameterLimit : defaults.parameterLimit,
         parseArrays: opts.parseArrays !== false,
-        plainObjects: typeof opts.plainObjects === "boolean" ? opts.plainObjects : defaults2.plainObjects,
-        strictDepth: typeof opts.strictDepth === "boolean" ? !!opts.strictDepth : defaults2.strictDepth,
-        strictMerge: typeof opts.strictMerge === "boolean" ? !!opts.strictMerge : defaults2.strictMerge,
-        strictNullHandling: typeof opts.strictNullHandling === "boolean" ? opts.strictNullHandling : defaults2.strictNullHandling,
+        plainObjects: typeof opts.plainObjects === "boolean" ? opts.plainObjects : defaults.plainObjects,
+        strictDepth: typeof opts.strictDepth === "boolean" ? !!opts.strictDepth : defaults.strictDepth,
+        strictMerge: typeof opts.strictMerge === "boolean" ? !!opts.strictMerge : defaults.strictMerge,
+        strictNullHandling: typeof opts.strictNullHandling === "boolean" ? opts.strictNullHandling : defaults.strictNullHandling,
         throwOnLimitExceeded: typeof opts.throwOnLimitExceeded === "boolean" ? opts.throwOnLimitExceeded : false
       };
     };
@@ -20058,8 +20058,8 @@ var require_utils3 = __commonJS({
     exports.normalizeType = function(type) {
       return ~type.indexOf("/") ? acceptParams(type) : { value: mime.lookup(type) || "application/octet-stream", params: {} };
     };
-    exports.normalizeTypes = function(types3) {
-      return types3.map(exports.normalizeType);
+    exports.normalizeTypes = function(types) {
+      return types.map(exports.normalizeType);
     };
     function acceptParams(str) {
       var length = str.length;
@@ -20201,12 +20201,12 @@ var require_wrappy = __commonJS({
 var require_once = __commonJS({
   "node_modules/.pnpm/once@1.4.0/node_modules/once/once.js"(exports, module) {
     var wrappy = require_wrappy();
-    module.exports = wrappy(once);
+    module.exports = wrappy(once2);
     module.exports.strict = wrappy(onceStrict);
-    once.proto = once(function() {
+    once2.proto = once2(function() {
       Object.defineProperty(Function.prototype, "once", {
         value: function() {
-          return once(this);
+          return once2(this);
         },
         configurable: true
       });
@@ -20217,7 +20217,7 @@ var require_once = __commonJS({
         configurable: true
       });
     });
-    function once(fn) {
+    function once2(fn) {
       var f = function() {
         if (f.called) return f.value;
         f.called = true;
@@ -21302,7 +21302,7 @@ var require_application = __commonJS({
     var compileQueryParser = require_utils3().compileQueryParser;
     var compileTrust = require_utils3().compileTrust;
     var resolve = __require("node:path").resolve;
-    var once = require_once();
+    var once2 = require_once();
     var Router11 = require_router();
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
@@ -21532,7 +21532,7 @@ var require_application = __commonJS({
       var server = http.createServer(this);
       var args = slice.call(arguments);
       if (typeof args[args.length - 1] === "function") {
-        var done = args[args.length - 1] = once(args[args.length - 1]);
+        var done = args[args.length - 1] = once2(args[args.length - 1]);
         server.once("error", done);
       }
       return server.listen.apply(server, args);
@@ -22078,23 +22078,23 @@ var require_accepts = __commonJS({
       this.negotiator = new Negotiator(req);
     }
     Accepts.prototype.type = Accepts.prototype.types = function(types_) {
-      var types3 = types_;
-      if (types3 && !Array.isArray(types3)) {
-        types3 = new Array(arguments.length);
-        for (var i = 0; i < types3.length; i++) {
-          types3[i] = arguments[i];
+      var types = types_;
+      if (types && !Array.isArray(types)) {
+        types = new Array(arguments.length);
+        for (var i = 0; i < types.length; i++) {
+          types[i] = arguments[i];
         }
       }
-      if (!types3 || types3.length === 0) {
+      if (!types || types.length === 0) {
         return this.negotiator.mediaTypes();
       }
       if (!this.headers.accept) {
-        return types3[0];
+        return types[0];
       }
-      var mimes = types3.map(extToMime);
+      var mimes = types.map(extToMime);
       var accepts = this.negotiator.mediaTypes(mimes.filter(validMime));
       var first = accepts[0];
-      return first ? types3[mimes.indexOf(first)] : false;
+      return first ? types[mimes.indexOf(first)] : false;
     };
     Accepts.prototype.encoding = Accepts.prototype.encodings = function(encodings_) {
       var encodings = encodings_;
@@ -22355,9 +22355,9 @@ var require_request = __commonJS({
       var querystring = parse4(this).query;
       return queryparse(querystring);
     });
-    req.is = function is3(types3) {
-      var arr = types3;
-      if (!Array.isArray(types3)) {
+    req.is = function is3(types) {
+      var arr = types;
+      if (!Array.isArray(types)) {
         arr = new Array(arguments.length);
         for (var i = 0; i < arr.length; i++) {
           arr[i] = arguments[i];
@@ -24093,7 +24093,7 @@ var require_lib3 = __commonJS({
       "use strict";
       var assign = require_object_assign();
       var vary = require_vary();
-      var defaults2 = {
+      var defaults = {
         origin: "*",
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
         preflightContinue: false,
@@ -24264,7 +24264,7 @@ var require_lib3 = __commonJS({
             if (err) {
               next(err);
             } else {
-              var corsOptions = assign({}, defaults2, options);
+              var corsOptions = assign({}, defaults, options);
               var originCallback = null;
               if (corsOptions.origin && typeof corsOptions.origin === "function") {
                 originCallback = corsOptions.origin;
@@ -28869,16 +28869,16 @@ var require_eventemitter3 = __commonJS({
       Events.prototype = /* @__PURE__ */ Object.create(null);
       if (!new Events().__proto__) prefix = false;
     }
-    function EE(fn, context, once) {
+    function EE(fn, context, once2) {
       this.fn = fn;
       this.context = context;
-      this.once = once || false;
+      this.once = once2 || false;
     }
-    function addListener(emitter, event, fn, context, once) {
+    function addListener(emitter, event, fn, context, once2) {
       if (typeof fn !== "function") {
         throw new TypeError("The listener must be a function");
       }
-      var listener = new EE(fn, context || emitter, once), evt = prefix ? prefix + event : event;
+      var listener = new EE(fn, context || emitter, once2), evt = prefix ? prefix + event : event;
       if (!emitter._events[evt]) emitter._events[evt] = listener, emitter._eventsCount++;
       else if (!emitter._events[evt].fn) emitter._events[evt].push(listener);
       else emitter._events[evt] = [emitter._events[evt], listener];
@@ -28972,10 +28972,10 @@ var require_eventemitter3 = __commonJS({
     EventEmitter.prototype.on = function on(event, fn, context) {
       return addListener(this, event, fn, context, false);
     };
-    EventEmitter.prototype.once = function once(event, fn, context) {
+    EventEmitter.prototype.once = function once2(event, fn, context) {
       return addListener(this, event, fn, context, true);
     };
-    EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+    EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once2) {
       var evt = prefix ? prefix + event : event;
       if (!this._events[evt]) return this;
       if (!fn) {
@@ -28984,12 +28984,12 @@ var require_eventemitter3 = __commonJS({
       }
       var listeners = this._events[evt];
       if (listeners.fn) {
-        if (listeners.fn === fn && (!once || listeners.once) && (!context || listeners.context === context)) {
+        if (listeners.fn === fn && (!once2 || listeners.once) && (!context || listeners.context === context)) {
           clearEvent(this, evt);
         }
       } else {
         for (var i = 0, events = [], length = listeners.length; i < length; i++) {
-          if (listeners[i].fn !== fn || once && !listeners[i].once || context && listeners[i].context !== context) {
+          if (listeners[i].fn !== fn || once2 && !listeners[i].once || context && listeners[i].context !== context) {
             events.push(listeners[i]);
           }
         }
@@ -34336,5110 +34336,6 @@ var require_dist2 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/postgres-array@2.0.0/node_modules/postgres-array/index.js
-var require_postgres_array = __commonJS({
-  "node_modules/.pnpm/postgres-array@2.0.0/node_modules/postgres-array/index.js"(exports) {
-    "use strict";
-    exports.parse = function(source, transform2) {
-      return new ArrayParser(source, transform2).parse();
-    };
-    var ArrayParser = class _ArrayParser {
-      constructor(source, transform2) {
-        this.source = source;
-        this.transform = transform2 || identity;
-        this.position = 0;
-        this.entries = [];
-        this.recorded = [];
-        this.dimension = 0;
-      }
-      isEof() {
-        return this.position >= this.source.length;
-      }
-      nextCharacter() {
-        var character = this.source[this.position++];
-        if (character === "\\") {
-          return {
-            value: this.source[this.position++],
-            escaped: true
-          };
-        }
-        return {
-          value: character,
-          escaped: false
-        };
-      }
-      record(character) {
-        this.recorded.push(character);
-      }
-      newEntry(includeEmpty) {
-        var entry;
-        if (this.recorded.length > 0 || includeEmpty) {
-          entry = this.recorded.join("");
-          if (entry === "NULL" && !includeEmpty) {
-            entry = null;
-          }
-          if (entry !== null) entry = this.transform(entry);
-          this.entries.push(entry);
-          this.recorded = [];
-        }
-      }
-      consumeDimensions() {
-        if (this.source[0] === "[") {
-          while (!this.isEof()) {
-            var char2 = this.nextCharacter();
-            if (char2.value === "=") break;
-          }
-        }
-      }
-      parse(nested) {
-        var character, parser, quote;
-        this.consumeDimensions();
-        while (!this.isEof()) {
-          character = this.nextCharacter();
-          if (character.value === "{" && !quote) {
-            this.dimension++;
-            if (this.dimension > 1) {
-              parser = new _ArrayParser(this.source.substr(this.position - 1), this.transform);
-              this.entries.push(parser.parse(true));
-              this.position += parser.position - 2;
-            }
-          } else if (character.value === "}" && !quote) {
-            this.dimension--;
-            if (!this.dimension) {
-              this.newEntry();
-              if (nested) return this.entries;
-            }
-          } else if (character.value === '"' && !character.escaped) {
-            if (quote) this.newEntry(true);
-            quote = !quote;
-          } else if (character.value === "," && !quote) {
-            this.newEntry();
-          } else {
-            this.record(character.value);
-          }
-        }
-        if (this.dimension !== 0) {
-          throw new Error("array dimension not balanced");
-        }
-        return this.entries;
-      }
-    };
-    function identity(value) {
-      return value;
-    }
-  }
-});
-
-// node_modules/.pnpm/pg-types@2.2.0/node_modules/pg-types/lib/arrayParser.js
-var require_arrayParser = __commonJS({
-  "node_modules/.pnpm/pg-types@2.2.0/node_modules/pg-types/lib/arrayParser.js"(exports, module) {
-    var array2 = require_postgres_array();
-    module.exports = {
-      create: function(source, transform2) {
-        return {
-          parse: function() {
-            return array2.parse(source, transform2);
-          }
-        };
-      }
-    };
-  }
-});
-
-// node_modules/.pnpm/postgres-date@1.0.7/node_modules/postgres-date/index.js
-var require_postgres_date = __commonJS({
-  "node_modules/.pnpm/postgres-date@1.0.7/node_modules/postgres-date/index.js"(exports, module) {
-    "use strict";
-    var DATE_TIME = /(\d{1,})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})(\.\d{1,})?.*?( BC)?$/;
-    var DATE = /^(\d{1,})-(\d{2})-(\d{2})( BC)?$/;
-    var TIME_ZONE = /([Z+-])(\d{2})?:?(\d{2})?:?(\d{2})?/;
-    var INFINITY = /^-?infinity$/;
-    module.exports = function parseDate(isoDate) {
-      if (INFINITY.test(isoDate)) {
-        return Number(isoDate.replace("i", "I"));
-      }
-      var matches2 = DATE_TIME.exec(isoDate);
-      if (!matches2) {
-        return getDate(isoDate) || null;
-      }
-      var isBC = !!matches2[8];
-      var year = parseInt(matches2[1], 10);
-      if (isBC) {
-        year = bcYearToNegativeYear(year);
-      }
-      var month = parseInt(matches2[2], 10) - 1;
-      var day = matches2[3];
-      var hour = parseInt(matches2[4], 10);
-      var minute = parseInt(matches2[5], 10);
-      var second = parseInt(matches2[6], 10);
-      var ms = matches2[7];
-      ms = ms ? 1e3 * parseFloat(ms) : 0;
-      var date6;
-      var offset = timeZoneOffset(isoDate);
-      if (offset != null) {
-        date6 = new Date(Date.UTC(year, month, day, hour, minute, second, ms));
-        if (is0To99(year)) {
-          date6.setUTCFullYear(year);
-        }
-        if (offset !== 0) {
-          date6.setTime(date6.getTime() - offset);
-        }
-      } else {
-        date6 = new Date(year, month, day, hour, minute, second, ms);
-        if (is0To99(year)) {
-          date6.setFullYear(year);
-        }
-      }
-      return date6;
-    };
-    function getDate(isoDate) {
-      var matches2 = DATE.exec(isoDate);
-      if (!matches2) {
-        return;
-      }
-      var year = parseInt(matches2[1], 10);
-      var isBC = !!matches2[4];
-      if (isBC) {
-        year = bcYearToNegativeYear(year);
-      }
-      var month = parseInt(matches2[2], 10) - 1;
-      var day = matches2[3];
-      var date6 = new Date(year, month, day);
-      if (is0To99(year)) {
-        date6.setFullYear(year);
-      }
-      return date6;
-    }
-    function timeZoneOffset(isoDate) {
-      if (isoDate.endsWith("+00")) {
-        return 0;
-      }
-      var zone = TIME_ZONE.exec(isoDate.split(" ")[1]);
-      if (!zone) return;
-      var type = zone[1];
-      if (type === "Z") {
-        return 0;
-      }
-      var sign = type === "-" ? -1 : 1;
-      var offset = parseInt(zone[2], 10) * 3600 + parseInt(zone[3] || 0, 10) * 60 + parseInt(zone[4] || 0, 10);
-      return offset * sign * 1e3;
-    }
-    function bcYearToNegativeYear(year) {
-      return -(year - 1);
-    }
-    function is0To99(num) {
-      return num >= 0 && num < 100;
-    }
-  }
-});
-
-// node_modules/.pnpm/xtend@4.0.2/node_modules/xtend/mutable.js
-var require_mutable = __commonJS({
-  "node_modules/.pnpm/xtend@4.0.2/node_modules/xtend/mutable.js"(exports, module) {
-    module.exports = extend2;
-    var hasOwnProperty = Object.prototype.hasOwnProperty;
-    function extend2(target) {
-      for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i];
-        for (var key in source) {
-          if (hasOwnProperty.call(source, key)) {
-            target[key] = source[key];
-          }
-        }
-      }
-      return target;
-    }
-  }
-});
-
-// node_modules/.pnpm/postgres-interval@1.2.0/node_modules/postgres-interval/index.js
-var require_postgres_interval = __commonJS({
-  "node_modules/.pnpm/postgres-interval@1.2.0/node_modules/postgres-interval/index.js"(exports, module) {
-    "use strict";
-    var extend2 = require_mutable();
-    module.exports = PostgresInterval;
-    function PostgresInterval(raw) {
-      if (!(this instanceof PostgresInterval)) {
-        return new PostgresInterval(raw);
-      }
-      extend2(this, parse4(raw));
-    }
-    var properties = ["seconds", "minutes", "hours", "days", "months", "years"];
-    PostgresInterval.prototype.toPostgres = function() {
-      var filtered = properties.filter(this.hasOwnProperty, this);
-      if (this.milliseconds && filtered.indexOf("seconds") < 0) {
-        filtered.push("seconds");
-      }
-      if (filtered.length === 0) return "0";
-      return filtered.map(function(property) {
-        var value = this[property] || 0;
-        if (property === "seconds" && this.milliseconds) {
-          value = (value + this.milliseconds / 1e3).toFixed(6).replace(/\.?0+$/, "");
-        }
-        return value + " " + property;
-      }, this).join(" ");
-    };
-    var propertiesISOEquivalent = {
-      years: "Y",
-      months: "M",
-      days: "D",
-      hours: "H",
-      minutes: "M",
-      seconds: "S"
-    };
-    var dateProperties = ["years", "months", "days"];
-    var timeProperties = ["hours", "minutes", "seconds"];
-    PostgresInterval.prototype.toISOString = PostgresInterval.prototype.toISO = function() {
-      var datePart = dateProperties.map(buildProperty, this).join("");
-      var timePart = timeProperties.map(buildProperty, this).join("");
-      return "P" + datePart + "T" + timePart;
-      function buildProperty(property) {
-        var value = this[property] || 0;
-        if (property === "seconds" && this.milliseconds) {
-          value = (value + this.milliseconds / 1e3).toFixed(6).replace(/0+$/, "");
-        }
-        return value + propertiesISOEquivalent[property];
-      }
-    };
-    var NUMBER = "([+-]?\\d+)";
-    var YEAR = NUMBER + "\\s+years?";
-    var MONTH = NUMBER + "\\s+mons?";
-    var DAY = NUMBER + "\\s+days?";
-    var TIME = "([+-])?([\\d]*):(\\d\\d):(\\d\\d)\\.?(\\d{1,6})?";
-    var INTERVAL = new RegExp([YEAR, MONTH, DAY, TIME].map(function(regexString) {
-      return "(" + regexString + ")?";
-    }).join("\\s*"));
-    var positions = {
-      years: 2,
-      months: 4,
-      days: 6,
-      hours: 9,
-      minutes: 10,
-      seconds: 11,
-      milliseconds: 12
-    };
-    var negatives = ["hours", "minutes", "seconds", "milliseconds"];
-    function parseMilliseconds(fraction) {
-      var microseconds = fraction + "000000".slice(fraction.length);
-      return parseInt(microseconds, 10) / 1e3;
-    }
-    function parse4(interval2) {
-      if (!interval2) return {};
-      var matches2 = INTERVAL.exec(interval2);
-      var isNegative = matches2[8] === "-";
-      return Object.keys(positions).reduce(function(parsed, property) {
-        var position = positions[property];
-        var value = matches2[position];
-        if (!value) return parsed;
-        value = property === "milliseconds" ? parseMilliseconds(value) : parseInt(value, 10);
-        if (!value) return parsed;
-        if (isNegative && ~negatives.indexOf(property)) {
-          value *= -1;
-        }
-        parsed[property] = value;
-        return parsed;
-      }, {});
-    }
-  }
-});
-
-// node_modules/.pnpm/postgres-bytea@1.0.1/node_modules/postgres-bytea/index.js
-var require_postgres_bytea = __commonJS({
-  "node_modules/.pnpm/postgres-bytea@1.0.1/node_modules/postgres-bytea/index.js"(exports, module) {
-    "use strict";
-    var bufferFrom = Buffer.from || Buffer;
-    module.exports = function parseBytea(input) {
-      if (/^\\x/.test(input)) {
-        return bufferFrom(input.substr(2), "hex");
-      }
-      var output = "";
-      var i = 0;
-      while (i < input.length) {
-        if (input[i] !== "\\") {
-          output += input[i];
-          ++i;
-        } else {
-          if (/[0-7]{3}/.test(input.substr(i + 1, 3))) {
-            output += String.fromCharCode(parseInt(input.substr(i + 1, 3), 8));
-            i += 4;
-          } else {
-            var backslashes = 1;
-            while (i + backslashes < input.length && input[i + backslashes] === "\\") {
-              backslashes++;
-            }
-            for (var k = 0; k < Math.floor(backslashes / 2); ++k) {
-              output += "\\";
-            }
-            i += Math.floor(backslashes / 2) * 2;
-          }
-        }
-      }
-      return bufferFrom(output, "binary");
-    };
-  }
-});
-
-// node_modules/.pnpm/pg-types@2.2.0/node_modules/pg-types/lib/textParsers.js
-var require_textParsers = __commonJS({
-  "node_modules/.pnpm/pg-types@2.2.0/node_modules/pg-types/lib/textParsers.js"(exports, module) {
-    var array2 = require_postgres_array();
-    var arrayParser = require_arrayParser();
-    var parseDate = require_postgres_date();
-    var parseInterval = require_postgres_interval();
-    var parseByteA = require_postgres_bytea();
-    function allowNull(fn) {
-      return function nullAllowed(value) {
-        if (value === null) return value;
-        return fn(value);
-      };
-    }
-    function parseBool(value) {
-      if (value === null) return value;
-      return value === "TRUE" || value === "t" || value === "true" || value === "y" || value === "yes" || value === "on" || value === "1";
-    }
-    function parseBoolArray(value) {
-      if (!value) return null;
-      return array2.parse(value, parseBool);
-    }
-    function parseBaseTenInt(string4) {
-      return parseInt(string4, 10);
-    }
-    function parseIntegerArray(value) {
-      if (!value) return null;
-      return array2.parse(value, allowNull(parseBaseTenInt));
-    }
-    function parseBigIntegerArray(value) {
-      if (!value) return null;
-      return array2.parse(value, allowNull(function(entry) {
-        return parseBigInteger(entry).trim();
-      }));
-    }
-    var parsePointArray = function(value) {
-      if (!value) {
-        return null;
-      }
-      var p = arrayParser.create(value, function(entry) {
-        if (entry !== null) {
-          entry = parsePoint(entry);
-        }
-        return entry;
-      });
-      return p.parse();
-    };
-    var parseFloatArray = function(value) {
-      if (!value) {
-        return null;
-      }
-      var p = arrayParser.create(value, function(entry) {
-        if (entry !== null) {
-          entry = parseFloat(entry);
-        }
-        return entry;
-      });
-      return p.parse();
-    };
-    var parseStringArray = function(value) {
-      if (!value) {
-        return null;
-      }
-      var p = arrayParser.create(value);
-      return p.parse();
-    };
-    var parseDateArray = function(value) {
-      if (!value) {
-        return null;
-      }
-      var p = arrayParser.create(value, function(entry) {
-        if (entry !== null) {
-          entry = parseDate(entry);
-        }
-        return entry;
-      });
-      return p.parse();
-    };
-    var parseIntervalArray = function(value) {
-      if (!value) {
-        return null;
-      }
-      var p = arrayParser.create(value, function(entry) {
-        if (entry !== null) {
-          entry = parseInterval(entry);
-        }
-        return entry;
-      });
-      return p.parse();
-    };
-    var parseByteAArray = function(value) {
-      if (!value) {
-        return null;
-      }
-      return array2.parse(value, allowNull(parseByteA));
-    };
-    var parseInteger = function(value) {
-      return parseInt(value, 10);
-    };
-    var parseBigInteger = function(value) {
-      var valStr = String(value);
-      if (/^\d+$/.test(valStr)) {
-        return valStr;
-      }
-      return value;
-    };
-    var parseJsonArray = function(value) {
-      if (!value) {
-        return null;
-      }
-      return array2.parse(value, allowNull(JSON.parse));
-    };
-    var parsePoint = function(value) {
-      if (value[0] !== "(") {
-        return null;
-      }
-      value = value.substring(1, value.length - 1).split(",");
-      return {
-        x: parseFloat(value[0]),
-        y: parseFloat(value[1])
-      };
-    };
-    var parseCircle = function(value) {
-      if (value[0] !== "<" && value[1] !== "(") {
-        return null;
-      }
-      var point2 = "(";
-      var radius = "";
-      var pointParsed = false;
-      for (var i = 2; i < value.length - 1; i++) {
-        if (!pointParsed) {
-          point2 += value[i];
-        }
-        if (value[i] === ")") {
-          pointParsed = true;
-          continue;
-        } else if (!pointParsed) {
-          continue;
-        }
-        if (value[i] === ",") {
-          continue;
-        }
-        radius += value[i];
-      }
-      var result = parsePoint(point2);
-      result.radius = parseFloat(radius);
-      return result;
-    };
-    var init = function(register) {
-      register(20, parseBigInteger);
-      register(21, parseInteger);
-      register(23, parseInteger);
-      register(26, parseInteger);
-      register(700, parseFloat);
-      register(701, parseFloat);
-      register(16, parseBool);
-      register(1082, parseDate);
-      register(1114, parseDate);
-      register(1184, parseDate);
-      register(600, parsePoint);
-      register(651, parseStringArray);
-      register(718, parseCircle);
-      register(1e3, parseBoolArray);
-      register(1001, parseByteAArray);
-      register(1005, parseIntegerArray);
-      register(1007, parseIntegerArray);
-      register(1028, parseIntegerArray);
-      register(1016, parseBigIntegerArray);
-      register(1017, parsePointArray);
-      register(1021, parseFloatArray);
-      register(1022, parseFloatArray);
-      register(1231, parseFloatArray);
-      register(1014, parseStringArray);
-      register(1015, parseStringArray);
-      register(1008, parseStringArray);
-      register(1009, parseStringArray);
-      register(1040, parseStringArray);
-      register(1041, parseStringArray);
-      register(1115, parseDateArray);
-      register(1182, parseDateArray);
-      register(1185, parseDateArray);
-      register(1186, parseInterval);
-      register(1187, parseIntervalArray);
-      register(17, parseByteA);
-      register(114, JSON.parse.bind(JSON));
-      register(3802, JSON.parse.bind(JSON));
-      register(199, parseJsonArray);
-      register(3807, parseJsonArray);
-      register(3907, parseStringArray);
-      register(2951, parseStringArray);
-      register(791, parseStringArray);
-      register(1183, parseStringArray);
-      register(1270, parseStringArray);
-    };
-    module.exports = {
-      init
-    };
-  }
-});
-
-// node_modules/.pnpm/pg-int8@1.0.1/node_modules/pg-int8/index.js
-var require_pg_int8 = __commonJS({
-  "node_modules/.pnpm/pg-int8@1.0.1/node_modules/pg-int8/index.js"(exports, module) {
-    "use strict";
-    var BASE = 1e6;
-    function readInt8(buffer) {
-      var high = buffer.readInt32BE(0);
-      var low = buffer.readUInt32BE(4);
-      var sign = "";
-      if (high < 0) {
-        high = ~high + (low === 0);
-        low = ~low + 1 >>> 0;
-        sign = "-";
-      }
-      var result = "";
-      var carry;
-      var t;
-      var digits;
-      var pad;
-      var l;
-      var i;
-      {
-        carry = high % BASE;
-        high = high / BASE >>> 0;
-        t = 4294967296 * carry + low;
-        low = t / BASE >>> 0;
-        digits = "" + (t - BASE * low);
-        if (low === 0 && high === 0) {
-          return sign + digits + result;
-        }
-        pad = "";
-        l = 6 - digits.length;
-        for (i = 0; i < l; i++) {
-          pad += "0";
-        }
-        result = pad + digits + result;
-      }
-      {
-        carry = high % BASE;
-        high = high / BASE >>> 0;
-        t = 4294967296 * carry + low;
-        low = t / BASE >>> 0;
-        digits = "" + (t - BASE * low);
-        if (low === 0 && high === 0) {
-          return sign + digits + result;
-        }
-        pad = "";
-        l = 6 - digits.length;
-        for (i = 0; i < l; i++) {
-          pad += "0";
-        }
-        result = pad + digits + result;
-      }
-      {
-        carry = high % BASE;
-        high = high / BASE >>> 0;
-        t = 4294967296 * carry + low;
-        low = t / BASE >>> 0;
-        digits = "" + (t - BASE * low);
-        if (low === 0 && high === 0) {
-          return sign + digits + result;
-        }
-        pad = "";
-        l = 6 - digits.length;
-        for (i = 0; i < l; i++) {
-          pad += "0";
-        }
-        result = pad + digits + result;
-      }
-      {
-        carry = high % BASE;
-        t = 4294967296 * carry + low;
-        digits = "" + t % BASE;
-        return sign + digits + result;
-      }
-    }
-    module.exports = readInt8;
-  }
-});
-
-// node_modules/.pnpm/pg-types@2.2.0/node_modules/pg-types/lib/binaryParsers.js
-var require_binaryParsers = __commonJS({
-  "node_modules/.pnpm/pg-types@2.2.0/node_modules/pg-types/lib/binaryParsers.js"(exports, module) {
-    var parseInt64 = require_pg_int8();
-    var parseBits = function(data, bits, offset, invert, callback) {
-      offset = offset || 0;
-      invert = invert || false;
-      callback = callback || function(lastValue, newValue, bits2) {
-        return lastValue * Math.pow(2, bits2) + newValue;
-      };
-      var offsetBytes = offset >> 3;
-      var inv = function(value) {
-        if (invert) {
-          return ~value & 255;
-        }
-        return value;
-      };
-      var mask = 255;
-      var firstBits = 8 - offset % 8;
-      if (bits < firstBits) {
-        mask = 255 << 8 - bits & 255;
-        firstBits = bits;
-      }
-      if (offset) {
-        mask = mask >> offset % 8;
-      }
-      var result = 0;
-      if (offset % 8 + bits >= 8) {
-        result = callback(0, inv(data[offsetBytes]) & mask, firstBits);
-      }
-      var bytes = bits + offset >> 3;
-      for (var i = offsetBytes + 1; i < bytes; i++) {
-        result = callback(result, inv(data[i]), 8);
-      }
-      var lastBits = (bits + offset) % 8;
-      if (lastBits > 0) {
-        result = callback(result, inv(data[bytes]) >> 8 - lastBits, lastBits);
-      }
-      return result;
-    };
-    var parseFloatFromBits = function(data, precisionBits, exponentBits) {
-      var bias = Math.pow(2, exponentBits - 1) - 1;
-      var sign = parseBits(data, 1);
-      var exponent = parseBits(data, exponentBits, 1);
-      if (exponent === 0) {
-        return 0;
-      }
-      var precisionBitsCounter = 1;
-      var parsePrecisionBits = function(lastValue, newValue, bits) {
-        if (lastValue === 0) {
-          lastValue = 1;
-        }
-        for (var i = 1; i <= bits; i++) {
-          precisionBitsCounter /= 2;
-          if ((newValue & 1 << bits - i) > 0) {
-            lastValue += precisionBitsCounter;
-          }
-        }
-        return lastValue;
-      };
-      var mantissa = parseBits(data, precisionBits, exponentBits + 1, false, parsePrecisionBits);
-      if (exponent == Math.pow(2, exponentBits + 1) - 1) {
-        if (mantissa === 0) {
-          return sign === 0 ? Infinity : -Infinity;
-        }
-        return NaN;
-      }
-      return (sign === 0 ? 1 : -1) * Math.pow(2, exponent - bias) * mantissa;
-    };
-    var parseInt16 = function(value) {
-      if (parseBits(value, 1) == 1) {
-        return -1 * (parseBits(value, 15, 1, true) + 1);
-      }
-      return parseBits(value, 15, 1);
-    };
-    var parseInt32 = function(value) {
-      if (parseBits(value, 1) == 1) {
-        return -1 * (parseBits(value, 31, 1, true) + 1);
-      }
-      return parseBits(value, 31, 1);
-    };
-    var parseFloat32 = function(value) {
-      return parseFloatFromBits(value, 23, 8);
-    };
-    var parseFloat64 = function(value) {
-      return parseFloatFromBits(value, 52, 11);
-    };
-    var parseNumeric = function(value) {
-      var sign = parseBits(value, 16, 32);
-      if (sign == 49152) {
-        return NaN;
-      }
-      var weight = Math.pow(1e4, parseBits(value, 16, 16));
-      var result = 0;
-      var digits = [];
-      var ndigits = parseBits(value, 16);
-      for (var i = 0; i < ndigits; i++) {
-        result += parseBits(value, 16, 64 + 16 * i) * weight;
-        weight /= 1e4;
-      }
-      var scale = Math.pow(10, parseBits(value, 16, 48));
-      return (sign === 0 ? 1 : -1) * Math.round(result * scale) / scale;
-    };
-    var parseDate = function(isUTC, value) {
-      var sign = parseBits(value, 1);
-      var rawValue = parseBits(value, 63, 1);
-      var result = new Date((sign === 0 ? 1 : -1) * rawValue / 1e3 + 9466848e5);
-      if (!isUTC) {
-        result.setTime(result.getTime() + result.getTimezoneOffset() * 6e4);
-      }
-      result.usec = rawValue % 1e3;
-      result.getMicroSeconds = function() {
-        return this.usec;
-      };
-      result.setMicroSeconds = function(value2) {
-        this.usec = value2;
-      };
-      result.getUTCMicroSeconds = function() {
-        return this.usec;
-      };
-      return result;
-    };
-    var parseArray = function(value) {
-      var dim = parseBits(value, 32);
-      var flags = parseBits(value, 32, 32);
-      var elementType = parseBits(value, 32, 64);
-      var offset = 96;
-      var dims = [];
-      for (var i = 0; i < dim; i++) {
-        dims[i] = parseBits(value, 32, offset);
-        offset += 32;
-        offset += 32;
-      }
-      var parseElement = function(elementType2) {
-        var length = parseBits(value, 32, offset);
-        offset += 32;
-        if (length == 4294967295) {
-          return null;
-        }
-        var result;
-        if (elementType2 == 23 || elementType2 == 20) {
-          result = parseBits(value, length * 8, offset);
-          offset += length * 8;
-          return result;
-        } else if (elementType2 == 25) {
-          result = value.toString(this.encoding, offset >> 3, (offset += length << 3) >> 3);
-          return result;
-        } else {
-          console.log("ERROR: ElementType not implemented: " + elementType2);
-        }
-      };
-      var parse4 = function(dimension, elementType2) {
-        var array2 = [];
-        var i2;
-        if (dimension.length > 1) {
-          var count = dimension.shift();
-          for (i2 = 0; i2 < count; i2++) {
-            array2[i2] = parse4(dimension, elementType2);
-          }
-          dimension.unshift(count);
-        } else {
-          for (i2 = 0; i2 < dimension[0]; i2++) {
-            array2[i2] = parseElement(elementType2);
-          }
-        }
-        return array2;
-      };
-      return parse4(dims, elementType);
-    };
-    var parseText = function(value) {
-      return value.toString("utf8");
-    };
-    var parseBool = function(value) {
-      if (value === null) return null;
-      return parseBits(value, 8) > 0;
-    };
-    var init = function(register) {
-      register(20, parseInt64);
-      register(21, parseInt16);
-      register(23, parseInt32);
-      register(26, parseInt32);
-      register(1700, parseNumeric);
-      register(700, parseFloat32);
-      register(701, parseFloat64);
-      register(16, parseBool);
-      register(1114, parseDate.bind(null, false));
-      register(1184, parseDate.bind(null, true));
-      register(1e3, parseArray);
-      register(1007, parseArray);
-      register(1016, parseArray);
-      register(1008, parseArray);
-      register(1009, parseArray);
-      register(25, parseText);
-    };
-    module.exports = {
-      init
-    };
-  }
-});
-
-// node_modules/.pnpm/pg-types@2.2.0/node_modules/pg-types/lib/builtins.js
-var require_builtins = __commonJS({
-  "node_modules/.pnpm/pg-types@2.2.0/node_modules/pg-types/lib/builtins.js"(exports, module) {
-    module.exports = {
-      BOOL: 16,
-      BYTEA: 17,
-      CHAR: 18,
-      INT8: 20,
-      INT2: 21,
-      INT4: 23,
-      REGPROC: 24,
-      TEXT: 25,
-      OID: 26,
-      TID: 27,
-      XID: 28,
-      CID: 29,
-      JSON: 114,
-      XML: 142,
-      PG_NODE_TREE: 194,
-      SMGR: 210,
-      PATH: 602,
-      POLYGON: 604,
-      CIDR: 650,
-      FLOAT4: 700,
-      FLOAT8: 701,
-      ABSTIME: 702,
-      RELTIME: 703,
-      TINTERVAL: 704,
-      CIRCLE: 718,
-      MACADDR8: 774,
-      MONEY: 790,
-      MACADDR: 829,
-      INET: 869,
-      ACLITEM: 1033,
-      BPCHAR: 1042,
-      VARCHAR: 1043,
-      DATE: 1082,
-      TIME: 1083,
-      TIMESTAMP: 1114,
-      TIMESTAMPTZ: 1184,
-      INTERVAL: 1186,
-      TIMETZ: 1266,
-      BIT: 1560,
-      VARBIT: 1562,
-      NUMERIC: 1700,
-      REFCURSOR: 1790,
-      REGPROCEDURE: 2202,
-      REGOPER: 2203,
-      REGOPERATOR: 2204,
-      REGCLASS: 2205,
-      REGTYPE: 2206,
-      UUID: 2950,
-      TXID_SNAPSHOT: 2970,
-      PG_LSN: 3220,
-      PG_NDISTINCT: 3361,
-      PG_DEPENDENCIES: 3402,
-      TSVECTOR: 3614,
-      TSQUERY: 3615,
-      GTSVECTOR: 3642,
-      REGCONFIG: 3734,
-      REGDICTIONARY: 3769,
-      JSONB: 3802,
-      REGNAMESPACE: 4089,
-      REGROLE: 4096
-    };
-  }
-});
-
-// node_modules/.pnpm/pg-types@2.2.0/node_modules/pg-types/index.js
-var require_pg_types = __commonJS({
-  "node_modules/.pnpm/pg-types@2.2.0/node_modules/pg-types/index.js"(exports) {
-    var textParsers = require_textParsers();
-    var binaryParsers = require_binaryParsers();
-    var arrayParser = require_arrayParser();
-    var builtinTypes = require_builtins();
-    exports.getTypeParser = getTypeParser;
-    exports.setTypeParser = setTypeParser;
-    exports.arrayParser = arrayParser;
-    exports.builtins = builtinTypes;
-    var typeParsers = {
-      text: {},
-      binary: {}
-    };
-    function noParse(val) {
-      return String(val);
-    }
-    function getTypeParser(oid, format) {
-      format = format || "text";
-      if (!typeParsers[format]) {
-        return noParse;
-      }
-      return typeParsers[format][oid] || noParse;
-    }
-    function setTypeParser(oid, format, parseFn) {
-      if (typeof format == "function") {
-        parseFn = format;
-        format = "text";
-      }
-      typeParsers[format][oid] = parseFn;
-    }
-    textParsers.init(function(oid, converter) {
-      typeParsers.text[oid] = converter;
-    });
-    binaryParsers.init(function(oid, converter) {
-      typeParsers.binary[oid] = converter;
-    });
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/defaults.js
-var require_defaults = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/defaults.js"(exports, module) {
-    "use strict";
-    var user;
-    try {
-      user = process.platform === "win32" ? process.env.USERNAME : process.env.USER;
-    } catch {
-    }
-    module.exports = {
-      // database host. defaults to localhost
-      host: "localhost",
-      // database user's name
-      user,
-      // name of database to connect
-      database: void 0,
-      // database user's password
-      password: null,
-      // a Postgres connection string to be used instead of setting individual connection items
-      // NOTE:  Setting this value will cause it to override any other value (such as database or user) defined
-      // in the defaults object.
-      connectionString: void 0,
-      // database port
-      port: 5432,
-      // number of rows to return at a time from a prepared statement's
-      // portal. 0 will return all rows at once
-      rows: 0,
-      // binary result mode
-      binary: false,
-      // Connection pool options - see https://github.com/brianc/node-pg-pool
-      // number of connections to use in connection pool
-      // 0 will disable connection pooling
-      max: 10,
-      // max milliseconds a client can go unused before it is removed
-      // from the pool and destroyed
-      idleTimeoutMillis: 3e4,
-      client_encoding: "",
-      ssl: false,
-      application_name: void 0,
-      fallback_application_name: void 0,
-      options: void 0,
-      parseInputDatesAsUTC: false,
-      // max milliseconds any query using this connection will execute for before timing out in error.
-      // false=unlimited
-      statement_timeout: false,
-      // Abort any statement that waits longer than the specified duration in milliseconds while attempting to acquire a lock.
-      // false=unlimited
-      lock_timeout: false,
-      // Terminate any session with an open transaction that has been idle for longer than the specified duration in milliseconds
-      // false=unlimited
-      idle_in_transaction_session_timeout: false,
-      // max milliseconds to wait for query to complete (client side)
-      query_timeout: false,
-      connect_timeout: 0,
-      keepalives: 1,
-      keepalives_idle: 0
-    };
-    var pgTypes = require_pg_types();
-    var parseBigInteger = pgTypes.getTypeParser(20, "text");
-    var parseBigIntegerArray = pgTypes.getTypeParser(1016, "text");
-    module.exports.__defineSetter__("parseInt8", function(val) {
-      pgTypes.setTypeParser(20, "text", val ? pgTypes.getTypeParser(23, "text") : parseBigInteger);
-      pgTypes.setTypeParser(1016, "text", val ? pgTypes.getTypeParser(1007, "text") : parseBigIntegerArray);
-    });
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/utils.js
-var require_utils6 = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/utils.js"(exports, module) {
-    "use strict";
-    var defaults2 = require_defaults();
-    var util2 = __require("util");
-    var { isDate } = util2.types || util2;
-    function escapeElement(elementRepresentation) {
-      const escaped = elementRepresentation.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-      return '"' + escaped + '"';
-    }
-    function arrayString(val) {
-      let result = "{";
-      for (let i = 0; i < val.length; i++) {
-        if (i > 0) {
-          result = result + ",";
-        }
-        if (val[i] === null || typeof val[i] === "undefined") {
-          result = result + "NULL";
-        } else if (Array.isArray(val[i])) {
-          result = result + arrayString(val[i]);
-        } else if (ArrayBuffer.isView(val[i])) {
-          let item = val[i];
-          if (!(item instanceof Buffer)) {
-            const buf = Buffer.from(item.buffer, item.byteOffset, item.byteLength);
-            if (buf.length === item.byteLength) {
-              item = buf;
-            } else {
-              item = buf.slice(item.byteOffset, item.byteOffset + item.byteLength);
-            }
-          }
-          result += "\\\\x" + item.toString("hex");
-        } else {
-          result += escapeElement(prepareValue(val[i]));
-        }
-      }
-      result = result + "}";
-      return result;
-    }
-    var prepareValue = function(val, seen) {
-      if (val == null) {
-        return null;
-      }
-      if (typeof val === "object") {
-        if (val instanceof Buffer) {
-          return val;
-        }
-        if (ArrayBuffer.isView(val)) {
-          const buf = Buffer.from(val.buffer, val.byteOffset, val.byteLength);
-          if (buf.length === val.byteLength) {
-            return buf;
-          }
-          return buf.slice(val.byteOffset, val.byteOffset + val.byteLength);
-        }
-        if (isDate(val)) {
-          if (defaults2.parseInputDatesAsUTC) {
-            return dateToStringUTC(val);
-          } else {
-            return dateToString(val);
-          }
-        }
-        if (Array.isArray(val)) {
-          return arrayString(val);
-        }
-        return prepareObject(val, seen);
-      }
-      return val.toString();
-    };
-    function prepareObject(val, seen) {
-      if (val && typeof val.toPostgres === "function") {
-        seen = seen || [];
-        if (seen.indexOf(val) !== -1) {
-          throw new Error('circular reference detected while preparing "' + val + '" for query');
-        }
-        seen.push(val);
-        return prepareValue(val.toPostgres(prepareValue), seen);
-      }
-      return JSON.stringify(val);
-    }
-    function dateToString(date6) {
-      let offset = -date6.getTimezoneOffset();
-      let year = date6.getFullYear();
-      const isBCYear = year < 1;
-      if (isBCYear) year = Math.abs(year) + 1;
-      let ret = String(year).padStart(4, "0") + "-" + String(date6.getMonth() + 1).padStart(2, "0") + "-" + String(date6.getDate()).padStart(2, "0") + "T" + String(date6.getHours()).padStart(2, "0") + ":" + String(date6.getMinutes()).padStart(2, "0") + ":" + String(date6.getSeconds()).padStart(2, "0") + "." + String(date6.getMilliseconds()).padStart(3, "0");
-      if (offset < 0) {
-        ret += "-";
-        offset *= -1;
-      } else {
-        ret += "+";
-      }
-      ret += String(Math.floor(offset / 60)).padStart(2, "0") + ":" + String(offset % 60).padStart(2, "0");
-      if (isBCYear) ret += " BC";
-      return ret;
-    }
-    function dateToStringUTC(date6) {
-      let year = date6.getUTCFullYear();
-      const isBCYear = year < 1;
-      if (isBCYear) year = Math.abs(year) + 1;
-      let ret = String(year).padStart(4, "0") + "-" + String(date6.getUTCMonth() + 1).padStart(2, "0") + "-" + String(date6.getUTCDate()).padStart(2, "0") + "T" + String(date6.getUTCHours()).padStart(2, "0") + ":" + String(date6.getUTCMinutes()).padStart(2, "0") + ":" + String(date6.getUTCSeconds()).padStart(2, "0") + "." + String(date6.getUTCMilliseconds()).padStart(3, "0");
-      ret += "+00:00";
-      if (isBCYear) ret += " BC";
-      return ret;
-    }
-    function normalizeQueryConfig(config2, values, callback) {
-      config2 = typeof config2 === "string" ? { text: config2 } : config2;
-      if (values) {
-        if (typeof values === "function") {
-          config2.callback = values;
-        } else {
-          config2.values = values;
-        }
-      }
-      if (callback) {
-        config2.callback = callback;
-      }
-      return config2;
-    }
-    var escapeIdentifier2 = function(str) {
-      return '"' + str.replace(/"/g, '""') + '"';
-    };
-    var escapeLiteral2 = function(str) {
-      let hasBackslash = false;
-      let escaped = "'";
-      if (str == null) {
-        return "''";
-      }
-      if (typeof str !== "string") {
-        return "''";
-      }
-      for (let i = 0; i < str.length; i++) {
-        const c = str[i];
-        if (c === "'") {
-          escaped += c + c;
-        } else if (c === "\\") {
-          escaped += c + c;
-          hasBackslash = true;
-        } else {
-          escaped += c;
-        }
-      }
-      escaped += "'";
-      if (hasBackslash === true) {
-        escaped = " E" + escaped;
-      }
-      return escaped;
-    };
-    module.exports = {
-      prepareValue: function prepareValueWrapper(value) {
-        return prepareValue(value);
-      },
-      normalizeQueryConfig,
-      escapeIdentifier: escapeIdentifier2,
-      escapeLiteral: escapeLiteral2
-    };
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/crypto/utils-legacy.js
-var require_utils_legacy = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/crypto/utils-legacy.js"(exports, module) {
-    "use strict";
-    var nodeCrypto = __require("crypto");
-    function md5(string4) {
-      return nodeCrypto.createHash("md5").update(string4, "utf-8").digest("hex");
-    }
-    function postgresMd5PasswordHash(user, password, salt) {
-      const inner = md5(password + user);
-      const outer = md5(Buffer.concat([Buffer.from(inner), salt]));
-      return "md5" + outer;
-    }
-    function sha256(text2) {
-      return nodeCrypto.createHash("sha256").update(text2).digest();
-    }
-    function hashByName(hashName, text2) {
-      hashName = hashName.replace(/(\D)-/, "$1");
-      return nodeCrypto.createHash(hashName).update(text2).digest();
-    }
-    function hmacSha256(key, msg) {
-      return nodeCrypto.createHmac("sha256", key).update(msg).digest();
-    }
-    async function deriveKey(password, salt, iterations) {
-      return nodeCrypto.pbkdf2Sync(password, salt, iterations, 32, "sha256");
-    }
-    module.exports = {
-      postgresMd5PasswordHash,
-      randomBytes: nodeCrypto.randomBytes,
-      deriveKey,
-      sha256,
-      hashByName,
-      hmacSha256,
-      md5
-    };
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/crypto/utils-webcrypto.js
-var require_utils_webcrypto = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/crypto/utils-webcrypto.js"(exports, module) {
-    var nodeCrypto = __require("crypto");
-    module.exports = {
-      postgresMd5PasswordHash,
-      randomBytes,
-      deriveKey,
-      sha256,
-      hashByName,
-      hmacSha256,
-      md5
-    };
-    var webCrypto = nodeCrypto.webcrypto || globalThis.crypto;
-    var subtleCrypto = webCrypto.subtle;
-    var textEncoder = new TextEncoder();
-    function randomBytes(length) {
-      return webCrypto.getRandomValues(Buffer.alloc(length));
-    }
-    async function md5(string4) {
-      try {
-        return nodeCrypto.createHash("md5").update(string4, "utf-8").digest("hex");
-      } catch (e) {
-        const data = typeof string4 === "string" ? textEncoder.encode(string4) : string4;
-        const hash = await subtleCrypto.digest("MD5", data);
-        return Array.from(new Uint8Array(hash)).map((b) => b.toString(16).padStart(2, "0")).join("");
-      }
-    }
-    async function postgresMd5PasswordHash(user, password, salt) {
-      const inner = await md5(password + user);
-      const outer = await md5(Buffer.concat([Buffer.from(inner), salt]));
-      return "md5" + outer;
-    }
-    async function sha256(text2) {
-      return await subtleCrypto.digest("SHA-256", text2);
-    }
-    async function hashByName(hashName, text2) {
-      return await subtleCrypto.digest(hashName, text2);
-    }
-    async function hmacSha256(keyBuffer, msg) {
-      const key = await subtleCrypto.importKey("raw", keyBuffer, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-      return await subtleCrypto.sign("HMAC", key, textEncoder.encode(msg));
-    }
-    async function deriveKey(password, salt, iterations) {
-      const key = await subtleCrypto.importKey("raw", textEncoder.encode(password), "PBKDF2", false, ["deriveBits"]);
-      const params = { name: "PBKDF2", hash: "SHA-256", salt, iterations };
-      return await subtleCrypto.deriveBits(params, key, 32 * 8, ["deriveBits"]);
-    }
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/crypto/utils.js
-var require_utils7 = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/crypto/utils.js"(exports, module) {
-    "use strict";
-    var useLegacyCrypto = parseInt(process.versions && process.versions.node && process.versions.node.split(".")[0]) < 15;
-    if (useLegacyCrypto) {
-      module.exports = require_utils_legacy();
-    } else {
-      module.exports = require_utils_webcrypto();
-    }
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/crypto/cert-signatures.js
-var require_cert_signatures = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/crypto/cert-signatures.js"(exports, module) {
-    function x509Error(msg, cert) {
-      return new Error("SASL channel binding: " + msg + " when parsing public certificate " + cert.toString("base64"));
-    }
-    function readASN1Length(data, index) {
-      let length = data[index++];
-      if (length < 128) return { length, index };
-      const lengthBytes = length & 127;
-      if (lengthBytes > 4) throw x509Error("bad length", data);
-      length = 0;
-      for (let i = 0; i < lengthBytes; i++) {
-        length = length << 8 | data[index++];
-      }
-      return { length, index };
-    }
-    function readASN1OID(data, index) {
-      if (data[index++] !== 6) throw x509Error("non-OID data", data);
-      const { length: OIDLength, index: indexAfterOIDLength } = readASN1Length(data, index);
-      index = indexAfterOIDLength;
-      const lastIndex = index + OIDLength;
-      const byte1 = data[index++];
-      let oid = (byte1 / 40 >> 0) + "." + byte1 % 40;
-      while (index < lastIndex) {
-        let value = 0;
-        while (index < lastIndex) {
-          const nextByte = data[index++];
-          value = value << 7 | nextByte & 127;
-          if (nextByte < 128) break;
-        }
-        oid += "." + value;
-      }
-      return { oid, index };
-    }
-    function expectASN1Seq(data, index) {
-      if (data[index++] !== 48) throw x509Error("non-sequence data", data);
-      return readASN1Length(data, index);
-    }
-    function signatureAlgorithmHashFromCertificate(data, index) {
-      if (index === void 0) index = 0;
-      index = expectASN1Seq(data, index).index;
-      const { length: certInfoLength, index: indexAfterCertInfoLength } = expectASN1Seq(data, index);
-      index = indexAfterCertInfoLength + certInfoLength;
-      index = expectASN1Seq(data, index).index;
-      const { oid, index: indexAfterOID } = readASN1OID(data, index);
-      switch (oid) {
-        // RSA
-        case "1.2.840.113549.1.1.4":
-          return "MD5";
-        case "1.2.840.113549.1.1.5":
-          return "SHA-1";
-        case "1.2.840.113549.1.1.11":
-          return "SHA-256";
-        case "1.2.840.113549.1.1.12":
-          return "SHA-384";
-        case "1.2.840.113549.1.1.13":
-          return "SHA-512";
-        case "1.2.840.113549.1.1.14":
-          return "SHA-224";
-        case "1.2.840.113549.1.1.15":
-          return "SHA512-224";
-        case "1.2.840.113549.1.1.16":
-          return "SHA512-256";
-        // ECDSA
-        case "1.2.840.10045.4.1":
-          return "SHA-1";
-        case "1.2.840.10045.4.3.1":
-          return "SHA-224";
-        case "1.2.840.10045.4.3.2":
-          return "SHA-256";
-        case "1.2.840.10045.4.3.3":
-          return "SHA-384";
-        case "1.2.840.10045.4.3.4":
-          return "SHA-512";
-        // RSASSA-PSS: hash is indicated separately
-        case "1.2.840.113549.1.1.10": {
-          index = indexAfterOID;
-          index = expectASN1Seq(data, index).index;
-          if (data[index++] !== 160) throw x509Error("non-tag data", data);
-          index = readASN1Length(data, index).index;
-          index = expectASN1Seq(data, index).index;
-          const { oid: hashOID } = readASN1OID(data, index);
-          switch (hashOID) {
-            // standalone hash OIDs
-            case "1.2.840.113549.2.5":
-              return "MD5";
-            case "1.3.14.3.2.26":
-              return "SHA-1";
-            case "2.16.840.1.101.3.4.2.1":
-              return "SHA-256";
-            case "2.16.840.1.101.3.4.2.2":
-              return "SHA-384";
-            case "2.16.840.1.101.3.4.2.3":
-              return "SHA-512";
-          }
-          throw x509Error("unknown hash OID " + hashOID, data);
-        }
-        // Ed25519 -- see https: return//github.com/openssl/openssl/issues/15477
-        case "1.3.101.110":
-        case "1.3.101.112":
-          return "SHA-512";
-        // Ed448 -- still not in pg 17.2 (if supported, digest would be SHAKE256 x 64 bytes)
-        case "1.3.101.111":
-        case "1.3.101.113":
-          throw x509Error("Ed448 certificate channel binding is not currently supported by Postgres");
-      }
-      throw x509Error("unknown OID " + oid, data);
-    }
-    module.exports = { signatureAlgorithmHashFromCertificate };
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/crypto/sasl.js
-var require_sasl = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/crypto/sasl.js"(exports, module) {
-    "use strict";
-    var crypto2 = require_utils7();
-    var { signatureAlgorithmHashFromCertificate } = require_cert_signatures();
-    function startSession(mechanisms, stream) {
-      const candidates = ["SCRAM-SHA-256"];
-      if (stream) candidates.unshift("SCRAM-SHA-256-PLUS");
-      const mechanism = candidates.find((candidate) => mechanisms.includes(candidate));
-      if (!mechanism) {
-        throw new Error("SASL: Only mechanism(s) " + candidates.join(" and ") + " are supported");
-      }
-      if (mechanism === "SCRAM-SHA-256-PLUS" && typeof stream.getPeerCertificate !== "function") {
-        throw new Error("SASL: Mechanism SCRAM-SHA-256-PLUS requires a certificate");
-      }
-      const clientNonce = crypto2.randomBytes(18).toString("base64");
-      const gs2Header = mechanism === "SCRAM-SHA-256-PLUS" ? "p=tls-server-end-point" : stream ? "y" : "n";
-      return {
-        mechanism,
-        clientNonce,
-        response: gs2Header + ",,n=*,r=" + clientNonce,
-        message: "SASLInitialResponse"
-      };
-    }
-    async function continueSession(session, password, serverData, stream) {
-      if (session.message !== "SASLInitialResponse") {
-        throw new Error("SASL: Last message was not SASLInitialResponse");
-      }
-      if (typeof password !== "string") {
-        throw new Error("SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string");
-      }
-      if (password === "") {
-        throw new Error("SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a non-empty string");
-      }
-      if (typeof serverData !== "string") {
-        throw new Error("SASL: SCRAM-SERVER-FIRST-MESSAGE: serverData must be a string");
-      }
-      const sv = parseServerFirstMessage(serverData);
-      if (!sv.nonce.startsWith(session.clientNonce)) {
-        throw new Error("SASL: SCRAM-SERVER-FIRST-MESSAGE: server nonce does not start with client nonce");
-      } else if (sv.nonce.length === session.clientNonce.length) {
-        throw new Error("SASL: SCRAM-SERVER-FIRST-MESSAGE: server nonce is too short");
-      }
-      const clientFirstMessageBare = "n=*,r=" + session.clientNonce;
-      const serverFirstMessage = "r=" + sv.nonce + ",s=" + sv.salt + ",i=" + sv.iteration;
-      let channelBinding = stream ? "eSws" : "biws";
-      if (session.mechanism === "SCRAM-SHA-256-PLUS") {
-        const peerCert = stream.getPeerCertificate().raw;
-        let hashName = signatureAlgorithmHashFromCertificate(peerCert);
-        if (hashName === "MD5" || hashName === "SHA-1") hashName = "SHA-256";
-        const certHash = await crypto2.hashByName(hashName, peerCert);
-        const bindingData = Buffer.concat([Buffer.from("p=tls-server-end-point,,"), Buffer.from(certHash)]);
-        channelBinding = bindingData.toString("base64");
-      }
-      const clientFinalMessageWithoutProof = "c=" + channelBinding + ",r=" + sv.nonce;
-      const authMessage = clientFirstMessageBare + "," + serverFirstMessage + "," + clientFinalMessageWithoutProof;
-      const saltBytes = Buffer.from(sv.salt, "base64");
-      const saltedPassword = await crypto2.deriveKey(password, saltBytes, sv.iteration);
-      const clientKey = await crypto2.hmacSha256(saltedPassword, "Client Key");
-      const storedKey = await crypto2.sha256(clientKey);
-      const clientSignature = await crypto2.hmacSha256(storedKey, authMessage);
-      const clientProof = xorBuffers(Buffer.from(clientKey), Buffer.from(clientSignature)).toString("base64");
-      const serverKey = await crypto2.hmacSha256(saltedPassword, "Server Key");
-      const serverSignatureBytes = await crypto2.hmacSha256(serverKey, authMessage);
-      session.message = "SASLResponse";
-      session.serverSignature = Buffer.from(serverSignatureBytes).toString("base64");
-      session.response = clientFinalMessageWithoutProof + ",p=" + clientProof;
-    }
-    function finalizeSession(session, serverData) {
-      if (session.message !== "SASLResponse") {
-        throw new Error("SASL: Last message was not SASLResponse");
-      }
-      if (typeof serverData !== "string") {
-        throw new Error("SASL: SCRAM-SERVER-FINAL-MESSAGE: serverData must be a string");
-      }
-      const { serverSignature } = parseServerFinalMessage(serverData);
-      if (serverSignature !== session.serverSignature) {
-        throw new Error("SASL: SCRAM-SERVER-FINAL-MESSAGE: server signature does not match");
-      }
-    }
-    function isPrintableChars(text2) {
-      if (typeof text2 !== "string") {
-        throw new TypeError("SASL: text must be a string");
-      }
-      return text2.split("").map((_2, i) => text2.charCodeAt(i)).every((c) => c >= 33 && c <= 43 || c >= 45 && c <= 126);
-    }
-    function isBase64(text2) {
-      return /^(?:[a-zA-Z0-9+/]{4})*(?:[a-zA-Z0-9+/]{2}==|[a-zA-Z0-9+/]{3}=)?$/.test(text2);
-    }
-    function parseAttributePairs(text2) {
-      if (typeof text2 !== "string") {
-        throw new TypeError("SASL: attribute pairs text must be a string");
-      }
-      return new Map(
-        text2.split(",").map((attrValue) => {
-          if (!/^.=/.test(attrValue)) {
-            throw new Error("SASL: Invalid attribute pair entry");
-          }
-          const name = attrValue[0];
-          const value = attrValue.substring(2);
-          return [name, value];
-        })
-      );
-    }
-    function parseServerFirstMessage(data) {
-      const attrPairs = parseAttributePairs(data);
-      const nonce = attrPairs.get("r");
-      if (!nonce) {
-        throw new Error("SASL: SCRAM-SERVER-FIRST-MESSAGE: nonce missing");
-      } else if (!isPrintableChars(nonce)) {
-        throw new Error("SASL: SCRAM-SERVER-FIRST-MESSAGE: nonce must only contain printable characters");
-      }
-      const salt = attrPairs.get("s");
-      if (!salt) {
-        throw new Error("SASL: SCRAM-SERVER-FIRST-MESSAGE: salt missing");
-      } else if (!isBase64(salt)) {
-        throw new Error("SASL: SCRAM-SERVER-FIRST-MESSAGE: salt must be base64");
-      }
-      const iterationText = attrPairs.get("i");
-      if (!iterationText) {
-        throw new Error("SASL: SCRAM-SERVER-FIRST-MESSAGE: iteration missing");
-      } else if (!/^[1-9][0-9]*$/.test(iterationText)) {
-        throw new Error("SASL: SCRAM-SERVER-FIRST-MESSAGE: invalid iteration count");
-      }
-      const iteration = parseInt(iterationText, 10);
-      return {
-        nonce,
-        salt,
-        iteration
-      };
-    }
-    function parseServerFinalMessage(serverData) {
-      const attrPairs = parseAttributePairs(serverData);
-      const serverSignature = attrPairs.get("v");
-      if (!serverSignature) {
-        throw new Error("SASL: SCRAM-SERVER-FINAL-MESSAGE: server signature is missing");
-      } else if (!isBase64(serverSignature)) {
-        throw new Error("SASL: SCRAM-SERVER-FINAL-MESSAGE: server signature must be base64");
-      }
-      return {
-        serverSignature
-      };
-    }
-    function xorBuffers(a, b) {
-      if (!Buffer.isBuffer(a)) {
-        throw new TypeError("first argument must be a Buffer");
-      }
-      if (!Buffer.isBuffer(b)) {
-        throw new TypeError("second argument must be a Buffer");
-      }
-      if (a.length !== b.length) {
-        throw new Error("Buffer lengths must match");
-      }
-      if (a.length === 0) {
-        throw new Error("Buffers cannot be empty");
-      }
-      return Buffer.from(a.map((_2, i) => a[i] ^ b[i]));
-    }
-    module.exports = {
-      startSession,
-      continueSession,
-      finalizeSession
-    };
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/type-overrides.js
-var require_type_overrides = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/type-overrides.js"(exports, module) {
-    "use strict";
-    var types3 = require_pg_types();
-    function TypeOverrides2(userTypes) {
-      this._types = userTypes || types3;
-      this.text = {};
-      this.binary = {};
-    }
-    TypeOverrides2.prototype.getOverrides = function(format) {
-      switch (format) {
-        case "text":
-          return this.text;
-        case "binary":
-          return this.binary;
-        default:
-          return {};
-      }
-    };
-    TypeOverrides2.prototype.setTypeParser = function(oid, format, parseFn) {
-      if (typeof format === "function") {
-        parseFn = format;
-        format = "text";
-      }
-      this.getOverrides(format)[oid] = parseFn;
-    };
-    TypeOverrides2.prototype.getTypeParser = function(oid, format) {
-      format = format || "text";
-      return this.getOverrides(format)[oid] || this._types.getTypeParser(oid, format);
-    };
-    module.exports = TypeOverrides2;
-  }
-});
-
-// node_modules/.pnpm/pg-connection-string@2.12.0/node_modules/pg-connection-string/index.js
-var require_pg_connection_string = __commonJS({
-  "node_modules/.pnpm/pg-connection-string@2.12.0/node_modules/pg-connection-string/index.js"(exports, module) {
-    "use strict";
-    function parse4(str, options = {}) {
-      if (str.charAt(0) === "/") {
-        const config3 = str.split(" ");
-        return { host: config3[0], database: config3[1] };
-      }
-      const config2 = {};
-      let result;
-      let dummyHost = false;
-      if (/ |%[^a-f0-9]|%[a-f0-9][^a-f0-9]/i.test(str)) {
-        str = encodeURI(str).replace(/%25(\d\d)/g, "%$1");
-      }
-      try {
-        try {
-          result = new URL(str, "postgres://base");
-        } catch (e) {
-          result = new URL(str.replace("@/", "@___DUMMY___/"), "postgres://base");
-          dummyHost = true;
-        }
-      } catch (err) {
-        err.input && (err.input = "*****REDACTED*****");
-        throw err;
-      }
-      for (const entry of result.searchParams.entries()) {
-        config2[entry[0]] = entry[1];
-      }
-      config2.user = config2.user || decodeURIComponent(result.username);
-      config2.password = config2.password || decodeURIComponent(result.password);
-      if (result.protocol == "socket:") {
-        config2.host = decodeURI(result.pathname);
-        config2.database = result.searchParams.get("db");
-        config2.client_encoding = result.searchParams.get("encoding");
-        return config2;
-      }
-      const hostname2 = dummyHost ? "" : result.hostname;
-      if (!config2.host) {
-        config2.host = decodeURIComponent(hostname2);
-      } else if (hostname2 && /^%2f/i.test(hostname2)) {
-        result.pathname = hostname2 + result.pathname;
-      }
-      if (!config2.port) {
-        config2.port = result.port;
-      }
-      const pathname = result.pathname.slice(1) || null;
-      config2.database = pathname ? decodeURI(pathname) : null;
-      if (config2.ssl === "true" || config2.ssl === "1") {
-        config2.ssl = true;
-      }
-      if (config2.ssl === "0") {
-        config2.ssl = false;
-      }
-      if (config2.sslcert || config2.sslkey || config2.sslrootcert || config2.sslmode) {
-        config2.ssl = {};
-      }
-      const fs3 = config2.sslcert || config2.sslkey || config2.sslrootcert ? __require("fs") : null;
-      if (config2.sslcert) {
-        config2.ssl.cert = fs3.readFileSync(config2.sslcert).toString();
-      }
-      if (config2.sslkey) {
-        config2.ssl.key = fs3.readFileSync(config2.sslkey).toString();
-      }
-      if (config2.sslrootcert) {
-        config2.ssl.ca = fs3.readFileSync(config2.sslrootcert).toString();
-      }
-      if (options.useLibpqCompat && config2.uselibpqcompat) {
-        throw new Error("Both useLibpqCompat and uselibpqcompat are set. Please use only one of them.");
-      }
-      if (config2.uselibpqcompat === "true" || options.useLibpqCompat) {
-        switch (config2.sslmode) {
-          case "disable": {
-            config2.ssl = false;
-            break;
-          }
-          case "prefer": {
-            config2.ssl.rejectUnauthorized = false;
-            break;
-          }
-          case "require": {
-            if (config2.sslrootcert) {
-              config2.ssl.checkServerIdentity = function() {
-              };
-            } else {
-              config2.ssl.rejectUnauthorized = false;
-            }
-            break;
-          }
-          case "verify-ca": {
-            if (!config2.ssl.ca) {
-              throw new Error(
-                "SECURITY WARNING: Using sslmode=verify-ca requires specifying a CA with sslrootcert. If a public CA is used, verify-ca allows connections to a server that somebody else may have registered with the CA, making you vulnerable to Man-in-the-Middle attacks. Either specify a custom CA certificate with sslrootcert parameter or use sslmode=verify-full for proper security."
-              );
-            }
-            config2.ssl.checkServerIdentity = function() {
-            };
-            break;
-          }
-          case "verify-full": {
-            break;
-          }
-        }
-      } else {
-        switch (config2.sslmode) {
-          case "disable": {
-            config2.ssl = false;
-            break;
-          }
-          case "prefer":
-          case "require":
-          case "verify-ca":
-          case "verify-full": {
-            if (config2.sslmode !== "verify-full") {
-              deprecatedSslModeWarning(config2.sslmode);
-            }
-            break;
-          }
-          case "no-verify": {
-            config2.ssl.rejectUnauthorized = false;
-            break;
-          }
-        }
-      }
-      return config2;
-    }
-    function toConnectionOptions(sslConfig) {
-      const connectionOptions = Object.entries(sslConfig).reduce((c, [key, value]) => {
-        if (value !== void 0 && value !== null) {
-          c[key] = value;
-        }
-        return c;
-      }, {});
-      return connectionOptions;
-    }
-    function toClientConfig(config2) {
-      const poolConfig = Object.entries(config2).reduce((c, [key, value]) => {
-        if (key === "ssl") {
-          const sslConfig = value;
-          if (typeof sslConfig === "boolean") {
-            c[key] = sslConfig;
-          }
-          if (typeof sslConfig === "object") {
-            c[key] = toConnectionOptions(sslConfig);
-          }
-        } else if (value !== void 0 && value !== null) {
-          if (key === "port") {
-            if (value !== "") {
-              const v = parseInt(value, 10);
-              if (isNaN(v)) {
-                throw new Error(`Invalid ${key}: ${value}`);
-              }
-              c[key] = v;
-            }
-          } else {
-            c[key] = value;
-          }
-        }
-        return c;
-      }, {});
-      return poolConfig;
-    }
-    function parseIntoClientConfig(str) {
-      return toClientConfig(parse4(str));
-    }
-    function deprecatedSslModeWarning(sslmode) {
-      if (!deprecatedSslModeWarning.warned && typeof process !== "undefined" && process.emitWarning) {
-        deprecatedSslModeWarning.warned = true;
-        process.emitWarning(`SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
-In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
-
-To prepare for this change:
-- If you want the current behavior, explicitly use 'sslmode=verify-full'
-- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=${sslmode}'
-
-See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.`);
-      }
-    }
-    module.exports = parse4;
-    parse4.parse = parse4;
-    parse4.toClientConfig = toClientConfig;
-    parse4.parseIntoClientConfig = parseIntoClientConfig;
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/connection-parameters.js
-var require_connection_parameters = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/connection-parameters.js"(exports, module) {
-    "use strict";
-    var dns = __require("dns");
-    var defaults2 = require_defaults();
-    var parse4 = require_pg_connection_string().parse;
-    var val = function(key, config2, envVar) {
-      if (config2[key]) {
-        return config2[key];
-      }
-      if (envVar === void 0) {
-        envVar = process.env["PG" + key.toUpperCase()];
-      } else if (envVar === false) {
-      } else {
-        envVar = process.env[envVar];
-      }
-      return envVar || defaults2[key];
-    };
-    var readSSLConfigFromEnvironment = function() {
-      switch (process.env.PGSSLMODE) {
-        case "disable":
-          return false;
-        case "prefer":
-        case "require":
-        case "verify-ca":
-        case "verify-full":
-          return true;
-        case "no-verify":
-          return { rejectUnauthorized: false };
-      }
-      return defaults2.ssl;
-    };
-    var quoteParamValue = function(value) {
-      return "'" + ("" + value).replace(/\\/g, "\\\\").replace(/'/g, "\\'") + "'";
-    };
-    var add = function(params, config2, paramName) {
-      const value = config2[paramName];
-      if (value !== void 0 && value !== null) {
-        params.push(paramName + "=" + quoteParamValue(value));
-      }
-    };
-    var ConnectionParameters = class {
-      constructor(config2) {
-        config2 = typeof config2 === "string" ? parse4(config2) : config2 || {};
-        if (config2.connectionString) {
-          config2 = Object.assign({}, config2, parse4(config2.connectionString));
-        }
-        this.user = val("user", config2);
-        this.database = val("database", config2);
-        if (this.database === void 0) {
-          this.database = this.user;
-        }
-        this.port = parseInt(val("port", config2), 10);
-        this.host = val("host", config2);
-        Object.defineProperty(this, "password", {
-          configurable: true,
-          enumerable: false,
-          writable: true,
-          value: val("password", config2)
-        });
-        this.binary = val("binary", config2);
-        this.options = val("options", config2);
-        this.ssl = typeof config2.ssl === "undefined" ? readSSLConfigFromEnvironment() : config2.ssl;
-        if (typeof this.ssl === "string") {
-          if (this.ssl === "true") {
-            this.ssl = true;
-          }
-        }
-        if (this.ssl === "no-verify") {
-          this.ssl = { rejectUnauthorized: false };
-        }
-        if (this.ssl && this.ssl.key) {
-          Object.defineProperty(this.ssl, "key", {
-            enumerable: false
-          });
-        }
-        this.client_encoding = val("client_encoding", config2);
-        this.replication = val("replication", config2);
-        this.isDomainSocket = !(this.host || "").indexOf("/");
-        this.application_name = val("application_name", config2, "PGAPPNAME");
-        this.fallback_application_name = val("fallback_application_name", config2, false);
-        this.statement_timeout = val("statement_timeout", config2, false);
-        this.lock_timeout = val("lock_timeout", config2, false);
-        this.idle_in_transaction_session_timeout = val("idle_in_transaction_session_timeout", config2, false);
-        this.query_timeout = val("query_timeout", config2, false);
-        if (config2.connectionTimeoutMillis === void 0) {
-          this.connect_timeout = process.env.PGCONNECT_TIMEOUT || 0;
-        } else {
-          this.connect_timeout = Math.floor(config2.connectionTimeoutMillis / 1e3);
-        }
-        if (config2.keepAlive === false) {
-          this.keepalives = 0;
-        } else if (config2.keepAlive === true) {
-          this.keepalives = 1;
-        }
-        if (typeof config2.keepAliveInitialDelayMillis === "number") {
-          this.keepalives_idle = Math.floor(config2.keepAliveInitialDelayMillis / 1e3);
-        }
-      }
-      getLibpqConnectionString(cb) {
-        const params = [];
-        add(params, this, "user");
-        add(params, this, "password");
-        add(params, this, "port");
-        add(params, this, "application_name");
-        add(params, this, "fallback_application_name");
-        add(params, this, "connect_timeout");
-        add(params, this, "options");
-        const ssl = typeof this.ssl === "object" ? this.ssl : this.ssl ? { sslmode: this.ssl } : {};
-        add(params, ssl, "sslmode");
-        add(params, ssl, "sslca");
-        add(params, ssl, "sslkey");
-        add(params, ssl, "sslcert");
-        add(params, ssl, "sslrootcert");
-        if (this.database) {
-          params.push("dbname=" + quoteParamValue(this.database));
-        }
-        if (this.replication) {
-          params.push("replication=" + quoteParamValue(this.replication));
-        }
-        if (this.host) {
-          params.push("host=" + quoteParamValue(this.host));
-        }
-        if (this.isDomainSocket) {
-          return cb(null, params.join(" "));
-        }
-        if (this.client_encoding) {
-          params.push("client_encoding=" + quoteParamValue(this.client_encoding));
-        }
-        dns.lookup(this.host, function(err, address) {
-          if (err) return cb(err, null);
-          params.push("hostaddr=" + quoteParamValue(address));
-          return cb(null, params.join(" "));
-        });
-      }
-    };
-    module.exports = ConnectionParameters;
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/result.js
-var require_result = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/result.js"(exports, module) {
-    "use strict";
-    var types3 = require_pg_types();
-    var matchRegexp = /^([A-Za-z]+)(?: (\d+))?(?: (\d+))?/;
-    var Result2 = class {
-      constructor(rowMode, types4) {
-        this.command = null;
-        this.rowCount = null;
-        this.oid = null;
-        this.rows = [];
-        this.fields = [];
-        this._parsers = void 0;
-        this._types = types4;
-        this.RowCtor = null;
-        this.rowAsArray = rowMode === "array";
-        if (this.rowAsArray) {
-          this.parseRow = this._parseRowAsArray;
-        }
-        this._prebuiltEmptyResultObject = null;
-      }
-      // adds a command complete message
-      addCommandComplete(msg) {
-        let match2;
-        if (msg.text) {
-          match2 = matchRegexp.exec(msg.text);
-        } else {
-          match2 = matchRegexp.exec(msg.command);
-        }
-        if (match2) {
-          this.command = match2[1];
-          if (match2[3]) {
-            this.oid = parseInt(match2[2], 10);
-            this.rowCount = parseInt(match2[3], 10);
-          } else if (match2[2]) {
-            this.rowCount = parseInt(match2[2], 10);
-          }
-        }
-      }
-      _parseRowAsArray(rowData) {
-        const row = new Array(rowData.length);
-        for (let i = 0, len = rowData.length; i < len; i++) {
-          const rawValue = rowData[i];
-          if (rawValue !== null) {
-            row[i] = this._parsers[i](rawValue);
-          } else {
-            row[i] = null;
-          }
-        }
-        return row;
-      }
-      parseRow(rowData) {
-        const row = { ...this._prebuiltEmptyResultObject };
-        for (let i = 0, len = rowData.length; i < len; i++) {
-          const rawValue = rowData[i];
-          const field = this.fields[i].name;
-          if (rawValue !== null) {
-            const v = this.fields[i].format === "binary" ? Buffer.from(rawValue) : rawValue;
-            row[field] = this._parsers[i](v);
-          } else {
-            row[field] = null;
-          }
-        }
-        return row;
-      }
-      addRow(row) {
-        this.rows.push(row);
-      }
-      addFields(fieldDescriptions) {
-        this.fields = fieldDescriptions;
-        if (this.fields.length) {
-          this._parsers = new Array(fieldDescriptions.length);
-        }
-        const row = {};
-        for (let i = 0; i < fieldDescriptions.length; i++) {
-          const desc3 = fieldDescriptions[i];
-          row[desc3.name] = null;
-          if (this._types) {
-            this._parsers[i] = this._types.getTypeParser(desc3.dataTypeID, desc3.format || "text");
-          } else {
-            this._parsers[i] = types3.getTypeParser(desc3.dataTypeID, desc3.format || "text");
-          }
-        }
-        this._prebuiltEmptyResultObject = { ...row };
-      }
-    };
-    module.exports = Result2;
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/query.js
-var require_query = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/query.js"(exports, module) {
-    "use strict";
-    var { EventEmitter } = __require("events");
-    var Result2 = require_result();
-    var utils = require_utils6();
-    var Query2 = class extends EventEmitter {
-      constructor(config2, values, callback) {
-        super();
-        config2 = utils.normalizeQueryConfig(config2, values, callback);
-        this.text = config2.text;
-        this.values = config2.values;
-        this.rows = config2.rows;
-        this.types = config2.types;
-        this.name = config2.name;
-        this.queryMode = config2.queryMode;
-        this.binary = config2.binary;
-        this.portal = config2.portal || "";
-        this.callback = config2.callback;
-        this._rowMode = config2.rowMode;
-        if (process.domain && config2.callback) {
-          this.callback = process.domain.bind(config2.callback);
-        }
-        this._result = new Result2(this._rowMode, this.types);
-        this._results = this._result;
-        this._canceledDueToError = false;
-      }
-      requiresPreparation() {
-        if (this.queryMode === "extended") {
-          return true;
-        }
-        if (this.name) {
-          return true;
-        }
-        if (this.rows) {
-          return true;
-        }
-        if (!this.text) {
-          return false;
-        }
-        if (!this.values) {
-          return false;
-        }
-        return this.values.length > 0;
-      }
-      _checkForMultirow() {
-        if (this._result.command) {
-          if (!Array.isArray(this._results)) {
-            this._results = [this._result];
-          }
-          this._result = new Result2(this._rowMode, this._result._types);
-          this._results.push(this._result);
-        }
-      }
-      // associates row metadata from the supplied
-      // message with this query object
-      // metadata used when parsing row results
-      handleRowDescription(msg) {
-        this._checkForMultirow();
-        this._result.addFields(msg.fields);
-        this._accumulateRows = this.callback || !this.listeners("row").length;
-      }
-      handleDataRow(msg) {
-        let row;
-        if (this._canceledDueToError) {
-          return;
-        }
-        try {
-          row = this._result.parseRow(msg.fields);
-        } catch (err) {
-          this._canceledDueToError = err;
-          return;
-        }
-        this.emit("row", row, this._result);
-        if (this._accumulateRows) {
-          this._result.addRow(row);
-        }
-      }
-      handleCommandComplete(msg, connection) {
-        this._checkForMultirow();
-        this._result.addCommandComplete(msg);
-        if (this.rows) {
-          connection.sync();
-        }
-      }
-      // if a named prepared statement is created with empty query text
-      // the backend will send an emptyQuery message but *not* a command complete message
-      // since we pipeline sync immediately after execute we don't need to do anything here
-      // unless we have rows specified, in which case we did not pipeline the initial sync call
-      handleEmptyQuery(connection) {
-        if (this.rows) {
-          connection.sync();
-        }
-      }
-      handleError(err, connection) {
-        if (this._canceledDueToError) {
-          err = this._canceledDueToError;
-          this._canceledDueToError = false;
-        }
-        if (this.callback) {
-          return this.callback(err);
-        }
-        this.emit("error", err);
-      }
-      handleReadyForQuery(con) {
-        if (this._canceledDueToError) {
-          return this.handleError(this._canceledDueToError, con);
-        }
-        if (this.callback) {
-          try {
-            this.callback(null, this._results);
-          } catch (err) {
-            process.nextTick(() => {
-              throw err;
-            });
-          }
-        }
-        this.emit("end", this._results);
-      }
-      submit(connection) {
-        if (typeof this.text !== "string" && typeof this.name !== "string") {
-          return new Error("A query must have either text or a name. Supplying neither is unsupported.");
-        }
-        const previous = connection.parsedStatements[this.name];
-        if (this.text && previous && this.text !== previous) {
-          return new Error(`Prepared statements must be unique - '${this.name}' was used for a different statement`);
-        }
-        if (this.values && !Array.isArray(this.values)) {
-          return new Error("Query values must be an array");
-        }
-        if (this.requiresPreparation()) {
-          connection.stream.cork && connection.stream.cork();
-          try {
-            this.prepare(connection);
-          } finally {
-            connection.stream.uncork && connection.stream.uncork();
-          }
-        } else {
-          connection.query(this.text);
-        }
-        return null;
-      }
-      hasBeenParsed(connection) {
-        return this.name && connection.parsedStatements[this.name];
-      }
-      handlePortalSuspended(connection) {
-        this._getRows(connection, this.rows);
-      }
-      _getRows(connection, rows) {
-        connection.execute({
-          portal: this.portal,
-          rows
-        });
-        if (!rows) {
-          connection.sync();
-        } else {
-          connection.flush();
-        }
-      }
-      // http://developer.postgresql.org/pgdocs/postgres/protocol-flow.html#PROTOCOL-FLOW-EXT-QUERY
-      prepare(connection) {
-        if (!this.hasBeenParsed(connection)) {
-          connection.parse({
-            text: this.text,
-            name: this.name,
-            types: this.types
-          });
-        }
-        try {
-          connection.bind({
-            portal: this.portal,
-            statement: this.name,
-            values: this.values,
-            binary: this.binary,
-            valueMapper: utils.prepareValue
-          });
-        } catch (err) {
-          this.handleError(err, connection);
-          return;
-        }
-        connection.describe({
-          type: "P",
-          name: this.portal || ""
-        });
-        this._getRows(connection, this.rows);
-      }
-      handleCopyInResponse(connection) {
-        connection.sendCopyFail("No source stream defined");
-      }
-      handleCopyData(msg, connection) {
-      }
-    };
-    module.exports = Query2;
-  }
-});
-
-// node_modules/.pnpm/pg-protocol@1.13.0/node_modules/pg-protocol/dist/messages.js
-var require_messages = __commonJS({
-  "node_modules/.pnpm/pg-protocol@1.13.0/node_modules/pg-protocol/dist/messages.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.NoticeMessage = exports.DataRowMessage = exports.CommandCompleteMessage = exports.ReadyForQueryMessage = exports.NotificationResponseMessage = exports.BackendKeyDataMessage = exports.AuthenticationMD5Password = exports.ParameterStatusMessage = exports.ParameterDescriptionMessage = exports.RowDescriptionMessage = exports.Field = exports.CopyResponse = exports.CopyDataMessage = exports.DatabaseError = exports.copyDone = exports.emptyQuery = exports.replicationStart = exports.portalSuspended = exports.noData = exports.closeComplete = exports.bindComplete = exports.parseComplete = void 0;
-    exports.parseComplete = {
-      name: "parseComplete",
-      length: 5
-    };
-    exports.bindComplete = {
-      name: "bindComplete",
-      length: 5
-    };
-    exports.closeComplete = {
-      name: "closeComplete",
-      length: 5
-    };
-    exports.noData = {
-      name: "noData",
-      length: 5
-    };
-    exports.portalSuspended = {
-      name: "portalSuspended",
-      length: 5
-    };
-    exports.replicationStart = {
-      name: "replicationStart",
-      length: 4
-    };
-    exports.emptyQuery = {
-      name: "emptyQuery",
-      length: 4
-    };
-    exports.copyDone = {
-      name: "copyDone",
-      length: 4
-    };
-    var DatabaseError2 = class extends Error {
-      constructor(message, length, name) {
-        super(message);
-        this.length = length;
-        this.name = name;
-      }
-    };
-    exports.DatabaseError = DatabaseError2;
-    var CopyDataMessage = class {
-      constructor(length, chunk) {
-        this.length = length;
-        this.chunk = chunk;
-        this.name = "copyData";
-      }
-    };
-    exports.CopyDataMessage = CopyDataMessage;
-    var CopyResponse = class {
-      constructor(length, name, binary, columnCount) {
-        this.length = length;
-        this.name = name;
-        this.binary = binary;
-        this.columnTypes = new Array(columnCount);
-      }
-    };
-    exports.CopyResponse = CopyResponse;
-    var Field = class {
-      constructor(name, tableID, columnID, dataTypeID, dataTypeSize, dataTypeModifier, format) {
-        this.name = name;
-        this.tableID = tableID;
-        this.columnID = columnID;
-        this.dataTypeID = dataTypeID;
-        this.dataTypeSize = dataTypeSize;
-        this.dataTypeModifier = dataTypeModifier;
-        this.format = format;
-      }
-    };
-    exports.Field = Field;
-    var RowDescriptionMessage = class {
-      constructor(length, fieldCount) {
-        this.length = length;
-        this.fieldCount = fieldCount;
-        this.name = "rowDescription";
-        this.fields = new Array(this.fieldCount);
-      }
-    };
-    exports.RowDescriptionMessage = RowDescriptionMessage;
-    var ParameterDescriptionMessage = class {
-      constructor(length, parameterCount) {
-        this.length = length;
-        this.parameterCount = parameterCount;
-        this.name = "parameterDescription";
-        this.dataTypeIDs = new Array(this.parameterCount);
-      }
-    };
-    exports.ParameterDescriptionMessage = ParameterDescriptionMessage;
-    var ParameterStatusMessage = class {
-      constructor(length, parameterName, parameterValue) {
-        this.length = length;
-        this.parameterName = parameterName;
-        this.parameterValue = parameterValue;
-        this.name = "parameterStatus";
-      }
-    };
-    exports.ParameterStatusMessage = ParameterStatusMessage;
-    var AuthenticationMD5Password = class {
-      constructor(length, salt) {
-        this.length = length;
-        this.salt = salt;
-        this.name = "authenticationMD5Password";
-      }
-    };
-    exports.AuthenticationMD5Password = AuthenticationMD5Password;
-    var BackendKeyDataMessage = class {
-      constructor(length, processID, secretKey) {
-        this.length = length;
-        this.processID = processID;
-        this.secretKey = secretKey;
-        this.name = "backendKeyData";
-      }
-    };
-    exports.BackendKeyDataMessage = BackendKeyDataMessage;
-    var NotificationResponseMessage = class {
-      constructor(length, processId, channel, payload) {
-        this.length = length;
-        this.processId = processId;
-        this.channel = channel;
-        this.payload = payload;
-        this.name = "notification";
-      }
-    };
-    exports.NotificationResponseMessage = NotificationResponseMessage;
-    var ReadyForQueryMessage = class {
-      constructor(length, status) {
-        this.length = length;
-        this.status = status;
-        this.name = "readyForQuery";
-      }
-    };
-    exports.ReadyForQueryMessage = ReadyForQueryMessage;
-    var CommandCompleteMessage = class {
-      constructor(length, text2) {
-        this.length = length;
-        this.text = text2;
-        this.name = "commandComplete";
-      }
-    };
-    exports.CommandCompleteMessage = CommandCompleteMessage;
-    var DataRowMessage = class {
-      constructor(length, fields) {
-        this.length = length;
-        this.fields = fields;
-        this.name = "dataRow";
-        this.fieldCount = fields.length;
-      }
-    };
-    exports.DataRowMessage = DataRowMessage;
-    var NoticeMessage = class {
-      constructor(length, message) {
-        this.length = length;
-        this.message = message;
-        this.name = "notice";
-      }
-    };
-    exports.NoticeMessage = NoticeMessage;
-  }
-});
-
-// node_modules/.pnpm/pg-protocol@1.13.0/node_modules/pg-protocol/dist/buffer-writer.js
-var require_buffer_writer = __commonJS({
-  "node_modules/.pnpm/pg-protocol@1.13.0/node_modules/pg-protocol/dist/buffer-writer.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.Writer = void 0;
-    var Writer = class {
-      constructor(size = 256) {
-        this.size = size;
-        this.offset = 5;
-        this.headerPosition = 0;
-        this.buffer = Buffer.allocUnsafe(size);
-      }
-      ensure(size) {
-        const remaining = this.buffer.length - this.offset;
-        if (remaining < size) {
-          const oldBuffer = this.buffer;
-          const newSize = oldBuffer.length + (oldBuffer.length >> 1) + size;
-          this.buffer = Buffer.allocUnsafe(newSize);
-          oldBuffer.copy(this.buffer);
-        }
-      }
-      addInt32(num) {
-        this.ensure(4);
-        this.buffer[this.offset++] = num >>> 24 & 255;
-        this.buffer[this.offset++] = num >>> 16 & 255;
-        this.buffer[this.offset++] = num >>> 8 & 255;
-        this.buffer[this.offset++] = num >>> 0 & 255;
-        return this;
-      }
-      addInt16(num) {
-        this.ensure(2);
-        this.buffer[this.offset++] = num >>> 8 & 255;
-        this.buffer[this.offset++] = num >>> 0 & 255;
-        return this;
-      }
-      addCString(string4) {
-        if (!string4) {
-          this.ensure(1);
-        } else {
-          const len = Buffer.byteLength(string4);
-          this.ensure(len + 1);
-          this.buffer.write(string4, this.offset, "utf-8");
-          this.offset += len;
-        }
-        this.buffer[this.offset++] = 0;
-        return this;
-      }
-      addString(string4 = "") {
-        const len = Buffer.byteLength(string4);
-        this.ensure(len);
-        this.buffer.write(string4, this.offset);
-        this.offset += len;
-        return this;
-      }
-      add(otherBuffer) {
-        this.ensure(otherBuffer.length);
-        otherBuffer.copy(this.buffer, this.offset);
-        this.offset += otherBuffer.length;
-        return this;
-      }
-      join(code) {
-        if (code) {
-          this.buffer[this.headerPosition] = code;
-          const length = this.offset - (this.headerPosition + 1);
-          this.buffer.writeInt32BE(length, this.headerPosition + 1);
-        }
-        return this.buffer.slice(code ? 0 : 5, this.offset);
-      }
-      flush(code) {
-        const result = this.join(code);
-        this.offset = 5;
-        this.headerPosition = 0;
-        this.buffer = Buffer.allocUnsafe(this.size);
-        return result;
-      }
-    };
-    exports.Writer = Writer;
-  }
-});
-
-// node_modules/.pnpm/pg-protocol@1.13.0/node_modules/pg-protocol/dist/serializer.js
-var require_serializer = __commonJS({
-  "node_modules/.pnpm/pg-protocol@1.13.0/node_modules/pg-protocol/dist/serializer.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.serialize = void 0;
-    var buffer_writer_1 = require_buffer_writer();
-    var writer = new buffer_writer_1.Writer();
-    var startup = (opts) => {
-      writer.addInt16(3).addInt16(0);
-      for (const key of Object.keys(opts)) {
-        writer.addCString(key).addCString(opts[key]);
-      }
-      writer.addCString("client_encoding").addCString("UTF8");
-      const bodyBuffer = writer.addCString("").flush();
-      const length = bodyBuffer.length + 4;
-      return new buffer_writer_1.Writer().addInt32(length).add(bodyBuffer).flush();
-    };
-    var requestSsl = () => {
-      const response = Buffer.allocUnsafe(8);
-      response.writeInt32BE(8, 0);
-      response.writeInt32BE(80877103, 4);
-      return response;
-    };
-    var password = (password2) => {
-      return writer.addCString(password2).flush(
-        112
-        /* code.startup */
-      );
-    };
-    var sendSASLInitialResponseMessage = function(mechanism, initialResponse) {
-      writer.addCString(mechanism).addInt32(Buffer.byteLength(initialResponse)).addString(initialResponse);
-      return writer.flush(
-        112
-        /* code.startup */
-      );
-    };
-    var sendSCRAMClientFinalMessage = function(additionalData) {
-      return writer.addString(additionalData).flush(
-        112
-        /* code.startup */
-      );
-    };
-    var query = (text2) => {
-      return writer.addCString(text2).flush(
-        81
-        /* code.query */
-      );
-    };
-    var emptyArray = [];
-    var parse4 = (query2) => {
-      const name = query2.name || "";
-      if (name.length > 63) {
-        console.error("Warning! Postgres only supports 63 characters for query names.");
-        console.error("You supplied %s (%s)", name, name.length);
-        console.error("This can cause conflicts and silent errors executing queries");
-      }
-      const types3 = query2.types || emptyArray;
-      const len = types3.length;
-      const buffer = writer.addCString(name).addCString(query2.text).addInt16(len);
-      for (let i = 0; i < len; i++) {
-        buffer.addInt32(types3[i]);
-      }
-      return writer.flush(
-        80
-        /* code.parse */
-      );
-    };
-    var paramWriter = new buffer_writer_1.Writer();
-    var writeValues = function(values, valueMapper) {
-      for (let i = 0; i < values.length; i++) {
-        const mappedVal = valueMapper ? valueMapper(values[i], i) : values[i];
-        if (mappedVal == null) {
-          writer.addInt16(
-            0
-            /* ParamType.STRING */
-          );
-          paramWriter.addInt32(-1);
-        } else if (mappedVal instanceof Buffer) {
-          writer.addInt16(
-            1
-            /* ParamType.BINARY */
-          );
-          paramWriter.addInt32(mappedVal.length);
-          paramWriter.add(mappedVal);
-        } else {
-          writer.addInt16(
-            0
-            /* ParamType.STRING */
-          );
-          paramWriter.addInt32(Buffer.byteLength(mappedVal));
-          paramWriter.addString(mappedVal);
-        }
-      }
-    };
-    var bind = (config2 = {}) => {
-      const portal = config2.portal || "";
-      const statement = config2.statement || "";
-      const binary = config2.binary || false;
-      const values = config2.values || emptyArray;
-      const len = values.length;
-      writer.addCString(portal).addCString(statement);
-      writer.addInt16(len);
-      writeValues(values, config2.valueMapper);
-      writer.addInt16(len);
-      writer.add(paramWriter.flush());
-      writer.addInt16(1);
-      writer.addInt16(
-        binary ? 1 : 0
-        /* ParamType.STRING */
-      );
-      return writer.flush(
-        66
-        /* code.bind */
-      );
-    };
-    var emptyExecute = Buffer.from([69, 0, 0, 0, 9, 0, 0, 0, 0, 0]);
-    var execute = (config2) => {
-      if (!config2 || !config2.portal && !config2.rows) {
-        return emptyExecute;
-      }
-      const portal = config2.portal || "";
-      const rows = config2.rows || 0;
-      const portalLength = Buffer.byteLength(portal);
-      const len = 4 + portalLength + 1 + 4;
-      const buff = Buffer.allocUnsafe(1 + len);
-      buff[0] = 69;
-      buff.writeInt32BE(len, 1);
-      buff.write(portal, 5, "utf-8");
-      buff[portalLength + 5] = 0;
-      buff.writeUInt32BE(rows, buff.length - 4);
-      return buff;
-    };
-    var cancel = (processID, secretKey) => {
-      const buffer = Buffer.allocUnsafe(16);
-      buffer.writeInt32BE(16, 0);
-      buffer.writeInt16BE(1234, 4);
-      buffer.writeInt16BE(5678, 6);
-      buffer.writeInt32BE(processID, 8);
-      buffer.writeInt32BE(secretKey, 12);
-      return buffer;
-    };
-    var cstringMessage = (code, string4) => {
-      const stringLen = Buffer.byteLength(string4);
-      const len = 4 + stringLen + 1;
-      const buffer = Buffer.allocUnsafe(1 + len);
-      buffer[0] = code;
-      buffer.writeInt32BE(len, 1);
-      buffer.write(string4, 5, "utf-8");
-      buffer[len] = 0;
-      return buffer;
-    };
-    var emptyDescribePortal = writer.addCString("P").flush(
-      68
-      /* code.describe */
-    );
-    var emptyDescribeStatement = writer.addCString("S").flush(
-      68
-      /* code.describe */
-    );
-    var describe = (msg) => {
-      return msg.name ? cstringMessage(68, `${msg.type}${msg.name || ""}`) : msg.type === "P" ? emptyDescribePortal : emptyDescribeStatement;
-    };
-    var close = (msg) => {
-      const text2 = `${msg.type}${msg.name || ""}`;
-      return cstringMessage(67, text2);
-    };
-    var copyData = (chunk) => {
-      return writer.add(chunk).flush(
-        100
-        /* code.copyFromChunk */
-      );
-    };
-    var copyFail = (message) => {
-      return cstringMessage(102, message);
-    };
-    var codeOnlyBuffer = (code) => Buffer.from([code, 0, 0, 0, 4]);
-    var flushBuffer = codeOnlyBuffer(
-      72
-      /* code.flush */
-    );
-    var syncBuffer = codeOnlyBuffer(
-      83
-      /* code.sync */
-    );
-    var endBuffer = codeOnlyBuffer(
-      88
-      /* code.end */
-    );
-    var copyDoneBuffer = codeOnlyBuffer(
-      99
-      /* code.copyDone */
-    );
-    var serialize = {
-      startup,
-      password,
-      requestSsl,
-      sendSASLInitialResponseMessage,
-      sendSCRAMClientFinalMessage,
-      query,
-      parse: parse4,
-      bind,
-      execute,
-      describe,
-      close,
-      flush: () => flushBuffer,
-      sync: () => syncBuffer,
-      end: () => endBuffer,
-      copyData,
-      copyDone: () => copyDoneBuffer,
-      copyFail,
-      cancel
-    };
-    exports.serialize = serialize;
-  }
-});
-
-// node_modules/.pnpm/pg-protocol@1.13.0/node_modules/pg-protocol/dist/buffer-reader.js
-var require_buffer_reader = __commonJS({
-  "node_modules/.pnpm/pg-protocol@1.13.0/node_modules/pg-protocol/dist/buffer-reader.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.BufferReader = void 0;
-    var BufferReader = class {
-      constructor(offset = 0) {
-        this.offset = offset;
-        this.buffer = Buffer.allocUnsafe(0);
-        this.encoding = "utf-8";
-      }
-      setBuffer(offset, buffer) {
-        this.offset = offset;
-        this.buffer = buffer;
-      }
-      int16() {
-        const result = this.buffer.readInt16BE(this.offset);
-        this.offset += 2;
-        return result;
-      }
-      byte() {
-        const result = this.buffer[this.offset];
-        this.offset++;
-        return result;
-      }
-      int32() {
-        const result = this.buffer.readInt32BE(this.offset);
-        this.offset += 4;
-        return result;
-      }
-      uint32() {
-        const result = this.buffer.readUInt32BE(this.offset);
-        this.offset += 4;
-        return result;
-      }
-      string(length) {
-        const result = this.buffer.toString(this.encoding, this.offset, this.offset + length);
-        this.offset += length;
-        return result;
-      }
-      cstring() {
-        const start = this.offset;
-        let end = start;
-        while (this.buffer[end++] !== 0) {
-        }
-        this.offset = end;
-        return this.buffer.toString(this.encoding, start, end - 1);
-      }
-      bytes(length) {
-        const result = this.buffer.slice(this.offset, this.offset + length);
-        this.offset += length;
-        return result;
-      }
-    };
-    exports.BufferReader = BufferReader;
-  }
-});
-
-// node_modules/.pnpm/pg-protocol@1.13.0/node_modules/pg-protocol/dist/parser.js
-var require_parser = __commonJS({
-  "node_modules/.pnpm/pg-protocol@1.13.0/node_modules/pg-protocol/dist/parser.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.Parser = void 0;
-    var messages_1 = require_messages();
-    var buffer_reader_1 = require_buffer_reader();
-    var CODE_LENGTH = 1;
-    var LEN_LENGTH = 4;
-    var HEADER_LENGTH = CODE_LENGTH + LEN_LENGTH;
-    var LATEINIT_LENGTH = -1;
-    var emptyBuffer = Buffer.allocUnsafe(0);
-    var Parser = class {
-      constructor(opts) {
-        this.buffer = emptyBuffer;
-        this.bufferLength = 0;
-        this.bufferOffset = 0;
-        this.reader = new buffer_reader_1.BufferReader();
-        if ((opts === null || opts === void 0 ? void 0 : opts.mode) === "binary") {
-          throw new Error("Binary mode not supported yet");
-        }
-        this.mode = (opts === null || opts === void 0 ? void 0 : opts.mode) || "text";
-      }
-      parse(buffer, callback) {
-        this.mergeBuffer(buffer);
-        const bufferFullLength = this.bufferOffset + this.bufferLength;
-        let offset = this.bufferOffset;
-        while (offset + HEADER_LENGTH <= bufferFullLength) {
-          const code = this.buffer[offset];
-          const length = this.buffer.readUInt32BE(offset + CODE_LENGTH);
-          const fullMessageLength = CODE_LENGTH + length;
-          if (fullMessageLength + offset <= bufferFullLength) {
-            const message = this.handlePacket(offset + HEADER_LENGTH, code, length, this.buffer);
-            callback(message);
-            offset += fullMessageLength;
-          } else {
-            break;
-          }
-        }
-        if (offset === bufferFullLength) {
-          this.buffer = emptyBuffer;
-          this.bufferLength = 0;
-          this.bufferOffset = 0;
-        } else {
-          this.bufferLength = bufferFullLength - offset;
-          this.bufferOffset = offset;
-        }
-      }
-      mergeBuffer(buffer) {
-        if (this.bufferLength > 0) {
-          const newLength = this.bufferLength + buffer.byteLength;
-          const newFullLength = newLength + this.bufferOffset;
-          if (newFullLength > this.buffer.byteLength) {
-            let newBuffer;
-            if (newLength <= this.buffer.byteLength && this.bufferOffset >= this.bufferLength) {
-              newBuffer = this.buffer;
-            } else {
-              let newBufferLength = this.buffer.byteLength * 2;
-              while (newLength >= newBufferLength) {
-                newBufferLength *= 2;
-              }
-              newBuffer = Buffer.allocUnsafe(newBufferLength);
-            }
-            this.buffer.copy(newBuffer, 0, this.bufferOffset, this.bufferOffset + this.bufferLength);
-            this.buffer = newBuffer;
-            this.bufferOffset = 0;
-          }
-          buffer.copy(this.buffer, this.bufferOffset + this.bufferLength);
-          this.bufferLength = newLength;
-        } else {
-          this.buffer = buffer;
-          this.bufferOffset = 0;
-          this.bufferLength = buffer.byteLength;
-        }
-      }
-      handlePacket(offset, code, length, bytes) {
-        const { reader } = this;
-        reader.setBuffer(offset, bytes);
-        let message;
-        switch (code) {
-          case 50:
-            message = messages_1.bindComplete;
-            break;
-          case 49:
-            message = messages_1.parseComplete;
-            break;
-          case 51:
-            message = messages_1.closeComplete;
-            break;
-          case 110:
-            message = messages_1.noData;
-            break;
-          case 115:
-            message = messages_1.portalSuspended;
-            break;
-          case 99:
-            message = messages_1.copyDone;
-            break;
-          case 87:
-            message = messages_1.replicationStart;
-            break;
-          case 73:
-            message = messages_1.emptyQuery;
-            break;
-          case 68:
-            message = parseDataRowMessage(reader);
-            break;
-          case 67:
-            message = parseCommandCompleteMessage(reader);
-            break;
-          case 90:
-            message = parseReadyForQueryMessage(reader);
-            break;
-          case 65:
-            message = parseNotificationMessage(reader);
-            break;
-          case 82:
-            message = parseAuthenticationResponse(reader, length);
-            break;
-          case 83:
-            message = parseParameterStatusMessage(reader);
-            break;
-          case 75:
-            message = parseBackendKeyData(reader);
-            break;
-          case 69:
-            message = parseErrorMessage(reader, "error");
-            break;
-          case 78:
-            message = parseErrorMessage(reader, "notice");
-            break;
-          case 84:
-            message = parseRowDescriptionMessage(reader);
-            break;
-          case 116:
-            message = parseParameterDescriptionMessage(reader);
-            break;
-          case 71:
-            message = parseCopyInMessage(reader);
-            break;
-          case 72:
-            message = parseCopyOutMessage(reader);
-            break;
-          case 100:
-            message = parseCopyData(reader, length);
-            break;
-          default:
-            return new messages_1.DatabaseError("received invalid response: " + code.toString(16), length, "error");
-        }
-        reader.setBuffer(0, emptyBuffer);
-        message.length = length;
-        return message;
-      }
-    };
-    exports.Parser = Parser;
-    var parseReadyForQueryMessage = (reader) => {
-      const status = reader.string(1);
-      return new messages_1.ReadyForQueryMessage(LATEINIT_LENGTH, status);
-    };
-    var parseCommandCompleteMessage = (reader) => {
-      const text2 = reader.cstring();
-      return new messages_1.CommandCompleteMessage(LATEINIT_LENGTH, text2);
-    };
-    var parseCopyData = (reader, length) => {
-      const chunk = reader.bytes(length - 4);
-      return new messages_1.CopyDataMessage(LATEINIT_LENGTH, chunk);
-    };
-    var parseCopyInMessage = (reader) => parseCopyMessage(reader, "copyInResponse");
-    var parseCopyOutMessage = (reader) => parseCopyMessage(reader, "copyOutResponse");
-    var parseCopyMessage = (reader, messageName) => {
-      const isBinary = reader.byte() !== 0;
-      const columnCount = reader.int16();
-      const message = new messages_1.CopyResponse(LATEINIT_LENGTH, messageName, isBinary, columnCount);
-      for (let i = 0; i < columnCount; i++) {
-        message.columnTypes[i] = reader.int16();
-      }
-      return message;
-    };
-    var parseNotificationMessage = (reader) => {
-      const processId = reader.int32();
-      const channel = reader.cstring();
-      const payload = reader.cstring();
-      return new messages_1.NotificationResponseMessage(LATEINIT_LENGTH, processId, channel, payload);
-    };
-    var parseRowDescriptionMessage = (reader) => {
-      const fieldCount = reader.int16();
-      const message = new messages_1.RowDescriptionMessage(LATEINIT_LENGTH, fieldCount);
-      for (let i = 0; i < fieldCount; i++) {
-        message.fields[i] = parseField(reader);
-      }
-      return message;
-    };
-    var parseField = (reader) => {
-      const name = reader.cstring();
-      const tableID = reader.uint32();
-      const columnID = reader.int16();
-      const dataTypeID = reader.uint32();
-      const dataTypeSize = reader.int16();
-      const dataTypeModifier = reader.int32();
-      const mode = reader.int16() === 0 ? "text" : "binary";
-      return new messages_1.Field(name, tableID, columnID, dataTypeID, dataTypeSize, dataTypeModifier, mode);
-    };
-    var parseParameterDescriptionMessage = (reader) => {
-      const parameterCount = reader.int16();
-      const message = new messages_1.ParameterDescriptionMessage(LATEINIT_LENGTH, parameterCount);
-      for (let i = 0; i < parameterCount; i++) {
-        message.dataTypeIDs[i] = reader.int32();
-      }
-      return message;
-    };
-    var parseDataRowMessage = (reader) => {
-      const fieldCount = reader.int16();
-      const fields = new Array(fieldCount);
-      for (let i = 0; i < fieldCount; i++) {
-        const len = reader.int32();
-        fields[i] = len === -1 ? null : reader.string(len);
-      }
-      return new messages_1.DataRowMessage(LATEINIT_LENGTH, fields);
-    };
-    var parseParameterStatusMessage = (reader) => {
-      const name = reader.cstring();
-      const value = reader.cstring();
-      return new messages_1.ParameterStatusMessage(LATEINIT_LENGTH, name, value);
-    };
-    var parseBackendKeyData = (reader) => {
-      const processID = reader.int32();
-      const secretKey = reader.int32();
-      return new messages_1.BackendKeyDataMessage(LATEINIT_LENGTH, processID, secretKey);
-    };
-    var parseAuthenticationResponse = (reader, length) => {
-      const code = reader.int32();
-      const message = {
-        name: "authenticationOk",
-        length
-      };
-      switch (code) {
-        case 0:
-          break;
-        case 3:
-          if (message.length === 8) {
-            message.name = "authenticationCleartextPassword";
-          }
-          break;
-        case 5:
-          if (message.length === 12) {
-            message.name = "authenticationMD5Password";
-            const salt = reader.bytes(4);
-            return new messages_1.AuthenticationMD5Password(LATEINIT_LENGTH, salt);
-          }
-          break;
-        case 10:
-          {
-            message.name = "authenticationSASL";
-            message.mechanisms = [];
-            let mechanism;
-            do {
-              mechanism = reader.cstring();
-              if (mechanism) {
-                message.mechanisms.push(mechanism);
-              }
-            } while (mechanism);
-          }
-          break;
-        case 11:
-          message.name = "authenticationSASLContinue";
-          message.data = reader.string(length - 8);
-          break;
-        case 12:
-          message.name = "authenticationSASLFinal";
-          message.data = reader.string(length - 8);
-          break;
-        default:
-          throw new Error("Unknown authenticationOk message type " + code);
-      }
-      return message;
-    };
-    var parseErrorMessage = (reader, name) => {
-      const fields = {};
-      let fieldType = reader.string(1);
-      while (fieldType !== "\0") {
-        fields[fieldType] = reader.cstring();
-        fieldType = reader.string(1);
-      }
-      const messageValue = fields.M;
-      const message = name === "notice" ? new messages_1.NoticeMessage(LATEINIT_LENGTH, messageValue) : new messages_1.DatabaseError(messageValue, LATEINIT_LENGTH, name);
-      message.severity = fields.S;
-      message.code = fields.C;
-      message.detail = fields.D;
-      message.hint = fields.H;
-      message.position = fields.P;
-      message.internalPosition = fields.p;
-      message.internalQuery = fields.q;
-      message.where = fields.W;
-      message.schema = fields.s;
-      message.table = fields.t;
-      message.column = fields.c;
-      message.dataType = fields.d;
-      message.constraint = fields.n;
-      message.file = fields.F;
-      message.line = fields.L;
-      message.routine = fields.R;
-      return message;
-    };
-  }
-});
-
-// node_modules/.pnpm/pg-protocol@1.13.0/node_modules/pg-protocol/dist/index.js
-var require_dist3 = __commonJS({
-  "node_modules/.pnpm/pg-protocol@1.13.0/node_modules/pg-protocol/dist/index.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.DatabaseError = exports.serialize = exports.parse = void 0;
-    var messages_1 = require_messages();
-    Object.defineProperty(exports, "DatabaseError", { enumerable: true, get: function() {
-      return messages_1.DatabaseError;
-    } });
-    var serializer_1 = require_serializer();
-    Object.defineProperty(exports, "serialize", { enumerable: true, get: function() {
-      return serializer_1.serialize;
-    } });
-    var parser_1 = require_parser();
-    function parse4(stream, callback) {
-      const parser = new parser_1.Parser();
-      stream.on("data", (buffer) => parser.parse(buffer, callback));
-      return new Promise((resolve) => stream.on("end", () => resolve()));
-    }
-    exports.parse = parse4;
-  }
-});
-
-// node_modules/.pnpm/pg-cloudflare@1.3.0/node_modules/pg-cloudflare/dist/empty.js
-var require_empty = __commonJS({
-  "node_modules/.pnpm/pg-cloudflare@1.3.0/node_modules/pg-cloudflare/dist/empty.js"(exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = {};
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/stream.js
-var require_stream = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/stream.js"(exports, module) {
-    var { getStream, getSecureStream } = getStreamFuncs();
-    module.exports = {
-      /**
-       * Get a socket stream compatible with the current runtime environment.
-       * @returns {Duplex}
-       */
-      getStream,
-      /**
-       * Get a TLS secured socket, compatible with the current environment,
-       * using the socket and other settings given in `options`.
-       * @returns {Duplex}
-       */
-      getSecureStream
-    };
-    function getNodejsStreamFuncs() {
-      function getStream2(ssl) {
-        const net = __require("net");
-        return new net.Socket();
-      }
-      function getSecureStream2(options) {
-        const tls = __require("tls");
-        return tls.connect(options);
-      }
-      return {
-        getStream: getStream2,
-        getSecureStream: getSecureStream2
-      };
-    }
-    function getCloudflareStreamFuncs() {
-      function getStream2(ssl) {
-        const { CloudflareSocket } = require_empty();
-        return new CloudflareSocket(ssl);
-      }
-      function getSecureStream2(options) {
-        options.socket.startTls(options);
-        return options.socket;
-      }
-      return {
-        getStream: getStream2,
-        getSecureStream: getSecureStream2
-      };
-    }
-    function isCloudflareRuntime() {
-      if (typeof navigator === "object" && navigator !== null && typeof navigator.userAgent === "string") {
-        return navigator.userAgent === "Cloudflare-Workers";
-      }
-      if (typeof Response === "function") {
-        const resp = new Response(null, { cf: { thing: true } });
-        if (typeof resp.cf === "object" && resp.cf !== null && resp.cf.thing) {
-          return true;
-        }
-      }
-      return false;
-    }
-    function getStreamFuncs() {
-      if (isCloudflareRuntime()) {
-        return getCloudflareStreamFuncs();
-      }
-      return getNodejsStreamFuncs();
-    }
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/connection.js
-var require_connection = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/connection.js"(exports, module) {
-    "use strict";
-    var EventEmitter = __require("events").EventEmitter;
-    var { parse: parse4, serialize } = require_dist3();
-    var { getStream, getSecureStream } = require_stream();
-    var flushBuffer = serialize.flush();
-    var syncBuffer = serialize.sync();
-    var endBuffer = serialize.end();
-    var Connection2 = class extends EventEmitter {
-      constructor(config2) {
-        super();
-        config2 = config2 || {};
-        this.stream = config2.stream || getStream(config2.ssl);
-        if (typeof this.stream === "function") {
-          this.stream = this.stream(config2);
-        }
-        this._keepAlive = config2.keepAlive;
-        this._keepAliveInitialDelayMillis = config2.keepAliveInitialDelayMillis;
-        this.parsedStatements = {};
-        this.ssl = config2.ssl || false;
-        this._ending = false;
-        this._emitMessage = false;
-        const self = this;
-        this.on("newListener", function(eventName) {
-          if (eventName === "message") {
-            self._emitMessage = true;
-          }
-        });
-      }
-      connect(port2, host) {
-        const self = this;
-        this._connecting = true;
-        this.stream.setNoDelay(true);
-        this.stream.connect(port2, host);
-        this.stream.once("connect", function() {
-          if (self._keepAlive) {
-            self.stream.setKeepAlive(true, self._keepAliveInitialDelayMillis);
-          }
-          self.emit("connect");
-        });
-        const reportStreamError = function(error40) {
-          if (self._ending && (error40.code === "ECONNRESET" || error40.code === "EPIPE")) {
-            return;
-          }
-          self.emit("error", error40);
-        };
-        this.stream.on("error", reportStreamError);
-        this.stream.on("close", function() {
-          self.emit("end");
-        });
-        if (!this.ssl) {
-          return this.attachListeners(this.stream);
-        }
-        this.stream.once("data", function(buffer) {
-          const responseCode = buffer.toString("utf8");
-          switch (responseCode) {
-            case "S":
-              break;
-            case "N":
-              self.stream.end();
-              return self.emit("error", new Error("The server does not support SSL connections"));
-            default:
-              self.stream.end();
-              return self.emit("error", new Error("There was an error establishing an SSL connection"));
-          }
-          const options = {
-            socket: self.stream
-          };
-          if (self.ssl !== true) {
-            Object.assign(options, self.ssl);
-            if ("key" in self.ssl) {
-              options.key = self.ssl.key;
-            }
-          }
-          const net = __require("net");
-          if (net.isIP && net.isIP(host) === 0) {
-            options.servername = host;
-          }
-          try {
-            self.stream = getSecureStream(options);
-          } catch (err) {
-            return self.emit("error", err);
-          }
-          self.attachListeners(self.stream);
-          self.stream.on("error", reportStreamError);
-          self.emit("sslconnect");
-        });
-      }
-      attachListeners(stream) {
-        parse4(stream, (msg) => {
-          const eventName = msg.name === "error" ? "errorMessage" : msg.name;
-          if (this._emitMessage) {
-            this.emit("message", msg);
-          }
-          this.emit(eventName, msg);
-        });
-      }
-      requestSsl() {
-        this.stream.write(serialize.requestSsl());
-      }
-      startup(config2) {
-        this.stream.write(serialize.startup(config2));
-      }
-      cancel(processID, secretKey) {
-        this._send(serialize.cancel(processID, secretKey));
-      }
-      password(password) {
-        this._send(serialize.password(password));
-      }
-      sendSASLInitialResponseMessage(mechanism, initialResponse) {
-        this._send(serialize.sendSASLInitialResponseMessage(mechanism, initialResponse));
-      }
-      sendSCRAMClientFinalMessage(additionalData) {
-        this._send(serialize.sendSCRAMClientFinalMessage(additionalData));
-      }
-      _send(buffer) {
-        if (!this.stream.writable) {
-          return false;
-        }
-        return this.stream.write(buffer);
-      }
-      query(text2) {
-        this._send(serialize.query(text2));
-      }
-      // send parse message
-      parse(query) {
-        this._send(serialize.parse(query));
-      }
-      // send bind message
-      bind(config2) {
-        this._send(serialize.bind(config2));
-      }
-      // send execute message
-      execute(config2) {
-        this._send(serialize.execute(config2));
-      }
-      flush() {
-        if (this.stream.writable) {
-          this.stream.write(flushBuffer);
-        }
-      }
-      sync() {
-        this._ending = true;
-        this._send(syncBuffer);
-      }
-      ref() {
-        this.stream.ref();
-      }
-      unref() {
-        this.stream.unref();
-      }
-      end() {
-        this._ending = true;
-        if (!this._connecting || !this.stream.writable) {
-          this.stream.end();
-          return;
-        }
-        return this.stream.write(endBuffer, () => {
-          this.stream.end();
-        });
-      }
-      close(msg) {
-        this._send(serialize.close(msg));
-      }
-      describe(msg) {
-        this._send(serialize.describe(msg));
-      }
-      sendCopyFromChunk(chunk) {
-        this._send(serialize.copyData(chunk));
-      }
-      endCopyFrom() {
-        this._send(serialize.copyDone());
-      }
-      sendCopyFail(msg) {
-        this._send(serialize.copyFail(msg));
-      }
-    };
-    module.exports = Connection2;
-  }
-});
-
-// node_modules/.pnpm/split2@4.2.0/node_modules/split2/index.js
-var require_split2 = __commonJS({
-  "node_modules/.pnpm/split2@4.2.0/node_modules/split2/index.js"(exports, module) {
-    "use strict";
-    var { Transform } = __require("stream");
-    var { StringDecoder } = __require("string_decoder");
-    var kLast = Symbol("last");
-    var kDecoder = Symbol("decoder");
-    function transform2(chunk, enc, cb) {
-      let list;
-      if (this.overflow) {
-        const buf = this[kDecoder].write(chunk);
-        list = buf.split(this.matcher);
-        if (list.length === 1) return cb();
-        list.shift();
-        this.overflow = false;
-      } else {
-        this[kLast] += this[kDecoder].write(chunk);
-        list = this[kLast].split(this.matcher);
-      }
-      this[kLast] = list.pop();
-      for (let i = 0; i < list.length; i++) {
-        try {
-          push(this, this.mapper(list[i]));
-        } catch (error40) {
-          return cb(error40);
-        }
-      }
-      this.overflow = this[kLast].length > this.maxLength;
-      if (this.overflow && !this.skipOverflow) {
-        cb(new Error("maximum buffer reached"));
-        return;
-      }
-      cb();
-    }
-    function flush(cb) {
-      this[kLast] += this[kDecoder].end();
-      if (this[kLast]) {
-        try {
-          push(this, this.mapper(this[kLast]));
-        } catch (error40) {
-          return cb(error40);
-        }
-      }
-      cb();
-    }
-    function push(self, val) {
-      if (val !== void 0) {
-        self.push(val);
-      }
-    }
-    function noop2(incoming) {
-      return incoming;
-    }
-    function split2(matcher, mapper, options) {
-      matcher = matcher || /\r?\n/;
-      mapper = mapper || noop2;
-      options = options || {};
-      switch (arguments.length) {
-        case 1:
-          if (typeof matcher === "function") {
-            mapper = matcher;
-            matcher = /\r?\n/;
-          } else if (typeof matcher === "object" && !(matcher instanceof RegExp) && !matcher[Symbol.split]) {
-            options = matcher;
-            matcher = /\r?\n/;
-          }
-          break;
-        case 2:
-          if (typeof matcher === "function") {
-            options = mapper;
-            mapper = matcher;
-            matcher = /\r?\n/;
-          } else if (typeof mapper === "object") {
-            options = mapper;
-            mapper = noop2;
-          }
-      }
-      options = Object.assign({}, options);
-      options.autoDestroy = true;
-      options.transform = transform2;
-      options.flush = flush;
-      options.readableObjectMode = true;
-      const stream = new Transform(options);
-      stream[kLast] = "";
-      stream[kDecoder] = new StringDecoder("utf8");
-      stream.matcher = matcher;
-      stream.mapper = mapper;
-      stream.maxLength = options.maxLength;
-      stream.skipOverflow = options.skipOverflow || false;
-      stream.overflow = false;
-      stream._destroy = function(err, cb) {
-        this._writableState.errorEmitted = false;
-        cb(err);
-      };
-      return stream;
-    }
-    module.exports = split2;
-  }
-});
-
-// node_modules/.pnpm/pgpass@1.0.5/node_modules/pgpass/lib/helper.js
-var require_helper = __commonJS({
-  "node_modules/.pnpm/pgpass@1.0.5/node_modules/pgpass/lib/helper.js"(exports, module) {
-    "use strict";
-    var path4 = __require("path");
-    var Stream = __require("stream").Stream;
-    var split2 = require_split2();
-    var util2 = __require("util");
-    var defaultPort = 5432;
-    var isWin = process.platform === "win32";
-    var warnStream = process.stderr;
-    var S_IRWXG = 56;
-    var S_IRWXO = 7;
-    var S_IFMT = 61440;
-    var S_IFREG = 32768;
-    function isRegFile(mode) {
-      return (mode & S_IFMT) == S_IFREG;
-    }
-    var fieldNames = ["host", "port", "database", "user", "password"];
-    var nrOfFields = fieldNames.length;
-    var passKey = fieldNames[nrOfFields - 1];
-    function warn() {
-      var isWritable = warnStream instanceof Stream && true === warnStream.writable;
-      if (isWritable) {
-        var args = Array.prototype.slice.call(arguments).concat("\n");
-        warnStream.write(util2.format.apply(util2, args));
-      }
-    }
-    Object.defineProperty(module.exports, "isWin", {
-      get: function() {
-        return isWin;
-      },
-      set: function(val) {
-        isWin = val;
-      }
-    });
-    module.exports.warnTo = function(stream) {
-      var old = warnStream;
-      warnStream = stream;
-      return old;
-    };
-    module.exports.getFileName = function(rawEnv) {
-      var env = rawEnv || process.env;
-      var file2 = env.PGPASSFILE || (isWin ? path4.join(env.APPDATA || "./", "postgresql", "pgpass.conf") : path4.join(env.HOME || "./", ".pgpass"));
-      return file2;
-    };
-    module.exports.usePgPass = function(stats, fname) {
-      if (Object.prototype.hasOwnProperty.call(process.env, "PGPASSWORD")) {
-        return false;
-      }
-      if (isWin) {
-        return true;
-      }
-      fname = fname || "<unkn>";
-      if (!isRegFile(stats.mode)) {
-        warn('WARNING: password file "%s" is not a plain file', fname);
-        return false;
-      }
-      if (stats.mode & (S_IRWXG | S_IRWXO)) {
-        warn('WARNING: password file "%s" has group or world access; permissions should be u=rw (0600) or less', fname);
-        return false;
-      }
-      return true;
-    };
-    var matcher = module.exports.match = function(connInfo, entry) {
-      return fieldNames.slice(0, -1).reduce(function(prev, field, idx) {
-        if (idx == 1) {
-          if (Number(connInfo[field] || defaultPort) === Number(entry[field])) {
-            return prev && true;
-          }
-        }
-        return prev && (entry[field] === "*" || entry[field] === connInfo[field]);
-      }, true);
-    };
-    module.exports.getPassword = function(connInfo, stream, cb) {
-      var pass;
-      var lineStream = stream.pipe(split2());
-      function onLine(line2) {
-        var entry = parseLine(line2);
-        if (entry && isValidEntry(entry) && matcher(connInfo, entry)) {
-          pass = entry[passKey];
-          lineStream.end();
-        }
-      }
-      var onEnd = function() {
-        stream.destroy();
-        cb(pass);
-      };
-      var onErr = function(err) {
-        stream.destroy();
-        warn("WARNING: error on reading file: %s", err);
-        cb(void 0);
-      };
-      stream.on("error", onErr);
-      lineStream.on("data", onLine).on("end", onEnd).on("error", onErr);
-    };
-    var parseLine = module.exports.parseLine = function(line2) {
-      if (line2.length < 11 || line2.match(/^\s+#/)) {
-        return null;
-      }
-      var curChar = "";
-      var prevChar = "";
-      var fieldIdx = 0;
-      var startIdx = 0;
-      var endIdx = 0;
-      var obj = {};
-      var isLastField = false;
-      var addToObj = function(idx, i0, i1) {
-        var field = line2.substring(i0, i1);
-        if (!Object.hasOwnProperty.call(process.env, "PGPASS_NO_DEESCAPE")) {
-          field = field.replace(/\\([:\\])/g, "$1");
-        }
-        obj[fieldNames[idx]] = field;
-      };
-      for (var i = 0; i < line2.length - 1; i += 1) {
-        curChar = line2.charAt(i + 1);
-        prevChar = line2.charAt(i);
-        isLastField = fieldIdx == nrOfFields - 1;
-        if (isLastField) {
-          addToObj(fieldIdx, startIdx);
-          break;
-        }
-        if (i >= 0 && curChar == ":" && prevChar !== "\\") {
-          addToObj(fieldIdx, startIdx, i + 1);
-          startIdx = i + 2;
-          fieldIdx += 1;
-        }
-      }
-      obj = Object.keys(obj).length === nrOfFields ? obj : null;
-      return obj;
-    };
-    var isValidEntry = module.exports.isValidEntry = function(entry) {
-      var rules = {
-        // host
-        0: function(x) {
-          return x.length > 0;
-        },
-        // port
-        1: function(x) {
-          if (x === "*") {
-            return true;
-          }
-          x = Number(x);
-          return isFinite(x) && x > 0 && x < 9007199254740992 && Math.floor(x) === x;
-        },
-        // database
-        2: function(x) {
-          return x.length > 0;
-        },
-        // username
-        3: function(x) {
-          return x.length > 0;
-        },
-        // password
-        4: function(x) {
-          return x.length > 0;
-        }
-      };
-      for (var idx = 0; idx < fieldNames.length; idx += 1) {
-        var rule = rules[idx];
-        var value = entry[fieldNames[idx]] || "";
-        var res = rule(value);
-        if (!res) {
-          return false;
-        }
-      }
-      return true;
-    };
-  }
-});
-
-// node_modules/.pnpm/pgpass@1.0.5/node_modules/pgpass/lib/index.js
-var require_lib4 = __commonJS({
-  "node_modules/.pnpm/pgpass@1.0.5/node_modules/pgpass/lib/index.js"(exports, module) {
-    "use strict";
-    var path4 = __require("path");
-    var fs3 = __require("fs");
-    var helper = require_helper();
-    module.exports = function(connInfo, cb) {
-      var file2 = helper.getFileName();
-      fs3.stat(file2, function(err, stat) {
-        if (err || !helper.usePgPass(stat, file2)) {
-          return cb(void 0);
-        }
-        var st = fs3.createReadStream(file2);
-        helper.getPassword(connInfo, st, cb);
-      });
-    };
-    module.exports.warnTo = helper.warnTo;
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/client.js
-var require_client = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/client.js"(exports, module) {
-    var EventEmitter = __require("events").EventEmitter;
-    var utils = require_utils6();
-    var nodeUtils = __require("util");
-    var sasl = require_sasl();
-    var TypeOverrides2 = require_type_overrides();
-    var ConnectionParameters = require_connection_parameters();
-    var Query2 = require_query();
-    var defaults2 = require_defaults();
-    var Connection2 = require_connection();
-    var crypto2 = require_utils7();
-    var activeQueryDeprecationNotice = nodeUtils.deprecate(
-      () => {
-      },
-      "Client.activeQuery is deprecated and will be removed in pg@9.0"
-    );
-    var queryQueueDeprecationNotice = nodeUtils.deprecate(
-      () => {
-      },
-      "Client.queryQueue is deprecated and will be removed in pg@9.0."
-    );
-    var pgPassDeprecationNotice = nodeUtils.deprecate(
-      () => {
-      },
-      "pgpass support is deprecated and will be removed in pg@9.0. You can provide an async function as the password property to the Client/Pool constructor that returns a password instead. Within this function you can call the pgpass module in your own code."
-    );
-    var byoPromiseDeprecationNotice = nodeUtils.deprecate(
-      () => {
-      },
-      "Passing a custom Promise implementation to the Client/Pool constructor is deprecated and will be removed in pg@9.0."
-    );
-    var queryQueueLengthDeprecationNotice = nodeUtils.deprecate(
-      () => {
-      },
-      "Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead."
-    );
-    var Client3 = class extends EventEmitter {
-      constructor(config2) {
-        super();
-        this.connectionParameters = new ConnectionParameters(config2);
-        this.user = this.connectionParameters.user;
-        this.database = this.connectionParameters.database;
-        this.port = this.connectionParameters.port;
-        this.host = this.connectionParameters.host;
-        Object.defineProperty(this, "password", {
-          configurable: true,
-          enumerable: false,
-          writable: true,
-          value: this.connectionParameters.password
-        });
-        this.replication = this.connectionParameters.replication;
-        const c = config2 || {};
-        if (c.Promise) {
-          byoPromiseDeprecationNotice();
-        }
-        this._Promise = c.Promise || global.Promise;
-        this._types = new TypeOverrides2(c.types);
-        this._ending = false;
-        this._ended = false;
-        this._connecting = false;
-        this._connected = false;
-        this._connectionError = false;
-        this._queryable = true;
-        this._activeQuery = null;
-        this.enableChannelBinding = Boolean(c.enableChannelBinding);
-        this.connection = c.connection || new Connection2({
-          stream: c.stream,
-          ssl: this.connectionParameters.ssl,
-          keepAlive: c.keepAlive || false,
-          keepAliveInitialDelayMillis: c.keepAliveInitialDelayMillis || 0,
-          encoding: this.connectionParameters.client_encoding || "utf8"
-        });
-        this._queryQueue = [];
-        this.binary = c.binary || defaults2.binary;
-        this.processID = null;
-        this.secretKey = null;
-        this.ssl = this.connectionParameters.ssl || false;
-        if (this.ssl && this.ssl.key) {
-          Object.defineProperty(this.ssl, "key", {
-            enumerable: false
-          });
-        }
-        this._connectionTimeoutMillis = c.connectionTimeoutMillis || 0;
-      }
-      get activeQuery() {
-        activeQueryDeprecationNotice();
-        return this._activeQuery;
-      }
-      set activeQuery(val) {
-        activeQueryDeprecationNotice();
-        this._activeQuery = val;
-      }
-      _getActiveQuery() {
-        return this._activeQuery;
-      }
-      _errorAllQueries(err) {
-        const enqueueError = (query) => {
-          process.nextTick(() => {
-            query.handleError(err, this.connection);
-          });
-        };
-        const activeQuery = this._getActiveQuery();
-        if (activeQuery) {
-          enqueueError(activeQuery);
-          this._activeQuery = null;
-        }
-        this._queryQueue.forEach(enqueueError);
-        this._queryQueue.length = 0;
-      }
-      _connect(callback) {
-        const self = this;
-        const con = this.connection;
-        this._connectionCallback = callback;
-        if (this._connecting || this._connected) {
-          const err = new Error("Client has already been connected. You cannot reuse a client.");
-          process.nextTick(() => {
-            callback(err);
-          });
-          return;
-        }
-        this._connecting = true;
-        if (this._connectionTimeoutMillis > 0) {
-          this.connectionTimeoutHandle = setTimeout(() => {
-            con._ending = true;
-            con.stream.destroy(new Error("timeout expired"));
-          }, this._connectionTimeoutMillis);
-          if (this.connectionTimeoutHandle.unref) {
-            this.connectionTimeoutHandle.unref();
-          }
-        }
-        if (this.host && this.host.indexOf("/") === 0) {
-          con.connect(this.host + "/.s.PGSQL." + this.port);
-        } else {
-          con.connect(this.port, this.host);
-        }
-        con.on("connect", function() {
-          if (self.ssl) {
-            con.requestSsl();
-          } else {
-            con.startup(self.getStartupConf());
-          }
-        });
-        con.on("sslconnect", function() {
-          con.startup(self.getStartupConf());
-        });
-        this._attachListeners(con);
-        con.once("end", () => {
-          const error40 = this._ending ? new Error("Connection terminated") : new Error("Connection terminated unexpectedly");
-          clearTimeout(this.connectionTimeoutHandle);
-          this._errorAllQueries(error40);
-          this._ended = true;
-          if (!this._ending) {
-            if (this._connecting && !this._connectionError) {
-              if (this._connectionCallback) {
-                this._connectionCallback(error40);
-              } else {
-                this._handleErrorEvent(error40);
-              }
-            } else if (!this._connectionError) {
-              this._handleErrorEvent(error40);
-            }
-          }
-          process.nextTick(() => {
-            this.emit("end");
-          });
-        });
-      }
-      connect(callback) {
-        if (callback) {
-          this._connect(callback);
-          return;
-        }
-        return new this._Promise((resolve, reject) => {
-          this._connect((error40) => {
-            if (error40) {
-              reject(error40);
-            } else {
-              resolve(this);
-            }
-          });
-        });
-      }
-      _attachListeners(con) {
-        con.on("authenticationCleartextPassword", this._handleAuthCleartextPassword.bind(this));
-        con.on("authenticationMD5Password", this._handleAuthMD5Password.bind(this));
-        con.on("authenticationSASL", this._handleAuthSASL.bind(this));
-        con.on("authenticationSASLContinue", this._handleAuthSASLContinue.bind(this));
-        con.on("authenticationSASLFinal", this._handleAuthSASLFinal.bind(this));
-        con.on("backendKeyData", this._handleBackendKeyData.bind(this));
-        con.on("error", this._handleErrorEvent.bind(this));
-        con.on("errorMessage", this._handleErrorMessage.bind(this));
-        con.on("readyForQuery", this._handleReadyForQuery.bind(this));
-        con.on("notice", this._handleNotice.bind(this));
-        con.on("rowDescription", this._handleRowDescription.bind(this));
-        con.on("dataRow", this._handleDataRow.bind(this));
-        con.on("portalSuspended", this._handlePortalSuspended.bind(this));
-        con.on("emptyQuery", this._handleEmptyQuery.bind(this));
-        con.on("commandComplete", this._handleCommandComplete.bind(this));
-        con.on("parseComplete", this._handleParseComplete.bind(this));
-        con.on("copyInResponse", this._handleCopyInResponse.bind(this));
-        con.on("copyData", this._handleCopyData.bind(this));
-        con.on("notification", this._handleNotification.bind(this));
-      }
-      _getPassword(cb) {
-        const con = this.connection;
-        if (typeof this.password === "function") {
-          this._Promise.resolve().then(() => this.password(this.connectionParameters)).then((pass) => {
-            if (pass !== void 0) {
-              if (typeof pass !== "string") {
-                con.emit("error", new TypeError("Password must be a string"));
-                return;
-              }
-              this.connectionParameters.password = this.password = pass;
-            } else {
-              this.connectionParameters.password = this.password = null;
-            }
-            cb();
-          }).catch((err) => {
-            con.emit("error", err);
-          });
-        } else if (this.password !== null) {
-          cb();
-        } else {
-          try {
-            const pgPass = require_lib4();
-            pgPass(this.connectionParameters, (pass) => {
-              if (void 0 !== pass) {
-                pgPassDeprecationNotice();
-                this.connectionParameters.password = this.password = pass;
-              }
-              cb();
-            });
-          } catch (e) {
-            this.emit("error", e);
-          }
-        }
-      }
-      _handleAuthCleartextPassword(msg) {
-        this._getPassword(() => {
-          this.connection.password(this.password);
-        });
-      }
-      _handleAuthMD5Password(msg) {
-        this._getPassword(async () => {
-          try {
-            const hashedPassword = await crypto2.postgresMd5PasswordHash(this.user, this.password, msg.salt);
-            this.connection.password(hashedPassword);
-          } catch (e) {
-            this.emit("error", e);
-          }
-        });
-      }
-      _handleAuthSASL(msg) {
-        this._getPassword(() => {
-          try {
-            this.saslSession = sasl.startSession(msg.mechanisms, this.enableChannelBinding && this.connection.stream);
-            this.connection.sendSASLInitialResponseMessage(this.saslSession.mechanism, this.saslSession.response);
-          } catch (err) {
-            this.connection.emit("error", err);
-          }
-        });
-      }
-      async _handleAuthSASLContinue(msg) {
-        try {
-          await sasl.continueSession(
-            this.saslSession,
-            this.password,
-            msg.data,
-            this.enableChannelBinding && this.connection.stream
-          );
-          this.connection.sendSCRAMClientFinalMessage(this.saslSession.response);
-        } catch (err) {
-          this.connection.emit("error", err);
-        }
-      }
-      _handleAuthSASLFinal(msg) {
-        try {
-          sasl.finalizeSession(this.saslSession, msg.data);
-          this.saslSession = null;
-        } catch (err) {
-          this.connection.emit("error", err);
-        }
-      }
-      _handleBackendKeyData(msg) {
-        this.processID = msg.processID;
-        this.secretKey = msg.secretKey;
-      }
-      _handleReadyForQuery(msg) {
-        if (this._connecting) {
-          this._connecting = false;
-          this._connected = true;
-          clearTimeout(this.connectionTimeoutHandle);
-          if (this._connectionCallback) {
-            this._connectionCallback(null, this);
-            this._connectionCallback = null;
-          }
-          this.emit("connect");
-        }
-        const activeQuery = this._getActiveQuery();
-        this._activeQuery = null;
-        this.readyForQuery = true;
-        if (activeQuery) {
-          activeQuery.handleReadyForQuery(this.connection);
-        }
-        this._pulseQueryQueue();
-      }
-      // if we receive an error event or error message
-      // during the connection process we handle it here
-      _handleErrorWhileConnecting(err) {
-        if (this._connectionError) {
-          return;
-        }
-        this._connectionError = true;
-        clearTimeout(this.connectionTimeoutHandle);
-        if (this._connectionCallback) {
-          return this._connectionCallback(err);
-        }
-        this.emit("error", err);
-      }
-      // if we're connected and we receive an error event from the connection
-      // this means the socket is dead - do a hard abort of all queries and emit
-      // the socket error on the client as well
-      _handleErrorEvent(err) {
-        if (this._connecting) {
-          return this._handleErrorWhileConnecting(err);
-        }
-        this._queryable = false;
-        this._errorAllQueries(err);
-        this.emit("error", err);
-      }
-      // handle error messages from the postgres backend
-      _handleErrorMessage(msg) {
-        if (this._connecting) {
-          return this._handleErrorWhileConnecting(msg);
-        }
-        const activeQuery = this._getActiveQuery();
-        if (!activeQuery) {
-          this._handleErrorEvent(msg);
-          return;
-        }
-        this._activeQuery = null;
-        activeQuery.handleError(msg, this.connection);
-      }
-      _handleRowDescription(msg) {
-        const activeQuery = this._getActiveQuery();
-        if (activeQuery == null) {
-          const error40 = new Error("Received unexpected rowDescription message from backend.");
-          this._handleErrorEvent(error40);
-          return;
-        }
-        activeQuery.handleRowDescription(msg);
-      }
-      _handleDataRow(msg) {
-        const activeQuery = this._getActiveQuery();
-        if (activeQuery == null) {
-          const error40 = new Error("Received unexpected dataRow message from backend.");
-          this._handleErrorEvent(error40);
-          return;
-        }
-        activeQuery.handleDataRow(msg);
-      }
-      _handlePortalSuspended(msg) {
-        const activeQuery = this._getActiveQuery();
-        if (activeQuery == null) {
-          const error40 = new Error("Received unexpected portalSuspended message from backend.");
-          this._handleErrorEvent(error40);
-          return;
-        }
-        activeQuery.handlePortalSuspended(this.connection);
-      }
-      _handleEmptyQuery(msg) {
-        const activeQuery = this._getActiveQuery();
-        if (activeQuery == null) {
-          const error40 = new Error("Received unexpected emptyQuery message from backend.");
-          this._handleErrorEvent(error40);
-          return;
-        }
-        activeQuery.handleEmptyQuery(this.connection);
-      }
-      _handleCommandComplete(msg) {
-        const activeQuery = this._getActiveQuery();
-        if (activeQuery == null) {
-          const error40 = new Error("Received unexpected commandComplete message from backend.");
-          this._handleErrorEvent(error40);
-          return;
-        }
-        activeQuery.handleCommandComplete(msg, this.connection);
-      }
-      _handleParseComplete() {
-        const activeQuery = this._getActiveQuery();
-        if (activeQuery == null) {
-          const error40 = new Error("Received unexpected parseComplete message from backend.");
-          this._handleErrorEvent(error40);
-          return;
-        }
-        if (activeQuery.name) {
-          this.connection.parsedStatements[activeQuery.name] = activeQuery.text;
-        }
-      }
-      _handleCopyInResponse(msg) {
-        const activeQuery = this._getActiveQuery();
-        if (activeQuery == null) {
-          const error40 = new Error("Received unexpected copyInResponse message from backend.");
-          this._handleErrorEvent(error40);
-          return;
-        }
-        activeQuery.handleCopyInResponse(this.connection);
-      }
-      _handleCopyData(msg) {
-        const activeQuery = this._getActiveQuery();
-        if (activeQuery == null) {
-          const error40 = new Error("Received unexpected copyData message from backend.");
-          this._handleErrorEvent(error40);
-          return;
-        }
-        activeQuery.handleCopyData(msg, this.connection);
-      }
-      _handleNotification(msg) {
-        this.emit("notification", msg);
-      }
-      _handleNotice(msg) {
-        this.emit("notice", msg);
-      }
-      getStartupConf() {
-        const params = this.connectionParameters;
-        const data = {
-          user: params.user,
-          database: params.database
-        };
-        const appName = params.application_name || params.fallback_application_name;
-        if (appName) {
-          data.application_name = appName;
-        }
-        if (params.replication) {
-          data.replication = "" + params.replication;
-        }
-        if (params.statement_timeout) {
-          data.statement_timeout = String(parseInt(params.statement_timeout, 10));
-        }
-        if (params.lock_timeout) {
-          data.lock_timeout = String(parseInt(params.lock_timeout, 10));
-        }
-        if (params.idle_in_transaction_session_timeout) {
-          data.idle_in_transaction_session_timeout = String(parseInt(params.idle_in_transaction_session_timeout, 10));
-        }
-        if (params.options) {
-          data.options = params.options;
-        }
-        return data;
-      }
-      cancel(client, query) {
-        if (client.activeQuery === query) {
-          const con = this.connection;
-          if (this.host && this.host.indexOf("/") === 0) {
-            con.connect(this.host + "/.s.PGSQL." + this.port);
-          } else {
-            con.connect(this.port, this.host);
-          }
-          con.on("connect", function() {
-            con.cancel(client.processID, client.secretKey);
-          });
-        } else if (client._queryQueue.indexOf(query) !== -1) {
-          client._queryQueue.splice(client._queryQueue.indexOf(query), 1);
-        }
-      }
-      setTypeParser(oid, format, parseFn) {
-        return this._types.setTypeParser(oid, format, parseFn);
-      }
-      getTypeParser(oid, format) {
-        return this._types.getTypeParser(oid, format);
-      }
-      // escapeIdentifier and escapeLiteral moved to utility functions & exported
-      // on PG
-      // re-exported here for backwards compatibility
-      escapeIdentifier(str) {
-        return utils.escapeIdentifier(str);
-      }
-      escapeLiteral(str) {
-        return utils.escapeLiteral(str);
-      }
-      _pulseQueryQueue() {
-        if (this.readyForQuery === true) {
-          this._activeQuery = this._queryQueue.shift();
-          const activeQuery = this._getActiveQuery();
-          if (activeQuery) {
-            this.readyForQuery = false;
-            this.hasExecuted = true;
-            const queryError = activeQuery.submit(this.connection);
-            if (queryError) {
-              process.nextTick(() => {
-                activeQuery.handleError(queryError, this.connection);
-                this.readyForQuery = true;
-                this._pulseQueryQueue();
-              });
-            }
-          } else if (this.hasExecuted) {
-            this._activeQuery = null;
-            this.emit("drain");
-          }
-        }
-      }
-      query(config2, values, callback) {
-        let query;
-        let result;
-        let readTimeout;
-        let readTimeoutTimer;
-        let queryCallback;
-        if (config2 === null || config2 === void 0) {
-          throw new TypeError("Client was passed a null or undefined query");
-        } else if (typeof config2.submit === "function") {
-          readTimeout = config2.query_timeout || this.connectionParameters.query_timeout;
-          result = query = config2;
-          if (!query.callback) {
-            if (typeof values === "function") {
-              query.callback = values;
-            } else if (callback) {
-              query.callback = callback;
-            }
-          }
-        } else {
-          readTimeout = config2.query_timeout || this.connectionParameters.query_timeout;
-          query = new Query2(config2, values, callback);
-          if (!query.callback) {
-            result = new this._Promise((resolve, reject) => {
-              query.callback = (err, res) => err ? reject(err) : resolve(res);
-            }).catch((err) => {
-              Error.captureStackTrace(err);
-              throw err;
-            });
-          }
-        }
-        if (readTimeout) {
-          queryCallback = query.callback || (() => {
-          });
-          readTimeoutTimer = setTimeout(() => {
-            const error40 = new Error("Query read timeout");
-            process.nextTick(() => {
-              query.handleError(error40, this.connection);
-            });
-            queryCallback(error40);
-            query.callback = () => {
-            };
-            const index = this._queryQueue.indexOf(query);
-            if (index > -1) {
-              this._queryQueue.splice(index, 1);
-            }
-            this._pulseQueryQueue();
-          }, readTimeout);
-          query.callback = (err, res) => {
-            clearTimeout(readTimeoutTimer);
-            queryCallback(err, res);
-          };
-        }
-        if (this.binary && !query.binary) {
-          query.binary = true;
-        }
-        if (query._result && !query._result._types) {
-          query._result._types = this._types;
-        }
-        if (!this._queryable) {
-          process.nextTick(() => {
-            query.handleError(new Error("Client has encountered a connection error and is not queryable"), this.connection);
-          });
-          return result;
-        }
-        if (this._ending) {
-          process.nextTick(() => {
-            query.handleError(new Error("Client was closed and is not queryable"), this.connection);
-          });
-          return result;
-        }
-        if (this._queryQueue.length > 0) {
-          queryQueueLengthDeprecationNotice();
-        }
-        this._queryQueue.push(query);
-        this._pulseQueryQueue();
-        return result;
-      }
-      ref() {
-        this.connection.ref();
-      }
-      unref() {
-        this.connection.unref();
-      }
-      end(cb) {
-        this._ending = true;
-        if (!this.connection._connecting || this._ended) {
-          if (cb) {
-            cb();
-          } else {
-            return this._Promise.resolve();
-          }
-        }
-        if (this._getActiveQuery() || !this._queryable) {
-          this.connection.stream.destroy();
-        } else {
-          this.connection.end();
-        }
-        if (cb) {
-          this.connection.once("end", cb);
-        } else {
-          return new this._Promise((resolve) => {
-            this.connection.once("end", resolve);
-          });
-        }
-      }
-      get queryQueue() {
-        queryQueueDeprecationNotice();
-        return this._queryQueue;
-      }
-    };
-    Client3.Query = Query2;
-    module.exports = Client3;
-  }
-});
-
-// node_modules/.pnpm/pg-pool@3.13.0_pg@8.20.0/node_modules/pg-pool/index.js
-var require_pg_pool = __commonJS({
-  "node_modules/.pnpm/pg-pool@3.13.0_pg@8.20.0/node_modules/pg-pool/index.js"(exports, module) {
-    "use strict";
-    var EventEmitter = __require("events").EventEmitter;
-    var NOOP = function() {
-    };
-    var removeWhere = (list, predicate) => {
-      const i = list.findIndex(predicate);
-      return i === -1 ? void 0 : list.splice(i, 1)[0];
-    };
-    var IdleItem = class {
-      constructor(client, idleListener, timeoutId) {
-        this.client = client;
-        this.idleListener = idleListener;
-        this.timeoutId = timeoutId;
-      }
-    };
-    var PendingItem = class {
-      constructor(callback) {
-        this.callback = callback;
-      }
-    };
-    function throwOnDoubleRelease() {
-      throw new Error("Release called on client which has already been released to the pool.");
-    }
-    function promisify(Promise2, callback) {
-      if (callback) {
-        return { callback, result: void 0 };
-      }
-      let rej;
-      let res;
-      const cb = function(err, client) {
-        err ? rej(err) : res(client);
-      };
-      const result = new Promise2(function(resolve, reject) {
-        res = resolve;
-        rej = reject;
-      }).catch((err) => {
-        Error.captureStackTrace(err);
-        throw err;
-      });
-      return { callback: cb, result };
-    }
-    function makeIdleListener(pool2, client) {
-      return function idleListener(err) {
-        err.client = client;
-        client.removeListener("error", idleListener);
-        client.on("error", () => {
-          pool2.log("additional client error after disconnection due to error", err);
-        });
-        pool2._remove(client);
-        pool2.emit("error", err, client);
-      };
-    }
-    var Pool4 = class extends EventEmitter {
-      constructor(options, Client3) {
-        super();
-        this.options = Object.assign({}, options);
-        if (options != null && "password" in options) {
-          Object.defineProperty(this.options, "password", {
-            configurable: true,
-            enumerable: false,
-            writable: true,
-            value: options.password
-          });
-        }
-        if (options != null && options.ssl && options.ssl.key) {
-          Object.defineProperty(this.options.ssl, "key", {
-            enumerable: false
-          });
-        }
-        this.options.max = this.options.max || this.options.poolSize || 10;
-        this.options.min = this.options.min || 0;
-        this.options.maxUses = this.options.maxUses || Infinity;
-        this.options.allowExitOnIdle = this.options.allowExitOnIdle || false;
-        this.options.maxLifetimeSeconds = this.options.maxLifetimeSeconds || 0;
-        this.log = this.options.log || function() {
-        };
-        this.Client = this.options.Client || Client3 || require_lib5().Client;
-        this.Promise = this.options.Promise || global.Promise;
-        if (typeof this.options.idleTimeoutMillis === "undefined") {
-          this.options.idleTimeoutMillis = 1e4;
-        }
-        this._clients = [];
-        this._idle = [];
-        this._expired = /* @__PURE__ */ new WeakSet();
-        this._pendingQueue = [];
-        this._endCallback = void 0;
-        this.ending = false;
-        this.ended = false;
-      }
-      _promiseTry(f) {
-        const Promise2 = this.Promise;
-        if (typeof Promise2.try === "function") {
-          return Promise2.try(f);
-        }
-        return new Promise2((resolve) => resolve(f()));
-      }
-      _isFull() {
-        return this._clients.length >= this.options.max;
-      }
-      _isAboveMin() {
-        return this._clients.length > this.options.min;
-      }
-      _pulseQueue() {
-        this.log("pulse queue");
-        if (this.ended) {
-          this.log("pulse queue ended");
-          return;
-        }
-        if (this.ending) {
-          this.log("pulse queue on ending");
-          if (this._idle.length) {
-            this._idle.slice().map((item) => {
-              this._remove(item.client);
-            });
-          }
-          if (!this._clients.length) {
-            this.ended = true;
-            this._endCallback();
-          }
-          return;
-        }
-        if (!this._pendingQueue.length) {
-          this.log("no queued requests");
-          return;
-        }
-        if (!this._idle.length && this._isFull()) {
-          return;
-        }
-        const pendingItem = this._pendingQueue.shift();
-        if (this._idle.length) {
-          const idleItem = this._idle.pop();
-          clearTimeout(idleItem.timeoutId);
-          const client = idleItem.client;
-          client.ref && client.ref();
-          const idleListener = idleItem.idleListener;
-          return this._acquireClient(client, pendingItem, idleListener, false);
-        }
-        if (!this._isFull()) {
-          return this.newClient(pendingItem);
-        }
-        throw new Error("unexpected condition");
-      }
-      _remove(client, callback) {
-        const removed = removeWhere(this._idle, (item) => item.client === client);
-        if (removed !== void 0) {
-          clearTimeout(removed.timeoutId);
-        }
-        this._clients = this._clients.filter((c) => c !== client);
-        const context = this;
-        client.end(() => {
-          context.emit("remove", client);
-          if (typeof callback === "function") {
-            callback();
-          }
-        });
-      }
-      connect(cb) {
-        if (this.ending) {
-          const err = new Error("Cannot use a pool after calling end on the pool");
-          return cb ? cb(err) : this.Promise.reject(err);
-        }
-        const response = promisify(this.Promise, cb);
-        const result = response.result;
-        if (this._isFull() || this._idle.length) {
-          if (this._idle.length) {
-            process.nextTick(() => this._pulseQueue());
-          }
-          if (!this.options.connectionTimeoutMillis) {
-            this._pendingQueue.push(new PendingItem(response.callback));
-            return result;
-          }
-          const queueCallback = (err, res, done) => {
-            clearTimeout(tid);
-            response.callback(err, res, done);
-          };
-          const pendingItem = new PendingItem(queueCallback);
-          const tid = setTimeout(() => {
-            removeWhere(this._pendingQueue, (i) => i.callback === queueCallback);
-            pendingItem.timedOut = true;
-            response.callback(new Error("timeout exceeded when trying to connect"));
-          }, this.options.connectionTimeoutMillis);
-          if (tid.unref) {
-            tid.unref();
-          }
-          this._pendingQueue.push(pendingItem);
-          return result;
-        }
-        this.newClient(new PendingItem(response.callback));
-        return result;
-      }
-      newClient(pendingItem) {
-        const client = new this.Client(this.options);
-        this._clients.push(client);
-        const idleListener = makeIdleListener(this, client);
-        this.log("checking client timeout");
-        let tid;
-        let timeoutHit = false;
-        if (this.options.connectionTimeoutMillis) {
-          tid = setTimeout(() => {
-            if (client.connection) {
-              this.log("ending client due to timeout");
-              timeoutHit = true;
-              client.connection.stream.destroy();
-            } else if (!client.isConnected()) {
-              this.log("ending client due to timeout");
-              timeoutHit = true;
-              client.end();
-            }
-          }, this.options.connectionTimeoutMillis);
-        }
-        this.log("connecting new client");
-        client.connect((err) => {
-          if (tid) {
-            clearTimeout(tid);
-          }
-          client.on("error", idleListener);
-          if (err) {
-            this.log("client failed to connect", err);
-            this._clients = this._clients.filter((c) => c !== client);
-            if (timeoutHit) {
-              err = new Error("Connection terminated due to connection timeout", { cause: err });
-            }
-            this._pulseQueue();
-            if (!pendingItem.timedOut) {
-              pendingItem.callback(err, void 0, NOOP);
-            }
-          } else {
-            this.log("new client connected");
-            if (this.options.onConnect) {
-              this._promiseTry(() => this.options.onConnect(client)).then(
-                () => {
-                  this._afterConnect(client, pendingItem, idleListener);
-                },
-                (hookErr) => {
-                  this._clients = this._clients.filter((c) => c !== client);
-                  client.end(() => {
-                    this._pulseQueue();
-                    if (!pendingItem.timedOut) {
-                      pendingItem.callback(hookErr, void 0, NOOP);
-                    }
-                  });
-                }
-              );
-              return;
-            }
-            return this._afterConnect(client, pendingItem, idleListener);
-          }
-        });
-      }
-      _afterConnect(client, pendingItem, idleListener) {
-        if (this.options.maxLifetimeSeconds !== 0) {
-          const maxLifetimeTimeout = setTimeout(() => {
-            this.log("ending client due to expired lifetime");
-            this._expired.add(client);
-            const idleIndex = this._idle.findIndex((idleItem) => idleItem.client === client);
-            if (idleIndex !== -1) {
-              this._acquireClient(
-                client,
-                new PendingItem((err, client2, clientRelease) => clientRelease()),
-                idleListener,
-                false
-              );
-            }
-          }, this.options.maxLifetimeSeconds * 1e3);
-          maxLifetimeTimeout.unref();
-          client.once("end", () => clearTimeout(maxLifetimeTimeout));
-        }
-        return this._acquireClient(client, pendingItem, idleListener, true);
-      }
-      // acquire a client for a pending work item
-      _acquireClient(client, pendingItem, idleListener, isNew) {
-        if (isNew) {
-          this.emit("connect", client);
-        }
-        this.emit("acquire", client);
-        client.release = this._releaseOnce(client, idleListener);
-        client.removeListener("error", idleListener);
-        if (!pendingItem.timedOut) {
-          if (isNew && this.options.verify) {
-            this.options.verify(client, (err) => {
-              if (err) {
-                client.release(err);
-                return pendingItem.callback(err, void 0, NOOP);
-              }
-              pendingItem.callback(void 0, client, client.release);
-            });
-          } else {
-            pendingItem.callback(void 0, client, client.release);
-          }
-        } else {
-          if (isNew && this.options.verify) {
-            this.options.verify(client, client.release);
-          } else {
-            client.release();
-          }
-        }
-      }
-      // returns a function that wraps _release and throws if called more than once
-      _releaseOnce(client, idleListener) {
-        let released = false;
-        return (err) => {
-          if (released) {
-            throwOnDoubleRelease();
-          }
-          released = true;
-          this._release(client, idleListener, err);
-        };
-      }
-      // release a client back to the poll, include an error
-      // to remove it from the pool
-      _release(client, idleListener, err) {
-        client.on("error", idleListener);
-        client._poolUseCount = (client._poolUseCount || 0) + 1;
-        this.emit("release", err, client);
-        if (err || this.ending || !client._queryable || client._ending || client._poolUseCount >= this.options.maxUses) {
-          if (client._poolUseCount >= this.options.maxUses) {
-            this.log("remove expended client");
-          }
-          return this._remove(client, this._pulseQueue.bind(this));
-        }
-        const isExpired = this._expired.has(client);
-        if (isExpired) {
-          this.log("remove expired client");
-          this._expired.delete(client);
-          return this._remove(client, this._pulseQueue.bind(this));
-        }
-        let tid;
-        if (this.options.idleTimeoutMillis && this._isAboveMin()) {
-          tid = setTimeout(() => {
-            if (this._isAboveMin()) {
-              this.log("remove idle client");
-              this._remove(client, this._pulseQueue.bind(this));
-            }
-          }, this.options.idleTimeoutMillis);
-          if (this.options.allowExitOnIdle) {
-            tid.unref();
-          }
-        }
-        if (this.options.allowExitOnIdle) {
-          client.unref();
-        }
-        this._idle.push(new IdleItem(client, idleListener, tid));
-        this._pulseQueue();
-      }
-      query(text2, values, cb) {
-        if (typeof text2 === "function") {
-          const response2 = promisify(this.Promise, text2);
-          setImmediate(function() {
-            return response2.callback(new Error("Passing a function as the first parameter to pool.query is not supported"));
-          });
-          return response2.result;
-        }
-        if (typeof values === "function") {
-          cb = values;
-          values = void 0;
-        }
-        const response = promisify(this.Promise, cb);
-        cb = response.callback;
-        this.connect((err, client) => {
-          if (err) {
-            return cb(err);
-          }
-          let clientReleased = false;
-          const onError = (err2) => {
-            if (clientReleased) {
-              return;
-            }
-            clientReleased = true;
-            client.release(err2);
-            cb(err2);
-          };
-          client.once("error", onError);
-          this.log("dispatching query");
-          try {
-            client.query(text2, values, (err2, res) => {
-              this.log("query dispatched");
-              client.removeListener("error", onError);
-              if (clientReleased) {
-                return;
-              }
-              clientReleased = true;
-              client.release(err2);
-              if (err2) {
-                return cb(err2);
-              }
-              return cb(void 0, res);
-            });
-          } catch (err2) {
-            client.release(err2);
-            return cb(err2);
-          }
-        });
-        return response.result;
-      }
-      end(cb) {
-        this.log("ending");
-        if (this.ending) {
-          const err = new Error("Called end on pool more than once");
-          return cb ? cb(err) : this.Promise.reject(err);
-        }
-        this.ending = true;
-        const promised = promisify(this.Promise, cb);
-        this._endCallback = promised.callback;
-        this._pulseQueue();
-        return promised.result;
-      }
-      get waitingCount() {
-        return this._pendingQueue.length;
-      }
-      get idleCount() {
-        return this._idle.length;
-      }
-      get expiredCount() {
-        return this._clients.reduce((acc, client) => acc + (this._expired.has(client) ? 1 : 0), 0);
-      }
-      get totalCount() {
-        return this._clients.length;
-      }
-    };
-    module.exports = Pool4;
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/native/query.js
-var require_query2 = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/native/query.js"(exports, module) {
-    "use strict";
-    var EventEmitter = __require("events").EventEmitter;
-    var util2 = __require("util");
-    var utils = require_utils6();
-    var NativeQuery = module.exports = function(config2, values, callback) {
-      EventEmitter.call(this);
-      config2 = utils.normalizeQueryConfig(config2, values, callback);
-      this.text = config2.text;
-      this.values = config2.values;
-      this.name = config2.name;
-      this.queryMode = config2.queryMode;
-      this.callback = config2.callback;
-      this.state = "new";
-      this._arrayMode = config2.rowMode === "array";
-      this._emitRowEvents = false;
-      this.on(
-        "newListener",
-        function(event) {
-          if (event === "row") this._emitRowEvents = true;
-        }.bind(this)
-      );
-    };
-    util2.inherits(NativeQuery, EventEmitter);
-    var errorFieldMap = {
-      sqlState: "code",
-      statementPosition: "position",
-      messagePrimary: "message",
-      context: "where",
-      schemaName: "schema",
-      tableName: "table",
-      columnName: "column",
-      dataTypeName: "dataType",
-      constraintName: "constraint",
-      sourceFile: "file",
-      sourceLine: "line",
-      sourceFunction: "routine"
-    };
-    NativeQuery.prototype.handleError = function(err) {
-      const fields = this.native.pq.resultErrorFields();
-      if (fields) {
-        for (const key in fields) {
-          const normalizedFieldName = errorFieldMap[key] || key;
-          err[normalizedFieldName] = fields[key];
-        }
-      }
-      if (this.callback) {
-        this.callback(err);
-      } else {
-        this.emit("error", err);
-      }
-      this.state = "error";
-    };
-    NativeQuery.prototype.then = function(onSuccess, onFailure) {
-      return this._getPromise().then(onSuccess, onFailure);
-    };
-    NativeQuery.prototype.catch = function(callback) {
-      return this._getPromise().catch(callback);
-    };
-    NativeQuery.prototype._getPromise = function() {
-      if (this._promise) return this._promise;
-      this._promise = new Promise(
-        function(resolve, reject) {
-          this._once("end", resolve);
-          this._once("error", reject);
-        }.bind(this)
-      );
-      return this._promise;
-    };
-    NativeQuery.prototype.submit = function(client) {
-      this.state = "running";
-      const self = this;
-      this.native = client.native;
-      client.native.arrayMode = this._arrayMode;
-      let after = function(err, rows, results) {
-        client.native.arrayMode = false;
-        setImmediate(function() {
-          self.emit("_done");
-        });
-        if (err) {
-          return self.handleError(err);
-        }
-        if (self._emitRowEvents) {
-          if (results.length > 1) {
-            rows.forEach((rowOfRows, i) => {
-              rowOfRows.forEach((row) => {
-                self.emit("row", row, results[i]);
-              });
-            });
-          } else {
-            rows.forEach(function(row) {
-              self.emit("row", row, results);
-            });
-          }
-        }
-        self.state = "end";
-        self.emit("end", results);
-        if (self.callback) {
-          self.callback(null, results);
-        }
-      };
-      if (process.domain) {
-        after = process.domain.bind(after);
-      }
-      if (this.name) {
-        if (this.name.length > 63) {
-          console.error("Warning! Postgres only supports 63 characters for query names.");
-          console.error("You supplied %s (%s)", this.name, this.name.length);
-          console.error("This can cause conflicts and silent errors executing queries");
-        }
-        const values = (this.values || []).map(utils.prepareValue);
-        if (client.namedQueries[this.name]) {
-          if (this.text && client.namedQueries[this.name] !== this.text) {
-            const err = new Error(`Prepared statements must be unique - '${this.name}' was used for a different statement`);
-            return after(err);
-          }
-          return client.native.execute(this.name, values, after);
-        }
-        return client.native.prepare(this.name, this.text, values.length, function(err) {
-          if (err) return after(err);
-          client.namedQueries[self.name] = self.text;
-          return self.native.execute(self.name, values, after);
-        });
-      } else if (this.values) {
-        if (!Array.isArray(this.values)) {
-          const err = new Error("Query values must be an array");
-          return after(err);
-        }
-        const vals = this.values.map(utils.prepareValue);
-        client.native.query(this.text, vals, after);
-      } else if (this.queryMode === "extended") {
-        client.native.query(this.text, [], after);
-      } else {
-        client.native.query(this.text, after);
-      }
-    };
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/native/client.js
-var require_client2 = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/native/client.js"(exports, module) {
-    var nodeUtils = __require("util");
-    var Native;
-    try {
-      Native = __require("pg-native");
-    } catch (e) {
-      throw e;
-    }
-    var TypeOverrides2 = require_type_overrides();
-    var EventEmitter = __require("events").EventEmitter;
-    var util2 = __require("util");
-    var ConnectionParameters = require_connection_parameters();
-    var NativeQuery = require_query2();
-    var queryQueueLengthDeprecationNotice = nodeUtils.deprecate(
-      () => {
-      },
-      "Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead."
-    );
-    var Client3 = module.exports = function(config2) {
-      EventEmitter.call(this);
-      config2 = config2 || {};
-      this._Promise = config2.Promise || global.Promise;
-      this._types = new TypeOverrides2(config2.types);
-      this.native = new Native({
-        types: this._types
-      });
-      this._queryQueue = [];
-      this._ending = false;
-      this._connecting = false;
-      this._connected = false;
-      this._queryable = true;
-      const cp = this.connectionParameters = new ConnectionParameters(config2);
-      if (config2.nativeConnectionString) cp.nativeConnectionString = config2.nativeConnectionString;
-      this.user = cp.user;
-      Object.defineProperty(this, "password", {
-        configurable: true,
-        enumerable: false,
-        writable: true,
-        value: cp.password
-      });
-      this.database = cp.database;
-      this.host = cp.host;
-      this.port = cp.port;
-      this.namedQueries = {};
-    };
-    Client3.Query = NativeQuery;
-    util2.inherits(Client3, EventEmitter);
-    Client3.prototype._errorAllQueries = function(err) {
-      const enqueueError = (query) => {
-        process.nextTick(() => {
-          query.native = this.native;
-          query.handleError(err);
-        });
-      };
-      if (this._hasActiveQuery()) {
-        enqueueError(this._activeQuery);
-        this._activeQuery = null;
-      }
-      this._queryQueue.forEach(enqueueError);
-      this._queryQueue.length = 0;
-    };
-    Client3.prototype._connect = function(cb) {
-      const self = this;
-      if (this._connecting) {
-        process.nextTick(() => cb(new Error("Client has already been connected. You cannot reuse a client.")));
-        return;
-      }
-      this._connecting = true;
-      this.connectionParameters.getLibpqConnectionString(function(err, conString) {
-        if (self.connectionParameters.nativeConnectionString) conString = self.connectionParameters.nativeConnectionString;
-        if (err) return cb(err);
-        self.native.connect(conString, function(err2) {
-          if (err2) {
-            self.native.end();
-            return cb(err2);
-          }
-          self._connected = true;
-          self.native.on("error", function(err3) {
-            self._queryable = false;
-            self._errorAllQueries(err3);
-            self.emit("error", err3);
-          });
-          self.native.on("notification", function(msg) {
-            self.emit("notification", {
-              channel: msg.relname,
-              payload: msg.extra
-            });
-          });
-          self.emit("connect");
-          self._pulseQueryQueue(true);
-          cb(null, this);
-        });
-      });
-    };
-    Client3.prototype.connect = function(callback) {
-      if (callback) {
-        this._connect(callback);
-        return;
-      }
-      return new this._Promise((resolve, reject) => {
-        this._connect((error40) => {
-          if (error40) {
-            reject(error40);
-          } else {
-            resolve(this);
-          }
-        });
-      });
-    };
-    Client3.prototype.query = function(config2, values, callback) {
-      let query;
-      let result;
-      let readTimeout;
-      let readTimeoutTimer;
-      let queryCallback;
-      if (config2 === null || config2 === void 0) {
-        throw new TypeError("Client was passed a null or undefined query");
-      } else if (typeof config2.submit === "function") {
-        readTimeout = config2.query_timeout || this.connectionParameters.query_timeout;
-        result = query = config2;
-        if (typeof values === "function") {
-          config2.callback = values;
-        }
-      } else {
-        readTimeout = config2.query_timeout || this.connectionParameters.query_timeout;
-        query = new NativeQuery(config2, values, callback);
-        if (!query.callback) {
-          let resolveOut, rejectOut;
-          result = new this._Promise((resolve, reject) => {
-            resolveOut = resolve;
-            rejectOut = reject;
-          }).catch((err) => {
-            Error.captureStackTrace(err);
-            throw err;
-          });
-          query.callback = (err, res) => err ? rejectOut(err) : resolveOut(res);
-        }
-      }
-      if (readTimeout) {
-        queryCallback = query.callback || (() => {
-        });
-        readTimeoutTimer = setTimeout(() => {
-          const error40 = new Error("Query read timeout");
-          process.nextTick(() => {
-            query.handleError(error40, this.connection);
-          });
-          queryCallback(error40);
-          query.callback = () => {
-          };
-          const index = this._queryQueue.indexOf(query);
-          if (index > -1) {
-            this._queryQueue.splice(index, 1);
-          }
-          this._pulseQueryQueue();
-        }, readTimeout);
-        query.callback = (err, res) => {
-          clearTimeout(readTimeoutTimer);
-          queryCallback(err, res);
-        };
-      }
-      if (!this._queryable) {
-        query.native = this.native;
-        process.nextTick(() => {
-          query.handleError(new Error("Client has encountered a connection error and is not queryable"));
-        });
-        return result;
-      }
-      if (this._ending) {
-        query.native = this.native;
-        process.nextTick(() => {
-          query.handleError(new Error("Client was closed and is not queryable"));
-        });
-        return result;
-      }
-      if (this._queryQueue.length > 0) {
-        queryQueueLengthDeprecationNotice();
-      }
-      this._queryQueue.push(query);
-      this._pulseQueryQueue();
-      return result;
-    };
-    Client3.prototype.end = function(cb) {
-      const self = this;
-      this._ending = true;
-      if (!this._connected) {
-        this.once("connect", this.end.bind(this, cb));
-      }
-      let result;
-      if (!cb) {
-        result = new this._Promise(function(resolve, reject) {
-          cb = (err) => err ? reject(err) : resolve();
-        });
-      }
-      this.native.end(function() {
-        self._connected = false;
-        self._errorAllQueries(new Error("Connection terminated"));
-        process.nextTick(() => {
-          self.emit("end");
-          if (cb) cb();
-        });
-      });
-      return result;
-    };
-    Client3.prototype._hasActiveQuery = function() {
-      return this._activeQuery && this._activeQuery.state !== "error" && this._activeQuery.state !== "end";
-    };
-    Client3.prototype._pulseQueryQueue = function(initialConnection) {
-      if (!this._connected) {
-        return;
-      }
-      if (this._hasActiveQuery()) {
-        return;
-      }
-      const query = this._queryQueue.shift();
-      if (!query) {
-        if (!initialConnection) {
-          this.emit("drain");
-        }
-        return;
-      }
-      this._activeQuery = query;
-      query.submit(this);
-      const self = this;
-      query.once("_done", function() {
-        self._pulseQueryQueue();
-      });
-    };
-    Client3.prototype.cancel = function(query) {
-      if (this._activeQuery === query) {
-        this.native.cancel(function() {
-        });
-      } else if (this._queryQueue.indexOf(query) !== -1) {
-        this._queryQueue.splice(this._queryQueue.indexOf(query), 1);
-      }
-    };
-    Client3.prototype.ref = function() {
-    };
-    Client3.prototype.unref = function() {
-    };
-    Client3.prototype.setTypeParser = function(oid, format, parseFn) {
-      return this._types.setTypeParser(oid, format, parseFn);
-    };
-    Client3.prototype.getTypeParser = function(oid, format) {
-      return this._types.getTypeParser(oid, format);
-    };
-    Client3.prototype.isConnected = function() {
-      return this._connected;
-    };
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/native/index.js
-var require_native = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/native/index.js"(exports, module) {
-    "use strict";
-    module.exports = require_client2();
-  }
-});
-
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/index.js
-var require_lib5 = __commonJS({
-  "node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/index.js"(exports, module) {
-    "use strict";
-    var Client3 = require_client();
-    var defaults2 = require_defaults();
-    var Connection2 = require_connection();
-    var Result2 = require_result();
-    var utils = require_utils6();
-    var Pool4 = require_pg_pool();
-    var TypeOverrides2 = require_type_overrides();
-    var { DatabaseError: DatabaseError2 } = require_dist3();
-    var { escapeIdentifier: escapeIdentifier2, escapeLiteral: escapeLiteral2 } = require_utils6();
-    var poolFactory = (Client4) => {
-      return class BoundPool extends Pool4 {
-        constructor(options) {
-          super(options, Client4);
-        }
-      };
-    };
-    var PG = function(clientConstructor2) {
-      this.defaults = defaults2;
-      this.Client = clientConstructor2;
-      this.Query = this.Client.Query;
-      this.Pool = poolFactory(this.Client);
-      this._pools = [];
-      this.Connection = Connection2;
-      this.types = require_pg_types();
-      this.DatabaseError = DatabaseError2;
-      this.TypeOverrides = TypeOverrides2;
-      this.escapeIdentifier = escapeIdentifier2;
-      this.escapeLiteral = escapeLiteral2;
-      this.Result = Result2;
-      this.utils = utils;
-    };
-    var clientConstructor = Client3;
-    var forceNative = false;
-    try {
-      forceNative = !!process.env.NODE_PG_FORCE_NATIVE;
-    } catch {
-    }
-    if (forceNative) {
-      clientConstructor = require_native();
-    }
-    module.exports = new PG(clientConstructor);
-    Object.defineProperty(module.exports, "native", {
-      configurable: true,
-      enumerable: false,
-      get() {
-        let native = null;
-        try {
-          native = new PG(require_native());
-        } catch (err) {
-          if (err.code !== "MODULE_NOT_FOUND") {
-            throw err;
-          }
-        }
-        Object.defineProperty(module.exports, "native", {
-          value: native
-        });
-        return native;
-      }
-    });
-  }
-});
-
 // node_modules/.pnpm/@clerk+shared@4.10.2/node_modules/@clerk/shared/dist/runtime/underscore-ClYSgvuy.mjs
 function snakeToCamel(str) {
   return str ? str.replace(/([-_][a-z])/g, (match2) => match2.toUpperCase().replace(/-|_/, "")) : "";
@@ -41627,7 +36523,7 @@ function jsonToObject(item) {
     case ObjectType.BlocklistIdentifier:
       return BlocklistIdentifier.fromJSON(item);
     case ObjectType.Client:
-      return Client2.fromJSON(item);
+      return Client.fromJSON(item);
     case ObjectType.Cookies:
       return Cookies2.fromJSON(item);
     case ObjectType.Domain:
@@ -42456,7 +37352,7 @@ function createAuthenticateRequest(params) {
     debugRequestState
   };
 }
-var require_dist4, API_URL, API_VERSION, USER_AGENT, MAX_CACHE_LAST_UPDATED_AT_SECONDS, SUPPORTED_BAPI_VERSION, Attributes, Cookies, QueryParameters, Headers2, ContentTypes, ClerkSyncStatus, constants, TokenType, AuthenticateContext, createAuthenticateContext, SEPARATOR, MULTIPLE_SEPARATOR_REGEX, MAX_DECODES, AbstractAPI, basePath, ActorTokenAPI, basePath2, AgentTaskAPI, basePath3, AccountlessApplicationAPI, basePath4, AllowlistIdentifierAPI, basePath5, APIKeysAPI, basePath6, BetaFeaturesAPI, basePath7, BlocklistIdentifierAPI, basePath8, ClientAPI, basePath9, DomainAPI, basePath10, EmailAddressAPI, basePath11, EnterpriseConnectionAPI, basePath12, IdPOAuthAccessTokenApi, basePath13, InstanceAPI, basePath14, InvitationAPI, basePath15, MachineApi, IdPOAuthAccessToken, M2MToken, cache, lastUpdatedAt, PEM_HEADER, PEM_TRAILER, RSA_PREFIX, RSA_SUFFIX, getErrorObjectByCode, M2M_TOKEN_PREFIX, M2M_SUBJECT_PREFIX, OAUTH_TOKEN_PREFIX, API_KEY_PREFIX, MACHINE_TOKEN_PREFIXES, JwtFormatRegExp, OAUTH_ACCESS_TOKEN_TYPES, isTokenTypeAccepted, MACHINE_TOKEN_TYPES, basePath16, _verifyOptions, _M2MTokenApi_instances, createRequestOptions_fn, verifyJwtFormat_fn, M2MTokenApi, basePath17, JwksAPI, basePath18, JwtTemplatesApi, basePath19, OrganizationAPI, basePath20, OAuthApplicationsApi, basePath21, PhoneNumberAPI, basePath22, ProxyCheckAPI, basePath23, RedirectUrlAPI, basePath24, SamlConnectionAPI, basePath25, SessionAPI, basePath26, SignInTokenAPI, basePath27, SignUpAPI, basePath28, TestingTokenAPI, basePath29, UserAPI, basePath30, WaitlistEntryAPI, basePath31, WebhookAPI, basePath32, organizationBasePath, userBasePath, BillingAPI, isObject2, isObjectCustom, mapObjectSkip, _mapObject, SPLIT_LOWER_UPPER_RE, SPLIT_UPPER_UPPER_RE, SPLIT_SEPARATE_NUMBER_RE, DEFAULT_STRIP_REGEXP, SPLIT_REPLACE_VALUE, DEFAULT_PREFIX_SUFFIX_CHARACTERS, PlainObjectConstructor, snakecase_keys_default, AccountlessApplication, AgentTask, ActorToken, AllowlistIdentifier, APIKey, BlocklistIdentifier, SessionActivity, Session, Client2, CnameTarget, Cookies2, DeletedObject, Domain, Email, IdentificationLink, Verification, EmailAddress, Feature, BillingPlan, BillingSubscriptionItem, BillingSubscription, EnterpriseAccountConnection, EnterpriseAccount, EnterpriseConnectionSamlConnection, EnterpriseConnectionOauthConfig, EnterpriseConnection, ExternalAccount, Instance, InstanceRestrictions, InstanceSettings, Invitation, ObjectType, JwtTemplate, Machine, MachineScope, MachineSecretKey, OauthAccessToken, OAuthApplication, Organization, OrganizationInvitation, OrganizationMembership, OrganizationMembershipPublicUserData, OrganizationSettings, PhoneNumber, ProxyCheck, RedirectUrl, SamlConnection, AttributeMapping, SignInToken, SignUpAttemptVerification, SignUpAttemptVerifications, SignUpAttempt, SMSMessage, Token, Web3Wallet, User, WaitlistEntry, createDebug, createGetToken, getAuthObjectForAcceptedToken, AuthStatus, AuthErrorReason, withDebugHeaders, import_cookie, ClerkUrl, createClerkUrl, ClerkRequest, createClerkRequest, getCookieName, getCookieValue, HandshakeService, OrganizationMatcher, RefreshTokenErrorReason, authenticateRequest, debugRequestState, convertTokenVerificationErrorReasonToAuthErrorReason, defaultOptions2;
+var require_dist3, API_URL, API_VERSION, USER_AGENT, MAX_CACHE_LAST_UPDATED_AT_SECONDS, SUPPORTED_BAPI_VERSION, Attributes, Cookies, QueryParameters, Headers2, ContentTypes, ClerkSyncStatus, constants, TokenType, AuthenticateContext, createAuthenticateContext, SEPARATOR, MULTIPLE_SEPARATOR_REGEX, MAX_DECODES, AbstractAPI, basePath, ActorTokenAPI, basePath2, AgentTaskAPI, basePath3, AccountlessApplicationAPI, basePath4, AllowlistIdentifierAPI, basePath5, APIKeysAPI, basePath6, BetaFeaturesAPI, basePath7, BlocklistIdentifierAPI, basePath8, ClientAPI, basePath9, DomainAPI, basePath10, EmailAddressAPI, basePath11, EnterpriseConnectionAPI, basePath12, IdPOAuthAccessTokenApi, basePath13, InstanceAPI, basePath14, InvitationAPI, basePath15, MachineApi, IdPOAuthAccessToken, M2MToken, cache, lastUpdatedAt, PEM_HEADER, PEM_TRAILER, RSA_PREFIX, RSA_SUFFIX, getErrorObjectByCode, M2M_TOKEN_PREFIX, M2M_SUBJECT_PREFIX, OAUTH_TOKEN_PREFIX, API_KEY_PREFIX, MACHINE_TOKEN_PREFIXES, JwtFormatRegExp, OAUTH_ACCESS_TOKEN_TYPES, isTokenTypeAccepted, MACHINE_TOKEN_TYPES, basePath16, _verifyOptions, _M2MTokenApi_instances, createRequestOptions_fn, verifyJwtFormat_fn, M2MTokenApi, basePath17, JwksAPI, basePath18, JwtTemplatesApi, basePath19, OrganizationAPI, basePath20, OAuthApplicationsApi, basePath21, PhoneNumberAPI, basePath22, ProxyCheckAPI, basePath23, RedirectUrlAPI, basePath24, SamlConnectionAPI, basePath25, SessionAPI, basePath26, SignInTokenAPI, basePath27, SignUpAPI, basePath28, TestingTokenAPI, basePath29, UserAPI, basePath30, WaitlistEntryAPI, basePath31, WebhookAPI, basePath32, organizationBasePath, userBasePath, BillingAPI, isObject2, isObjectCustom, mapObjectSkip, _mapObject, SPLIT_LOWER_UPPER_RE, SPLIT_UPPER_UPPER_RE, SPLIT_SEPARATE_NUMBER_RE, DEFAULT_STRIP_REGEXP, SPLIT_REPLACE_VALUE, DEFAULT_PREFIX_SUFFIX_CHARACTERS, PlainObjectConstructor, snakecase_keys_default, AccountlessApplication, AgentTask, ActorToken, AllowlistIdentifier, APIKey, BlocklistIdentifier, SessionActivity, Session, Client, CnameTarget, Cookies2, DeletedObject, Domain, Email, IdentificationLink, Verification, EmailAddress, Feature, BillingPlan, BillingSubscriptionItem, BillingSubscription, EnterpriseAccountConnection, EnterpriseAccount, EnterpriseConnectionSamlConnection, EnterpriseConnectionOauthConfig, EnterpriseConnection, ExternalAccount, Instance, InstanceRestrictions, InstanceSettings, Invitation, ObjectType, JwtTemplate, Machine, MachineScope, MachineSecretKey, OauthAccessToken, OAuthApplication, Organization, OrganizationInvitation, OrganizationMembership, OrganizationMembershipPublicUserData, OrganizationSettings, PhoneNumber, ProxyCheck, RedirectUrl, SamlConnection, AttributeMapping, SignInToken, SignUpAttemptVerification, SignUpAttemptVerifications, SignUpAttempt, SMSMessage, Token, Web3Wallet, User, WaitlistEntry, createDebug, createGetToken, getAuthObjectForAcceptedToken, AuthStatus, AuthErrorReason, withDebugHeaders, import_cookie, ClerkUrl, createClerkUrl, ClerkRequest, createClerkRequest, getCookieName, getCookieValue, HandshakeService, OrganizationMatcher, RefreshTokenErrorReason, authenticateRequest, debugRequestState, convertTokenVerificationErrorReasonToAuthErrorReason, defaultOptions2;
 var init_chunk_ZFGNNAZZ = __esm({
   "node_modules/.pnpm/@clerk+backend@3.4.7/node_modules/@clerk/backend/dist/chunk-ZFGNNAZZ.mjs"() {
     init_chunk_YBVFDYDR();
@@ -42473,7 +37369,7 @@ var init_chunk_ZFGNNAZZ = __esm({
     init_error();
     init_pathToRegexp();
     init_authorization_errors();
-    require_dist4 = __commonJS2({
+    require_dist3 = __commonJS2({
       "../../node_modules/.pnpm/cookie@1.1.1/node_modules/cookie/dist/index.js"(exports) {
         "use strict";
         Object.defineProperty(exports, "__esModule", { value: true });
@@ -44914,7 +39810,7 @@ var init_chunk_ZFGNNAZZ = __esm({
         );
       }
     };
-    Client2 = class _Client {
+    Client = class _Client {
       constructor(id, sessionIds, sessions, signInId, signUpId, lastActiveSessionId, lastAuthenticationStrategy, createdAt, updatedAt) {
         this.id = id;
         this.sessionIds = sessionIds;
@@ -46322,7 +41218,7 @@ var init_chunk_ZFGNNAZZ = __esm({
       requestState.headers = headers;
       return requestState;
     };
-    import_cookie = __toESM2(require_dist4());
+    import_cookie = __toESM2(require_dist3());
     ClerkUrl = class extends URL {
       isCrossOrigin(other) {
         return this.origin !== new URL(other.toString()).origin;
@@ -50901,9 +45797,9 @@ var ZodUnion = class extends ZodType {
     return this._def.options;
   }
 };
-ZodUnion.create = (types3, params) => {
+ZodUnion.create = (types, params) => {
   return new ZodUnion({
-    options: types3,
+    options: types,
     typeName: ZodFirstPartyTypeKind.ZodUnion,
     ...processCreateParams(params)
   });
@@ -52815,7 +47711,7 @@ var storage_default = router2;
 // src/routes/banners.ts
 var import_express3 = __toESM(require_express2(), 1);
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/entity.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/entity.js
 var entityKind = Symbol.for("drizzle:entityKind");
 var hasOwnEntityKind = Symbol.for("drizzle:hasOwnEntityKind");
 function is(value, type) {
@@ -52842,7 +47738,7 @@ function is(value, type) {
   return false;
 }
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/column.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/column.js
 var Column = class {
   constructor(table, config2) {
     this.table = table;
@@ -52893,7 +47789,7 @@ var Column = class {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/column-builder.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/column-builder.js
 var ColumnBuilder = class {
   static [entityKind] = "ColumnBuilder";
   config;
@@ -52997,10 +47893,10 @@ var ColumnBuilder = class {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/table.utils.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/table.utils.js
 var TableName = Symbol.for("drizzle:Name");
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/foreign-keys.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/pg-core/foreign-keys.js
 var ForeignKeyBuilder = class {
   static [entityKind] = "PgForeignKeyBuilder";
   /** @internal */
@@ -53057,12 +47953,12 @@ var ForeignKey = class {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/tracing-utils.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/tracing-utils.js
 function iife(fn, ...args) {
   return fn(...args);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/unique-constraint.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/pg-core/unique-constraint.js
 function uniqueKeyName(table, columns) {
   return `${table[TableName]}_${columns.join("_")}_unique`;
 }
@@ -53112,7 +48008,7 @@ var UniqueConstraint = class {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/utils/array.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/pg-core/utils/array.js
 function parsePgArrayValue(arrayString, startFrom, inQuotes) {
   for (let i = startFrom; i < arrayString.length; i++) {
     const char2 = arrayString[i];
@@ -53188,7 +48084,7 @@ function makePgArray(array2) {
   }).join(",")}}`;
 }
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/common.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/pg-core/columns/common.js
 var PgColumnBuilder = class extends ColumnBuilder {
   foreignKeyConfigs = [];
   static [entityKind] = "PgColumnBuilder";
@@ -53373,7 +48269,7 @@ var PgArray = class _PgArray extends PgColumn {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/enum.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/pg-core/columns/enum.js
 var isPgEnumSym = Symbol.for("drizzle:isPgEnum");
 function isPgEnum(obj) {
   return !!obj && typeof obj === "function" && isPgEnumSym in obj && obj[isPgEnumSym] === true;
@@ -53405,7 +48301,7 @@ var PgEnumColumn = class extends PgColumn {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/subquery.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/subquery.js
 var Subquery = class {
   static [entityKind] = "Subquery";
   constructor(sql3, selection, alias, isWith = false) {
@@ -53425,10 +48321,10 @@ var WithSubquery = class extends Subquery {
   static [entityKind] = "WithSubquery";
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/version.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/version.js
 var version = "0.40.1";
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/tracing.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/tracing.js
 var otel;
 var rawTracer;
 var tracer = {
@@ -53463,10 +48359,10 @@ var tracer = {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/view-common.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/view-common.js
 var ViewBaseConfig = Symbol.for("drizzle:ViewBaseConfig");
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/table.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/table.js
 var Schema = Symbol.for("drizzle:Schema");
 var Columns = Symbol.for("drizzle:Columns");
 var ExtraConfigColumns = Symbol.for("drizzle:ExtraConfigColumns");
@@ -53522,7 +48418,7 @@ var Table = class {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/sql.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/sql/sql.js
 var FakePrimitiveParam = class {
   static [entityKind] = "FakePrimitiveParam";
 };
@@ -53889,7 +48785,7 @@ Subquery.prototype.getSQL = function() {
   return new SQL([this]);
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/expressions/conditions.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/sql/expressions/conditions.js
 function bindIfParam(value, column) {
   if (isDriverValueEncoder(column) && !isSQLWrapper(value) && !is(value, Param) && !is(value, Placeholder) && !is(value, Column) && !is(value, Table) && !is(value, View)) {
     return new Param(value, column);
@@ -53916,7 +48812,7 @@ function and(...unfilteredConditions) {
   ]);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/expressions/select.js
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/sql/expressions/select.js
 function asc(column) {
   return sql`${column} asc`;
 }
@@ -53924,22 +48820,10 @@ function desc(column) {
   return sql`${column} desc`;
 }
 
-// node_modules/.pnpm/pg@8.20.0/node_modules/pg/esm/index.mjs
-var import_lib = __toESM(require_lib5(), 1);
-var Client = import_lib.default.Client;
-var Pool = import_lib.default.Pool;
-var Connection = import_lib.default.Connection;
-var types = import_lib.default.types;
-var Query = import_lib.default.Query;
-var DatabaseError = import_lib.default.DatabaseError;
-var escapeIdentifier = import_lib.default.escapeIdentifier;
-var escapeLiteral = import_lib.default.escapeLiteral;
-var Result = import_lib.default.Result;
-var TypeOverrides = import_lib.default.TypeOverrides;
-var defaults = import_lib.default.defaults;
-var esm_default = import_lib.default;
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql2/driver.js
+import { createPool } from "mysql2";
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/entity.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/entity.js
 var entityKind2 = Symbol.for("drizzle:entityKind");
 var hasOwnEntityKind2 = Symbol.for("drizzle:hasOwnEntityKind");
 function is2(value, type) {
@@ -53966,7 +48850,7 @@ function is2(value, type) {
   return false;
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/logger.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/logger.js
 var ConsoleLogWriter = class {
   static [entityKind2] = "ConsoleLogWriter";
   write(message) {
@@ -53997,31 +48881,7 @@ var NoopLogger = class {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/query-promise.js
-var QueryPromise = class {
-  static [entityKind2] = "QueryPromise";
-  [Symbol.toStringTag] = "QueryPromise";
-  catch(onRejected) {
-    return this.then(void 0, onRejected);
-  }
-  finally(onFinally) {
-    return this.then(
-      (value) => {
-        onFinally?.();
-        return value;
-      },
-      (reason) => {
-        onFinally?.();
-        throw reason;
-      }
-    );
-  }
-  then(onFulfilled, onRejected) {
-    return this.execute().then(onFulfilled, onRejected);
-  }
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/column.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/column.js
 var Column2 = class {
   constructor(table, config2) {
     this.table = table;
@@ -54072,7 +48932,7 @@ var Column2 = class {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/column-builder.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/column-builder.js
 var ColumnBuilder2 = class {
   static [entityKind2] = "ColumnBuilder";
   config;
@@ -54175,10 +49035,10 @@ var ColumnBuilder2 = class {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/table.utils.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/table.utils.js
 var TableName2 = Symbol.for("drizzle:Name");
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/foreign-keys.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/foreign-keys.js
 var ForeignKeyBuilder2 = class {
   static [entityKind2] = "PgForeignKeyBuilder";
   /** @internal */
@@ -54235,12 +49095,12 @@ var ForeignKey2 = class {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/tracing-utils.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/tracing-utils.js
 function iife2(fn, ...args) {
   return fn(...args);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/unique-constraint.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/unique-constraint.js
 function uniqueKeyName2(table, columns) {
   return `${table[TableName2]}_${columns.join("_")}_unique`;
 }
@@ -54290,7 +49150,7 @@ var UniqueConstraint2 = class {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/utils/array.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/utils/array.js
 function parsePgArrayValue2(arrayString, startFrom, inQuotes) {
   for (let i = startFrom; i < arrayString.length; i++) {
     const char2 = arrayString[i];
@@ -54366,7 +49226,7 @@ function makePgArray2(array2) {
   }).join(",")}}`;
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/common.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/common.js
 var PgColumnBuilder2 = class extends ColumnBuilder2 {
   foreignKeyConfigs = [];
   static [entityKind2] = "PgColumnBuilder";
@@ -54550,7 +49410,7 @@ var PgArray2 = class _PgArray extends PgColumn2 {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/enum.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/enum.js
 var PgEnumObjectColumnBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgEnumObjectColumnBuilder";
   constructor(name, enumInstance) {
@@ -54608,7 +49468,7 @@ var PgEnumColumn2 = class extends PgColumn2 {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/subquery.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/subquery.js
 var Subquery2 = class {
   static [entityKind2] = "Subquery";
   constructor(sql3, fields, alias, isWith = false, usedTables = []) {
@@ -54629,10 +49489,10 @@ var WithSubquery2 = class extends Subquery2 {
   static [entityKind2] = "WithSubquery";
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/version.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/version.js
 var version2 = "0.45.2";
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/tracing.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/tracing.js
 var otel2;
 var rawTracer2;
 var tracer2 = {
@@ -54667,10 +49527,10 @@ var tracer2 = {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/view-common.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/view-common.js
 var ViewBaseConfig2 = Symbol.for("drizzle:ViewBaseConfig");
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/table.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/table.js
 var Schema2 = Symbol.for("drizzle:Schema");
 var Columns2 = Symbol.for("drizzle:Columns");
 var ExtraConfigColumns2 = Symbol.for("drizzle:ExtraConfigColumns");
@@ -54735,7 +49595,7 @@ function getTableUniqueName(table) {
   return `${table[Schema2] ?? "public"}.${table[TableName2]}`;
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/sql.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/sql/sql.js
 var FakePrimitiveParam2 = class {
   static [entityKind2] = "FakePrimitiveParam";
 };
@@ -55132,7 +49992,7 @@ Subquery2.prototype.getSQL = function() {
   return new SQL2([this]);
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/alias.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/alias.js
 var ColumnAliasProxyHandler = class {
   constructor(table) {
     this.table = table;
@@ -55228,7 +50088,7 @@ function mapColumnsInSQLToAlias(query, alias) {
   }));
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/selection-proxy.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/selection-proxy.js
 var SelectionProxyHandler = class _SelectionProxyHandler {
   static [entityKind2] = "SelectionProxyHandler";
   config;
@@ -55296,7 +50156,103 @@ var SelectionProxyHandler = class _SelectionProxyHandler {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/utils.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/query-builders/count.js
+var MySqlCountBuilder = class _MySqlCountBuilder extends SQL2 {
+  constructor(params) {
+    super(_MySqlCountBuilder.buildEmbeddedCount(params.source, params.filters).queryChunks);
+    this.params = params;
+    this.mapWith(Number);
+    this.session = params.session;
+    this.sql = _MySqlCountBuilder.buildCount(
+      params.source,
+      params.filters
+    );
+  }
+  sql;
+  static [entityKind2] = "MySqlCountBuilder";
+  [Symbol.toStringTag] = "MySqlCountBuilder";
+  session;
+  static buildEmbeddedCount(source, filters) {
+    return sql2`(select count(*) from ${source}${sql2.raw(" where ").if(filters)}${filters})`;
+  }
+  static buildCount(source, filters) {
+    return sql2`select count(*) as count from ${source}${sql2.raw(" where ").if(filters)}${filters}`;
+  }
+  then(onfulfilled, onrejected) {
+    return Promise.resolve(this.session.count(this.sql)).then(
+      onfulfilled,
+      onrejected
+    );
+  }
+  catch(onRejected) {
+    return this.then(void 0, onRejected);
+  }
+  finally(onFinally) {
+    return this.then(
+      (value) => {
+        onFinally?.();
+        return value;
+      },
+      (reason) => {
+        onFinally?.();
+        throw reason;
+      }
+    );
+  }
+};
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/query-promise.js
+var QueryPromise = class {
+  static [entityKind2] = "QueryPromise";
+  [Symbol.toStringTag] = "QueryPromise";
+  catch(onRejected) {
+    return this.then(void 0, onRejected);
+  }
+  finally(onFinally) {
+    return this.then(
+      (value) => {
+        onFinally?.();
+        return value;
+      },
+      (reason) => {
+        onFinally?.();
+        throw reason;
+      }
+    );
+  }
+  then(onFulfilled, onRejected) {
+    return this.execute().then(onFulfilled, onRejected);
+  }
+};
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/errors.js
+var DrizzleError = class extends Error {
+  static [entityKind2] = "DrizzleError";
+  constructor({ message, cause }) {
+    super(message);
+    this.name = "DrizzleError";
+    this.cause = cause;
+  }
+};
+var DrizzleQueryError = class _DrizzleQueryError extends Error {
+  constructor(query, params, cause) {
+    super(`Failed query: ${query}
+params: ${params}`);
+    this.query = query;
+    this.params = params;
+    this.cause = cause;
+    Error.captureStackTrace(this, _DrizzleQueryError);
+    if (cause) this.cause = cause;
+  }
+};
+var TransactionRollbackError = class extends DrizzleError {
+  static [entityKind2] = "TransactionRollbackError";
+  constructor() {
+    super({ message: "Rollback" });
+  }
+};
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/utils.js
 function mapResultRow(columns, row, joinsNotNullableMap) {
   const nullifyMap = {};
   const result = columns.reduce(
@@ -55450,7 +50406,7 @@ function isConfig(data) {
 }
 var textDecoder = typeof TextDecoder === "undefined" ? null : new TextDecoder();
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/int.common.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/int.common.js
 var PgIntColumnBaseBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgIntColumnBaseBuilder";
   generatedAlwaysAsIdentity(sequence) {
@@ -55489,7 +50445,7 @@ var PgIntColumnBaseBuilder = class extends PgColumnBuilder2 {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/bigint.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/bigint.js
 var PgBigInt53Builder = class extends PgIntColumnBaseBuilder {
   static [entityKind2] = "PgBigInt53Builder";
   constructor(name) {
@@ -55543,7 +50499,7 @@ function bigint(a, b) {
   return new PgBigInt64Builder(name);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/bigserial.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/bigserial.js
 var PgBigSerial53Builder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgBigSerial53Builder";
   constructor(name) {
@@ -55603,7 +50559,7 @@ function bigserial(a, b) {
   return new PgBigSerial64Builder(name);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/boolean.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/boolean.js
 var PgBooleanBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgBooleanBuilder";
   constructor(name) {
@@ -55624,7 +50580,7 @@ function boolean(name) {
   return new PgBooleanBuilder(name ?? "");
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/char.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/char.js
 var PgCharBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgCharBuilder";
   constructor(name, config2) {
@@ -55653,7 +50609,7 @@ function char(a, b = {}) {
   return new PgCharBuilder(name, config2);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/cidr.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/cidr.js
 var PgCidrBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgCidrBuilder";
   constructor(name) {
@@ -55674,7 +50630,7 @@ function cidr(name) {
   return new PgCidrBuilder(name ?? "");
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/custom.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/custom.js
 var PgCustomColumnBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgCustomColumnBuilder";
   constructor(name, fieldConfig, customTypeParams) {
@@ -55718,7 +50674,7 @@ function customType(customTypeParams) {
   };
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/date.common.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/date.common.js
 var PgDateColumnBaseBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgDateColumnBaseBuilder";
   defaultNow() {
@@ -55726,7 +50682,7 @@ var PgDateColumnBaseBuilder = class extends PgColumnBuilder2 {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/date.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/date.js
 var PgDateBuilder = class extends PgDateColumnBaseBuilder {
   static [entityKind2] = "PgDateBuilder";
   constructor(name) {
@@ -55781,7 +50737,7 @@ function date(a, b) {
   return new PgDateStringBuilder(name);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/double-precision.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/double-precision.js
 var PgDoublePrecisionBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgDoublePrecisionBuilder";
   constructor(name) {
@@ -55811,7 +50767,7 @@ function doublePrecision(name) {
   return new PgDoublePrecisionBuilder(name ?? "");
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/inet.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/inet.js
 var PgInetBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgInetBuilder";
   constructor(name) {
@@ -55832,7 +50788,7 @@ function inet(name) {
   return new PgInetBuilder(name ?? "");
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/integer.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/integer.js
 var PgIntegerBuilder = class extends PgIntColumnBaseBuilder {
   static [entityKind2] = "PgIntegerBuilder";
   constructor(name) {
@@ -55859,7 +50815,7 @@ function integer(name) {
   return new PgIntegerBuilder(name ?? "");
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/interval.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/interval.js
 var PgIntervalBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgIntervalBuilder";
   constructor(name, intervalConfig) {
@@ -55886,7 +50842,7 @@ function interval(a, b = {}) {
   return new PgIntervalBuilder(name, config2);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/json.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/json.js
 var PgJsonBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgJsonBuilder";
   constructor(name) {
@@ -55923,7 +50879,7 @@ function json(name) {
   return new PgJsonBuilder(name ?? "");
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/jsonb.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/jsonb.js
 var PgJsonbBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgJsonbBuilder";
   constructor(name) {
@@ -55960,7 +50916,7 @@ function jsonb(name) {
   return new PgJsonbBuilder(name ?? "");
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/line.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/line.js
 var PgLineBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgLineBuilder";
   constructor(name) {
@@ -56021,7 +50977,7 @@ function line(a, b) {
   return new PgLineABCBuilder(name);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/macaddr.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/macaddr.js
 var PgMacaddrBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgMacaddrBuilder";
   constructor(name) {
@@ -56042,7 +50998,7 @@ function macaddr(name) {
   return new PgMacaddrBuilder(name ?? "");
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/macaddr8.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/macaddr8.js
 var PgMacaddr8Builder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgMacaddr8Builder";
   constructor(name) {
@@ -56063,7 +51019,7 @@ function macaddr8(name) {
   return new PgMacaddr8Builder(name ?? "");
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/numeric.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/numeric.js
 var PgNumericBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgNumericBuilder";
   constructor(name, precision, scale) {
@@ -56180,7 +51136,7 @@ function numeric(a, b) {
   return mode === "number" ? new PgNumericNumberBuilder(name, config2?.precision, config2?.scale) : mode === "bigint" ? new PgNumericBigIntBuilder(name, config2?.precision, config2?.scale) : new PgNumericBuilder(name, config2?.precision, config2?.scale);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/point.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/point.js
 var PgPointTupleBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgPointTupleBuilder";
   constructor(name) {
@@ -56247,7 +51203,7 @@ function point(a, b) {
   return new PgPointObjectBuilder(name);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/postgis_extension/utils.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/postgis_extension/utils.js
 function hexToBytes(hex) {
   const bytes = [];
   for (let c = 0; c < hex.length; c += 2) {
@@ -56286,7 +51242,7 @@ function parseEWKB(hex) {
   throw new Error("Unsupported geometry type");
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/postgis_extension/geometry.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/postgis_extension/geometry.js
 var PgGeometryBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgGeometryBuilder";
   constructor(name) {
@@ -56346,7 +51302,7 @@ function geometry(a, b) {
   return new PgGeometryObjectBuilder(name);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/real.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/real.js
 var PgRealBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgRealBuilder";
   constructor(name, length) {
@@ -56377,7 +51333,7 @@ function real(name) {
   return new PgRealBuilder(name ?? "");
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/serial.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/serial.js
 var PgSerialBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgSerialBuilder";
   constructor(name) {
@@ -56400,7 +51356,7 @@ function serial(name) {
   return new PgSerialBuilder(name ?? "");
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/smallint.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/smallint.js
 var PgSmallIntBuilder = class extends PgIntColumnBaseBuilder {
   static [entityKind2] = "PgSmallIntBuilder";
   constructor(name) {
@@ -56427,7 +51383,7 @@ function smallint(name) {
   return new PgSmallIntBuilder(name ?? "");
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/smallserial.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/smallserial.js
 var PgSmallSerialBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgSmallSerialBuilder";
   constructor(name) {
@@ -56453,7 +51409,7 @@ function smallserial(name) {
   return new PgSmallSerialBuilder(name ?? "");
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/text.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/text.js
 var PgTextBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgTextBuilder";
   constructor(name, config2) {
@@ -56477,7 +51433,7 @@ function text(a, b = {}) {
   return new PgTextBuilder(name, config2);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/time.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/time.js
 var PgTimeBuilder = class extends PgDateColumnBaseBuilder {
   constructor(name, withTimezone, precision) {
     super(name, "string", "PgTime");
@@ -56511,7 +51467,7 @@ function time(a, b = {}) {
   return new PgTimeBuilder(name, config2.withTimezone ?? false, config2.precision);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/timestamp.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/timestamp.js
 var PgTimestampBuilder = class extends PgDateColumnBaseBuilder {
   static [entityKind2] = "PgTimestampBuilder";
   constructor(name, withTimezone, precision) {
@@ -56592,7 +51548,7 @@ function timestamp(a, b = {}) {
   return new PgTimestampBuilder(name, config2?.withTimezone ?? false, config2?.precision);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/uuid.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/uuid.js
 var PgUUIDBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgUUIDBuilder";
   constructor(name) {
@@ -56619,7 +51575,7 @@ function uuid(name) {
   return new PgUUIDBuilder(name ?? "");
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/varchar.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/varchar.js
 var PgVarcharBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgVarcharBuilder";
   constructor(name, config2) {
@@ -56648,7 +51604,7 @@ function varchar(a, b = {}) {
   return new PgVarcharBuilder(name, config2);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/bit.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/vector_extension/bit.js
 var PgBinaryVectorBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgBinaryVectorBuilder";
   constructor(name, config2) {
@@ -56675,7 +51631,7 @@ function bit(a, b) {
   return new PgBinaryVectorBuilder(name, config2);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/halfvec.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/vector_extension/halfvec.js
 var PgHalfVectorBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgHalfVectorBuilder";
   constructor(name, config2) {
@@ -56708,7 +51664,7 @@ function halfvec(a, b) {
   return new PgHalfVectorBuilder(name, config2);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/sparsevec.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/vector_extension/sparsevec.js
 var PgSparseVectorBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgSparseVectorBuilder";
   constructor(name, config2) {
@@ -56735,7 +51691,7 @@ function sparsevec(a, b) {
   return new PgSparseVectorBuilder(name, config2);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/vector.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/vector_extension/vector.js
 var PgVectorBuilder = class extends PgColumnBuilder2 {
   static [entityKind2] = "PgVectorBuilder";
   constructor(name, config2) {
@@ -56768,7 +51724,7 @@ function vector(a, b) {
   return new PgVectorBuilder(name, config2);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/all.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/all.js
 function getPgColumnBuilders() {
   return {
     bigint,
@@ -56806,7 +51762,7 @@ function getPgColumnBuilders() {
   };
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/table.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/table.js
 var InlineForeignKeys = Symbol.for("drizzle:PgInlineForeignKeys");
 var EnableRLS = Symbol.for("drizzle:EnableRLS");
 var PgTable = class extends Table2 {
@@ -56862,7 +51818,7 @@ var pgTable = (name, columns, extraConfig) => {
   return pgTableWithSchema(name, columns, extraConfig, void 0);
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/primary-keys.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/primary-keys.js
 var PrimaryKeyBuilder = class {
   static [entityKind2] = "PgPrimaryKeyBuilder";
   /** @internal */
@@ -56892,86 +51848,7 @@ var PrimaryKey = class {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/casing.js
-function toSnakeCase(input) {
-  const words = input.replace(/['\u2019]/g, "").match(/[\da-z]+|[A-Z]+(?![a-z])|[A-Z][\da-z]+/g) ?? [];
-  return words.map((word) => word.toLowerCase()).join("_");
-}
-function toCamelCase(input) {
-  const words = input.replace(/['\u2019]/g, "").match(/[\da-z]+|[A-Z]+(?![a-z])|[A-Z][\da-z]+/g) ?? [];
-  return words.reduce((acc, word, i) => {
-    const formattedWord = i === 0 ? word.toLowerCase() : `${word[0].toUpperCase()}${word.slice(1)}`;
-    return acc + formattedWord;
-  }, "");
-}
-function noopCase(input) {
-  return input;
-}
-var CasingCache = class {
-  static [entityKind2] = "CasingCache";
-  /** @internal */
-  cache = {};
-  cachedTables = {};
-  convert;
-  constructor(casing) {
-    this.convert = casing === "snake_case" ? toSnakeCase : casing === "camelCase" ? toCamelCase : noopCase;
-  }
-  getColumnCasing(column) {
-    if (!column.keyAsName) return column.name;
-    const schema = column.table[Table2.Symbol.Schema] ?? "public";
-    const tableName = column.table[Table2.Symbol.OriginalName];
-    const key = `${schema}.${tableName}.${column.name}`;
-    if (!this.cache[key]) {
-      this.cacheTable(column.table);
-    }
-    return this.cache[key];
-  }
-  cacheTable(table) {
-    const schema = table[Table2.Symbol.Schema] ?? "public";
-    const tableName = table[Table2.Symbol.OriginalName];
-    const tableKey = `${schema}.${tableName}`;
-    if (!this.cachedTables[tableKey]) {
-      for (const column of Object.values(table[Table2.Symbol.Columns])) {
-        const columnKey = `${tableKey}.${column.name}`;
-        this.cache[columnKey] = this.convert(column.name);
-      }
-      this.cachedTables[tableKey] = true;
-    }
-  }
-  clearCache() {
-    this.cache = {};
-    this.cachedTables = {};
-  }
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/errors.js
-var DrizzleError = class extends Error {
-  static [entityKind2] = "DrizzleError";
-  constructor({ message, cause }) {
-    super(message);
-    this.name = "DrizzleError";
-    this.cause = cause;
-  }
-};
-var DrizzleQueryError = class _DrizzleQueryError extends Error {
-  constructor(query, params, cause) {
-    super(`Failed query: ${query}
-params: ${params}`);
-    this.query = query;
-    this.params = params;
-    this.cause = cause;
-    Error.captureStackTrace(this, _DrizzleQueryError);
-    if (cause) this.cause = cause;
-  }
-};
-var TransactionRollbackError = class extends DrizzleError {
-  static [entityKind2] = "TransactionRollbackError";
-  constructor() {
-    super({ message: "Rollback" });
-  }
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/expressions/conditions.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/sql/expressions/conditions.js
 function bindIfParam2(value, column) {
   if (isDriverValueEncoder2(column) && !isSQLWrapper2(value) && !is2(value, Param2) && !is2(value, Placeholder2) && !is2(value, Column2) && !is2(value, Table2) && !is2(value, View2)) {
     return new Param2(value, column);
@@ -57086,7 +51963,7 @@ function notIlike(column, value) {
   return sql2`${column} not ilike ${value}`;
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/expressions/select.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/sql/expressions/select.js
 function asc2(column) {
   return sql2`${column} asc`;
 }
@@ -57094,7 +51971,7 @@ function desc2(column) {
   return sql2`${column} desc`;
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/relations.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/relations.js
 var Relation = class {
   constructor(sourceTable, referencedTable, relationName) {
     this.sourceTable = sourceTable;
@@ -57355,53 +52232,410 @@ function mapRelationalRow(tablesConfig, tableConfig, row, buildQueryResultSelect
   return result;
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/view-base.js
-var PgViewBase = class extends View2 {
-  static [entityKind2] = "PgViewBase";
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/foreign-keys.js
+var ForeignKeyBuilder3 = class {
+  static [entityKind2] = "MySqlForeignKeyBuilder";
+  /** @internal */
+  reference;
+  /** @internal */
+  _onUpdate;
+  /** @internal */
+  _onDelete;
+  constructor(config2, actions) {
+    this.reference = () => {
+      const { name, columns, foreignColumns } = config2();
+      return { name, columns, foreignTable: foreignColumns[0].table, foreignColumns };
+    };
+    if (actions) {
+      this._onUpdate = actions.onUpdate;
+      this._onDelete = actions.onDelete;
+    }
+  }
+  onUpdate(action) {
+    this._onUpdate = action;
+    return this;
+  }
+  onDelete(action) {
+    this._onDelete = action;
+    return this;
+  }
+  /** @internal */
+  build(table) {
+    return new ForeignKey3(table, this);
+  }
+};
+var ForeignKey3 = class {
+  constructor(table, builder) {
+    this.table = table;
+    this.reference = builder.reference;
+    this.onUpdate = builder._onUpdate;
+    this.onDelete = builder._onDelete;
+  }
+  static [entityKind2] = "MySqlForeignKey";
+  reference;
+  onUpdate;
+  onDelete;
+  getName() {
+    const { name, columns, foreignColumns } = this.reference();
+    const columnNames = columns.map((column) => column.name);
+    const foreignColumnNames = foreignColumns.map((column) => column.name);
+    const chunks = [
+      this.table[TableName2],
+      ...columnNames,
+      foreignColumns[0].table[TableName2],
+      ...foreignColumnNames
+    ];
+    return name ?? `${chunks.join("_")}_fk`;
+  }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/dialect.js
-var PgDialect = class {
-  static [entityKind2] = "PgDialect";
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/unique-constraint.js
+function uniqueKeyName3(table, columns) {
+  return `${table[TableName2]}_${columns.join("_")}_unique`;
+}
+var UniqueConstraintBuilder3 = class {
+  constructor(columns, name) {
+    this.name = name;
+    this.columns = columns;
+  }
+  static [entityKind2] = "MySqlUniqueConstraintBuilder";
+  /** @internal */
+  columns;
+  /** @internal */
+  build(table) {
+    return new UniqueConstraint3(table, this.columns, this.name);
+  }
+};
+var UniqueOnConstraintBuilder3 = class {
+  static [entityKind2] = "MySqlUniqueOnConstraintBuilder";
+  /** @internal */
+  name;
+  constructor(name) {
+    this.name = name;
+  }
+  on(...columns) {
+    return new UniqueConstraintBuilder3(columns, this.name);
+  }
+};
+var UniqueConstraint3 = class {
+  constructor(table, columns, name) {
+    this.table = table;
+    this.columns = columns;
+    this.name = name ?? uniqueKeyName3(this.table, this.columns.map((column) => column.name));
+  }
+  static [entityKind2] = "MySqlUniqueConstraint";
+  columns;
+  name;
+  nullsNotDistinct = false;
+  getName() {
+    return this.name;
+  }
+};
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/common.js
+var MySqlColumnBuilder = class extends ColumnBuilder2 {
+  static [entityKind2] = "MySqlColumnBuilder";
+  foreignKeyConfigs = [];
+  references(ref, actions = {}) {
+    this.foreignKeyConfigs.push({ ref, actions });
+    return this;
+  }
+  unique(name) {
+    this.config.isUnique = true;
+    this.config.uniqueName = name;
+    return this;
+  }
+  generatedAlwaysAs(as, config2) {
+    this.config.generated = {
+      as,
+      type: "always",
+      mode: config2?.mode ?? "virtual"
+    };
+    return this;
+  }
+  /** @internal */
+  buildForeignKeys(column, table) {
+    return this.foreignKeyConfigs.map(({ ref, actions }) => {
+      return ((ref2, actions2) => {
+        const builder = new ForeignKeyBuilder3(() => {
+          const foreignColumn = ref2();
+          return { columns: [column], foreignColumns: [foreignColumn] };
+        });
+        if (actions2.onUpdate) {
+          builder.onUpdate(actions2.onUpdate);
+        }
+        if (actions2.onDelete) {
+          builder.onDelete(actions2.onDelete);
+        }
+        return builder.build(table);
+      })(ref, actions);
+    });
+  }
+};
+var MySqlColumn = class extends Column2 {
+  constructor(table, config2) {
+    if (!config2.uniqueName) {
+      config2.uniqueName = uniqueKeyName3(table, [config2.name]);
+    }
+    super(table, config2);
+    this.table = table;
+  }
+  static [entityKind2] = "MySqlColumn";
+};
+var MySqlColumnBuilderWithAutoIncrement = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlColumnBuilderWithAutoIncrement";
+  constructor(name, dataType, columnType) {
+    super(name, dataType, columnType);
+    this.config.autoIncrement = false;
+  }
+  autoincrement() {
+    this.config.autoIncrement = true;
+    this.config.hasDefault = true;
+    return this;
+  }
+};
+var MySqlColumnWithAutoIncrement = class extends MySqlColumn {
+  static [entityKind2] = "MySqlColumnWithAutoIncrement";
+  autoIncrement = this.config.autoIncrement;
+};
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/table.js
+var InlineForeignKeys2 = Symbol.for("drizzle:MySqlInlineForeignKeys");
+var MySqlTable = class extends Table2 {
+  static [entityKind2] = "MySqlTable";
+  /** @internal */
+  static Symbol = Object.assign({}, Table2.Symbol, {
+    InlineForeignKeys: InlineForeignKeys2
+  });
+  /** @internal */
+  [Table2.Symbol.Columns];
+  /** @internal */
+  [InlineForeignKeys2] = [];
+  /** @internal */
+  [Table2.Symbol.ExtraConfigBuilder] = void 0;
+};
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/utils.js
+function extractUsedTable(table) {
+  if (is2(table, MySqlTable)) {
+    return [`${table[Table2.Symbol.BaseName]}`];
+  }
+  if (is2(table, Subquery2)) {
+    return table._.usedTables ?? [];
+  }
+  if (is2(table, SQL2)) {
+    return table.usedTables ?? [];
+  }
+  return [];
+}
+function convertIndexToString(indexes) {
+  return indexes.map((idx) => {
+    return typeof idx === "object" ? idx.config.name : idx;
+  });
+}
+function toArray(value) {
+  return Array.isArray(value) ? value : [value];
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/query-builders/delete.js
+var MySqlDeleteBase = class extends QueryPromise {
+  constructor(table, session, dialect, withList) {
+    super();
+    this.table = table;
+    this.session = session;
+    this.dialect = dialect;
+    this.config = { table, withList };
+  }
+  static [entityKind2] = "MySqlDelete";
+  config;
+  /**
+   * Adds a `where` clause to the query.
+   *
+   * Calling this method will delete only those rows that fulfill a specified condition.
+   *
+   * See docs: {@link https://orm.drizzle.team/docs/delete}
+   *
+   * @param where the `where` clause.
+   *
+   * @example
+   * You can use conditional operators and `sql function` to filter the rows to be deleted.
+   *
+   * ```ts
+   * // Delete all cars with green color
+   * db.delete(cars).where(eq(cars.color, 'green'));
+   * // or
+   * db.delete(cars).where(sql`${cars.color} = 'green'`)
+   * ```
+   *
+   * You can logically combine conditional operators with `and()` and `or()` operators:
+   *
+   * ```ts
+   * // Delete all BMW cars with a green color
+   * db.delete(cars).where(and(eq(cars.color, 'green'), eq(cars.brand, 'BMW')));
+   *
+   * // Delete all cars with the green or blue color
+   * db.delete(cars).where(or(eq(cars.color, 'green'), eq(cars.color, 'blue')));
+   * ```
+   */
+  where(where) {
+    this.config.where = where;
+    return this;
+  }
+  orderBy(...columns) {
+    if (typeof columns[0] === "function") {
+      const orderBy = columns[0](
+        new Proxy(
+          this.config.table[Table2.Symbol.Columns],
+          new SelectionProxyHandler({ sqlAliasedBehavior: "alias", sqlBehavior: "sql" })
+        )
+      );
+      const orderByArray = Array.isArray(orderBy) ? orderBy : [orderBy];
+      this.config.orderBy = orderByArray;
+    } else {
+      const orderByArray = columns;
+      this.config.orderBy = orderByArray;
+    }
+    return this;
+  }
+  limit(limit) {
+    this.config.limit = limit;
+    return this;
+  }
+  /** @internal */
+  getSQL() {
+    return this.dialect.buildDeleteQuery(this.config);
+  }
+  toSQL() {
+    const { typings: _typings, ...rest } = this.dialect.sqlToQuery(this.getSQL());
+    return rest;
+  }
+  prepare() {
+    return this.session.prepareQuery(
+      this.dialect.sqlToQuery(this.getSQL()),
+      this.config.returning,
+      void 0,
+      void 0,
+      void 0,
+      {
+        type: "delete",
+        tables: extractUsedTable(this.config.table)
+      }
+    );
+  }
+  execute = (placeholderValues) => {
+    return this.prepare().execute(placeholderValues);
+  };
+  createIterator = () => {
+    const self = this;
+    return async function* (placeholderValues) {
+      yield* self.prepare().iterator(placeholderValues);
+    };
+  };
+  iterator = this.createIterator();
+  $dynamic() {
+    return this;
+  }
+};
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/casing.js
+function toSnakeCase(input) {
+  const words = input.replace(/['\u2019]/g, "").match(/[\da-z]+|[A-Z]+(?![a-z])|[A-Z][\da-z]+/g) ?? [];
+  return words.map((word) => word.toLowerCase()).join("_");
+}
+function toCamelCase(input) {
+  const words = input.replace(/['\u2019]/g, "").match(/[\da-z]+|[A-Z]+(?![a-z])|[A-Z][\da-z]+/g) ?? [];
+  return words.reduce((acc, word, i) => {
+    const formattedWord = i === 0 ? word.toLowerCase() : `${word[0].toUpperCase()}${word.slice(1)}`;
+    return acc + formattedWord;
+  }, "");
+}
+function noopCase(input) {
+  return input;
+}
+var CasingCache = class {
+  static [entityKind2] = "CasingCache";
+  /** @internal */
+  cache = {};
+  cachedTables = {};
+  convert;
+  constructor(casing) {
+    this.convert = casing === "snake_case" ? toSnakeCase : casing === "camelCase" ? toCamelCase : noopCase;
+  }
+  getColumnCasing(column) {
+    if (!column.keyAsName) return column.name;
+    const schema = column.table[Table2.Symbol.Schema] ?? "public";
+    const tableName = column.table[Table2.Symbol.OriginalName];
+    const key = `${schema}.${tableName}.${column.name}`;
+    if (!this.cache[key]) {
+      this.cacheTable(column.table);
+    }
+    return this.cache[key];
+  }
+  cacheTable(table) {
+    const schema = table[Table2.Symbol.Schema] ?? "public";
+    const tableName = table[Table2.Symbol.OriginalName];
+    const tableKey = `${schema}.${tableName}`;
+    if (!this.cachedTables[tableKey]) {
+      for (const column of Object.values(table[Table2.Symbol.Columns])) {
+        const columnKey = `${tableKey}.${column.name}`;
+        this.cache[columnKey] = this.convert(column.name);
+      }
+      this.cachedTables[tableKey] = true;
+    }
+  }
+  clearCache() {
+    this.cache = {};
+    this.cachedTables = {};
+  }
+};
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/view-base.js
+var MySqlViewBase = class extends View2 {
+  static [entityKind2] = "MySqlViewBase";
+};
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/dialect.js
+var MySqlDialect = class {
+  static [entityKind2] = "MySqlDialect";
   /** @internal */
   casing;
   constructor(config2) {
     this.casing = new CasingCache(config2?.casing);
   }
   async migrate(migrations, session, config2) {
-    const migrationsTable = typeof config2 === "string" ? "__drizzle_migrations" : config2.migrationsTable ?? "__drizzle_migrations";
-    const migrationsSchema = typeof config2 === "string" ? "drizzle" : config2.migrationsSchema ?? "drizzle";
+    const migrationsTable = config2.migrationsTable ?? "__drizzle_migrations";
     const migrationTableCreate = sql2`
-			CREATE TABLE IF NOT EXISTS ${sql2.identifier(migrationsSchema)}.${sql2.identifier(migrationsTable)} (
-				id SERIAL PRIMARY KEY,
-				hash text NOT NULL,
+			create table if not exists ${sql2.identifier(migrationsTable)} (
+				id serial primary key,
+				hash text not null,
 				created_at bigint
 			)
 		`;
-    await session.execute(sql2`CREATE SCHEMA IF NOT EXISTS ${sql2.identifier(migrationsSchema)}`);
     await session.execute(migrationTableCreate);
     const dbMigrations = await session.all(
-      sql2`select id, hash, created_at from ${sql2.identifier(migrationsSchema)}.${sql2.identifier(migrationsTable)} order by created_at desc limit 1`
+      sql2`select id, hash, created_at from ${sql2.identifier(migrationsTable)} order by created_at desc limit 1`
     );
     const lastDbMigration = dbMigrations[0];
     await session.transaction(async (tx) => {
-      for await (const migration of migrations) {
+      for (const migration of migrations) {
         if (!lastDbMigration || Number(lastDbMigration.created_at) < migration.folderMillis) {
           for (const stmt of migration.sql) {
             await tx.execute(sql2.raw(stmt));
           }
           await tx.execute(
-            sql2`insert into ${sql2.identifier(migrationsSchema)}.${sql2.identifier(migrationsTable)} ("hash", "created_at") values(${migration.hash}, ${migration.folderMillis})`
+            sql2`insert into ${sql2.identifier(
+              migrationsTable
+            )} (\`hash\`, \`created_at\`) values(${migration.hash}, ${migration.folderMillis})`
           );
         }
       }
     });
   }
   escapeName(name) {
-    return `"${name.replace(/"/g, '""')}"`;
+    return `\`${name.replace(/`/g, "``")}\``;
   }
-  escapeParam(num) {
-    return `$${num + 1}`;
+  escapeParam(_num) {
+    return `?`;
   }
   escapeString(str) {
     return `'${str.replace(/'/g, "''")}'`;
@@ -57418,11 +52652,20 @@ var PgDialect = class {
     withSqlChunks.push(sql2` `);
     return sql2.join(withSqlChunks);
   }
-  buildDeleteQuery({ table, where, returning, withList }) {
+  buildDeleteQuery({
+    table,
+    where,
+    returning,
+    withList,
+    limit,
+    orderBy
+  }) {
     const withSql = this.buildWithCTE(withList);
     const returningSql = returning ? sql2` returning ${this.buildSelection(returning, { isSingleTable: true })}` : void 0;
     const whereSql = where ? sql2` where ${where}` : void 0;
-    return sql2`${withSql}delete from ${table}${whereSql}${returningSql}`;
+    const orderBySql = this.buildOrderBy(orderBy);
+    const limitSql = this.buildLimit(limit);
+    return sql2`${withSql}delete from ${table}${whereSql}${orderBySql}${limitSql}${returningSql}`;
   }
   buildUpdateSet(table, set2) {
     const tableColumns = table[Table2.Symbol.Columns];
@@ -57430,30 +52673,35 @@ var PgDialect = class {
       (colName) => set2[colName] !== void 0 || tableColumns[colName]?.onUpdateFn !== void 0
     );
     const setSize = columnNames.length;
-    return sql2.join(columnNames.flatMap((colName, i) => {
-      const col = tableColumns[colName];
-      const onUpdateFnResult = col.onUpdateFn?.();
-      const value = set2[colName] ?? (is2(onUpdateFnResult, SQL2) ? onUpdateFnResult : sql2.param(onUpdateFnResult, col));
-      const res = sql2`${sql2.identifier(this.casing.getColumnCasing(col))} = ${value}`;
-      if (i < setSize - 1) {
-        return [res, sql2.raw(", ")];
-      }
-      return [res];
-    }));
+    return sql2.join(
+      columnNames.flatMap((colName, i) => {
+        const col = tableColumns[colName];
+        const onUpdateFnResult = col.onUpdateFn?.();
+        const value = set2[colName] ?? (is2(onUpdateFnResult, SQL2) ? onUpdateFnResult : sql2.param(onUpdateFnResult, col));
+        const res = sql2`${sql2.identifier(this.casing.getColumnCasing(col))} = ${value}`;
+        if (i < setSize - 1) {
+          return [res, sql2.raw(", ")];
+        }
+        return [res];
+      })
+    );
   }
-  buildUpdateQuery({ table, set: set2, where, returning, withList, from, joins }) {
+  buildUpdateQuery({
+    table,
+    set: set2,
+    where,
+    returning,
+    withList,
+    limit,
+    orderBy
+  }) {
     const withSql = this.buildWithCTE(withList);
-    const tableName = table[PgTable.Symbol.Name];
-    const tableSchema = table[PgTable.Symbol.Schema];
-    const origTableName = table[PgTable.Symbol.OriginalName];
-    const alias = tableName === origTableName ? void 0 : tableName;
-    const tableSql = sql2`${tableSchema ? sql2`${sql2.identifier(tableSchema)}.` : void 0}${sql2.identifier(origTableName)}${alias && sql2` ${sql2.identifier(alias)}`}`;
     const setSql = this.buildUpdateSet(table, set2);
-    const fromSql = from && sql2.join([sql2.raw(" from "), this.buildFromTable(from)]);
-    const joinsSql = this.buildJoins(joins);
-    const returningSql = returning ? sql2` returning ${this.buildSelection(returning, { isSingleTable: !from })}` : void 0;
+    const returningSql = returning ? sql2` returning ${this.buildSelection(returning, { isSingleTable: true })}` : void 0;
     const whereSql = where ? sql2` where ${where}` : void 0;
-    return sql2`${withSql}update ${tableSql} set ${setSql}${fromSql}${joinsSql}${whereSql}${returningSql}`;
+    const orderBySql = this.buildOrderBy(orderBy);
+    const limitSql = this.buildLimit(limit);
+    return sql2`${withSql}update ${table} set ${setSql}${whereSql}${orderBySql}${limitSql}${returningSql}`;
   }
   /**
    * Builds selection SQL with provided fields/expressions
@@ -57478,7 +52726,7 @@ var PgDialect = class {
           chunk.push(
             new SQL2(
               query.queryChunks.map((c) => {
-                if (is2(c, PgColumn2)) {
+                if (is2(c, MySqlColumn)) {
                   return sql2.identifier(this.casing.getColumnCasing(c));
                 }
                 return c;
@@ -57515,54 +52763,17 @@ var PgDialect = class {
     });
     return sql2.join(chunks);
   }
-  buildJoins(joins) {
-    if (!joins || joins.length === 0) {
-      return void 0;
-    }
-    const joinsArray = [];
-    for (const [index, joinMeta] of joins.entries()) {
-      if (index === 0) {
-        joinsArray.push(sql2` `);
-      }
-      const table = joinMeta.table;
-      const lateralSql = joinMeta.lateral ? sql2` lateral` : void 0;
-      const onSql = joinMeta.on ? sql2` on ${joinMeta.on}` : void 0;
-      if (is2(table, PgTable)) {
-        const tableName = table[PgTable.Symbol.Name];
-        const tableSchema = table[PgTable.Symbol.Schema];
-        const origTableName = table[PgTable.Symbol.OriginalName];
-        const alias = tableName === origTableName ? void 0 : joinMeta.alias;
-        joinsArray.push(
-          sql2`${sql2.raw(joinMeta.joinType)} join${lateralSql} ${tableSchema ? sql2`${sql2.identifier(tableSchema)}.` : void 0}${sql2.identifier(origTableName)}${alias && sql2` ${sql2.identifier(alias)}`}${onSql}`
-        );
-      } else if (is2(table, View2)) {
-        const viewName = table[ViewBaseConfig2].name;
-        const viewSchema = table[ViewBaseConfig2].schema;
-        const origViewName = table[ViewBaseConfig2].originalName;
-        const alias = viewName === origViewName ? void 0 : joinMeta.alias;
-        joinsArray.push(
-          sql2`${sql2.raw(joinMeta.joinType)} join${lateralSql} ${viewSchema ? sql2`${sql2.identifier(viewSchema)}.` : void 0}${sql2.identifier(origViewName)}${alias && sql2` ${sql2.identifier(alias)}`}${onSql}`
-        );
-      } else {
-        joinsArray.push(
-          sql2`${sql2.raw(joinMeta.joinType)} join${lateralSql} ${table}${onSql}`
-        );
-      }
-      if (index < joins.length - 1) {
-        joinsArray.push(sql2` `);
-      }
-    }
-    return sql2.join(joinsArray);
+  buildLimit(limit) {
+    return typeof limit === "object" || typeof limit === "number" && limit >= 0 ? sql2` limit ${limit}` : void 0;
   }
-  buildFromTable(table) {
-    if (is2(table, Table2) && table[Table2.Symbol.IsAlias]) {
-      let fullName = sql2`${sql2.identifier(table[Table2.Symbol.OriginalName])}`;
-      if (table[Table2.Symbol.Schema]) {
-        fullName = sql2`${sql2.identifier(table[Table2.Symbol.Schema])}.${fullName}`;
-      }
-      return sql2`${fullName} ${sql2.identifier(table[Table2.Symbol.Name])}`;
-    }
-    return table;
+  buildOrderBy(orderBy) {
+    return orderBy && orderBy.length > 0 ? sql2` order by ${sql2.join(orderBy, sql2`, `)}` : void 0;
+  }
+  buildIndex({
+    indexes,
+    indexFor
+  }) {
+    return indexes && indexes.length > 0 ? sql2` ${sql2.raw(indexFor)} INDEX (${sql2.raw(indexes.join(`, `))})` : void 0;
   }
   buildSelectQuery({
     withList,
@@ -57578,59 +52789,110 @@ var PgDialect = class {
     offset,
     lockingClause,
     distinct,
-    setOperators
+    setOperators,
+    useIndex,
+    forceIndex,
+    ignoreIndex
   }) {
     const fieldsList = fieldsFlat ?? orderSelectedFields(fields);
     for (const f of fieldsList) {
-      if (is2(f.field, Column2) && getTableName(f.field.table) !== (is2(table, Subquery2) ? table._.alias : is2(table, PgViewBase) ? table[ViewBaseConfig2].name : is2(table, SQL2) ? void 0 : getTableName(table)) && !((table2) => joins?.some(
+      if (is2(f.field, Column2) && getTableName(f.field.table) !== (is2(table, Subquery2) ? table._.alias : is2(table, MySqlViewBase) ? table[ViewBaseConfig2].name : is2(table, SQL2) ? void 0 : getTableName(table)) && !((table2) => joins?.some(
         ({ alias }) => alias === (table2[Table2.Symbol.IsAlias] ? getTableName(table2) : table2[Table2.Symbol.BaseName])
       ))(f.field.table)) {
         const tableName = getTableName(f.field.table);
         throw new Error(
-          `Your "${f.path.join("->")}" field references a column "${tableName}"."${f.field.name}", but the table "${tableName}" is not part of the query! Did you forget to join it?`
+          `Your "${f.path.join(
+            "->"
+          )}" field references a column "${tableName}"."${f.field.name}", but the table "${tableName}" is not part of the query! Did you forget to join it?`
         );
       }
     }
     const isSingleTable = !joins || joins.length === 0;
     const withSql = this.buildWithCTE(withList);
-    let distinctSql;
-    if (distinct) {
-      distinctSql = distinct === true ? sql2` distinct` : sql2` distinct on (${sql2.join(distinct.on, sql2`, `)})`;
-    }
+    const distinctSql = distinct ? sql2` distinct` : void 0;
     const selection = this.buildSelection(fieldsList, { isSingleTable });
-    const tableSql = this.buildFromTable(table);
-    const joinsSql = this.buildJoins(joins);
+    const tableSql = (() => {
+      if (is2(table, Table2) && table[Table2.Symbol.IsAlias]) {
+        return sql2`${sql2`${sql2.identifier(table[Table2.Symbol.Schema] ?? "")}.`.if(table[Table2.Symbol.Schema])}${sql2.identifier(
+          table[Table2.Symbol.OriginalName]
+        )} ${sql2.identifier(table[Table2.Symbol.Name])}`;
+      }
+      return table;
+    })();
+    const joinsArray = [];
+    if (joins) {
+      for (const [index, joinMeta] of joins.entries()) {
+        if (index === 0) {
+          joinsArray.push(sql2` `);
+        }
+        const table2 = joinMeta.table;
+        const lateralSql = joinMeta.lateral ? sql2` lateral` : void 0;
+        const onSql = joinMeta.on ? sql2` on ${joinMeta.on}` : void 0;
+        if (is2(table2, MySqlTable)) {
+          const tableName = table2[MySqlTable.Symbol.Name];
+          const tableSchema = table2[MySqlTable.Symbol.Schema];
+          const origTableName = table2[MySqlTable.Symbol.OriginalName];
+          const alias = tableName === origTableName ? void 0 : joinMeta.alias;
+          const useIndexSql2 = this.buildIndex({
+            indexes: joinMeta.useIndex,
+            indexFor: "USE"
+          });
+          const forceIndexSql2 = this.buildIndex({
+            indexes: joinMeta.forceIndex,
+            indexFor: "FORCE"
+          });
+          const ignoreIndexSql2 = this.buildIndex({
+            indexes: joinMeta.ignoreIndex,
+            indexFor: "IGNORE"
+          });
+          joinsArray.push(
+            sql2`${sql2.raw(joinMeta.joinType)} join${lateralSql} ${tableSchema ? sql2`${sql2.identifier(tableSchema)}.` : void 0}${sql2.identifier(origTableName)}${useIndexSql2}${forceIndexSql2}${ignoreIndexSql2}${alias && sql2` ${sql2.identifier(alias)}`}${onSql}`
+          );
+        } else if (is2(table2, View2)) {
+          const viewName = table2[ViewBaseConfig2].name;
+          const viewSchema = table2[ViewBaseConfig2].schema;
+          const origViewName = table2[ViewBaseConfig2].originalName;
+          const alias = viewName === origViewName ? void 0 : joinMeta.alias;
+          joinsArray.push(
+            sql2`${sql2.raw(joinMeta.joinType)} join${lateralSql} ${viewSchema ? sql2`${sql2.identifier(viewSchema)}.` : void 0}${sql2.identifier(origViewName)}${alias && sql2` ${sql2.identifier(alias)}`}${onSql}`
+          );
+        } else {
+          joinsArray.push(
+            sql2`${sql2.raw(joinMeta.joinType)} join${lateralSql} ${table2}${onSql}`
+          );
+        }
+        if (index < joins.length - 1) {
+          joinsArray.push(sql2` `);
+        }
+      }
+    }
+    const joinsSql = sql2.join(joinsArray);
     const whereSql = where ? sql2` where ${where}` : void 0;
     const havingSql = having ? sql2` having ${having}` : void 0;
-    let orderBySql;
-    if (orderBy && orderBy.length > 0) {
-      orderBySql = sql2` order by ${sql2.join(orderBy, sql2`, `)}`;
-    }
-    let groupBySql;
-    if (groupBy && groupBy.length > 0) {
-      groupBySql = sql2` group by ${sql2.join(groupBy, sql2`, `)}`;
-    }
-    const limitSql = typeof limit === "object" || typeof limit === "number" && limit >= 0 ? sql2` limit ${limit}` : void 0;
+    const orderBySql = this.buildOrderBy(orderBy);
+    const groupBySql = groupBy && groupBy.length > 0 ? sql2` group by ${sql2.join(groupBy, sql2`, `)}` : void 0;
+    const limitSql = this.buildLimit(limit);
     const offsetSql = offset ? sql2` offset ${offset}` : void 0;
-    const lockingClauseSql = sql2.empty();
+    const useIndexSql = this.buildIndex({ indexes: useIndex, indexFor: "USE" });
+    const forceIndexSql = this.buildIndex({
+      indexes: forceIndex,
+      indexFor: "FORCE"
+    });
+    const ignoreIndexSql = this.buildIndex({
+      indexes: ignoreIndex,
+      indexFor: "IGNORE"
+    });
+    let lockingClausesSql;
     if (lockingClause) {
-      const clauseSql = sql2` for ${sql2.raw(lockingClause.strength)}`;
-      if (lockingClause.config.of) {
-        clauseSql.append(
-          sql2` of ${sql2.join(
-            Array.isArray(lockingClause.config.of) ? lockingClause.config.of : [lockingClause.config.of],
-            sql2`, `
-          )}`
-        );
+      const { config: config2, strength } = lockingClause;
+      lockingClausesSql = sql2` for ${sql2.raw(strength)}`;
+      if (config2.noWait) {
+        lockingClausesSql.append(sql2` nowait`);
+      } else if (config2.skipLocked) {
+        lockingClausesSql.append(sql2` skip locked`);
       }
-      if (lockingClause.config.noWait) {
-        clauseSql.append(sql2` nowait`);
-      } else if (lockingClause.config.skipLocked) {
-        clauseSql.append(sql2` skip locked`);
-      }
-      lockingClauseSql.append(clauseSql);
     }
-    const finalQuery = sql2`${withSql}select${distinctSql} ${selection} from ${tableSql}${joinsSql}${whereSql}${groupBySql}${havingSql}${orderBySql}${limitSql}${offsetSql}${lockingClauseSql}`;
+    const finalQuery = sql2`${withSql}select${distinctSql} ${selection} from ${tableSql}${useIndexSql}${forceIndexSql}${ignoreIndexSql}${joinsSql}${whereSql}${groupBySql}${havingSql}${orderBySql}${limitSql}${offsetSql}${lockingClausesSql}`;
     if (setOperators.length > 0) {
       return this.buildSetOperations(finalQuery, setOperators);
     }
@@ -57658,19 +52920,23 @@ var PgDialect = class {
     let orderBySql;
     if (orderBy && orderBy.length > 0) {
       const orderByValues = [];
-      for (const singleOrderBy of orderBy) {
-        if (is2(singleOrderBy, PgColumn2)) {
-          orderByValues.push(sql2.identifier(singleOrderBy.name));
-        } else if (is2(singleOrderBy, SQL2)) {
-          for (let i = 0; i < singleOrderBy.queryChunks.length; i++) {
-            const chunk = singleOrderBy.queryChunks[i];
-            if (is2(chunk, PgColumn2)) {
-              singleOrderBy.queryChunks[i] = sql2.identifier(chunk.name);
+      for (const orderByUnit of orderBy) {
+        if (is2(orderByUnit, MySqlColumn)) {
+          orderByValues.push(
+            sql2.identifier(this.casing.getColumnCasing(orderByUnit))
+          );
+        } else if (is2(orderByUnit, SQL2)) {
+          for (let i = 0; i < orderByUnit.queryChunks.length; i++) {
+            const chunk = orderByUnit.queryChunks[i];
+            if (is2(chunk, MySqlColumn)) {
+              orderByUnit.queryChunks[i] = sql2.identifier(
+                this.casing.getColumnCasing(chunk)
+              );
             }
           }
-          orderByValues.push(sql2`${singleOrderBy}`);
+          orderByValues.push(sql2`${orderByUnit}`);
         } else {
-          orderByValues.push(sql2`${singleOrderBy}`);
+          orderByValues.push(sql2`${orderByUnit}`);
         }
       }
       orderBySql = sql2` order by ${sql2.join(orderByValues, sql2`, `)} `;
@@ -57680,13 +52946,20 @@ var PgDialect = class {
     const offsetSql = offset ? sql2` offset ${offset}` : void 0;
     return sql2`${leftChunk}${operatorChunk}${rightChunk}${orderBySql}${limitSql}${offsetSql}`;
   }
-  buildInsertQuery({ table, values: valuesOrSelect, onConflict, returning, withList, select, overridingSystemValue_ }) {
+  buildInsertQuery({
+    table,
+    values: valuesOrSelect,
+    ignore,
+    onConflict,
+    select
+  }) {
     const valuesSqlList = [];
     const columns = table[Table2.Symbol.Columns];
-    const colEntries = Object.entries(columns).filter(([_2, col]) => !col.shouldDisableInsert());
-    const insertOrder = colEntries.map(
-      ([, column]) => sql2.identifier(this.casing.getColumnCasing(column))
+    const colEntries = Object.entries(columns).filter(
+      ([_2, col]) => !col.shouldDisableInsert()
     );
+    const insertOrder = colEntries.map(([, column]) => sql2.identifier(this.casing.getColumnCasing(column)));
+    const generatedIdsResponse = [];
     if (select) {
       const select2 = valuesOrSelect;
       if (is2(select2, SQL2)) {
@@ -57698,12 +52971,14 @@ var PgDialect = class {
       const values = valuesOrSelect;
       valuesSqlList.push(sql2.raw("values "));
       for (const [valueIndex, value] of values.entries()) {
+        const generatedIds = {};
         const valueList = [];
         for (const [fieldName, col] of colEntries) {
           const colValue = value[fieldName];
           if (colValue === void 0 || is2(colValue, Param2) && colValue.value === void 0) {
             if (col.defaultFn !== void 0) {
               const defaultFnResult = col.defaultFn();
+              generatedIds[fieldName] = defaultFnResult;
               const defaultValue = is2(defaultFnResult, SQL2) ? defaultFnResult : sql2.param(defaultFnResult, col);
               valueList.push(defaultValue);
             } else if (!col.default && col.onUpdateFn !== void 0) {
@@ -57714,43 +52989,26 @@ var PgDialect = class {
               valueList.push(sql2`default`);
             }
           } else {
+            if (col.defaultFn && is2(colValue, Param2)) {
+              generatedIds[fieldName] = colValue.value;
+            }
             valueList.push(colValue);
           }
         }
+        generatedIdsResponse.push(generatedIds);
         valuesSqlList.push(valueList);
         if (valueIndex < values.length - 1) {
           valuesSqlList.push(sql2`, `);
         }
       }
     }
-    const withSql = this.buildWithCTE(withList);
     const valuesSql = sql2.join(valuesSqlList);
-    const returningSql = returning ? sql2` returning ${this.buildSelection(returning, { isSingleTable: true })}` : void 0;
-    const onConflictSql = onConflict ? sql2` on conflict ${onConflict}` : void 0;
-    const overridingSql = overridingSystemValue_ === true ? sql2`overriding system value ` : void 0;
-    return sql2`${withSql}insert into ${table} ${insertOrder} ${overridingSql}${valuesSql}${onConflictSql}${returningSql}`;
-  }
-  buildRefreshMaterializedViewQuery({ view, concurrently, withNoData }) {
-    const concurrentlySql = concurrently ? sql2` concurrently` : void 0;
-    const withNoDataSql = withNoData ? sql2` with no data` : void 0;
-    return sql2`refresh materialized view${concurrentlySql} ${view}${withNoDataSql}`;
-  }
-  prepareTyping(encoder) {
-    if (is2(encoder, PgJsonb) || is2(encoder, PgJson)) {
-      return "json";
-    } else if (is2(encoder, PgNumeric)) {
-      return "decimal";
-    } else if (is2(encoder, PgTime)) {
-      return "time";
-    } else if (is2(encoder, PgTimestamp) || is2(encoder, PgTimestampString)) {
-      return "timestamp";
-    } else if (is2(encoder, PgDate) || is2(encoder, PgDateString)) {
-      return "date";
-    } else if (is2(encoder, PgUUID)) {
-      return "uuid";
-    } else {
-      return "none";
-    }
+    const ignoreSql = ignore ? sql2` ignore` : void 0;
+    const onConflictSql = onConflict ? sql2` on duplicate key ${onConflict}` : void 0;
+    return {
+      sql: sql2`insert${ignoreSql} into ${table} ${insertOrder} ${valuesSql}${onConflictSql}`,
+      generatedIds: generatedIdsResponse
+    };
   }
   sqlToQuery(sql22, invokeSource) {
     return sql22.toQuery({
@@ -57758,492 +53016,10 @@ var PgDialect = class {
       escapeName: this.escapeName,
       escapeParam: this.escapeParam,
       escapeString: this.escapeString,
-      prepareTyping: this.prepareTyping,
       invokeSource
     });
   }
-  // buildRelationalQueryWithPK({
-  // 	fullSchema,
-  // 	schema,
-  // 	tableNamesMap,
-  // 	table,
-  // 	tableConfig,
-  // 	queryConfig: config,
-  // 	tableAlias,
-  // 	isRoot = false,
-  // 	joinOn,
-  // }: {
-  // 	fullSchema: Record<string, unknown>;
-  // 	schema: TablesRelationalConfig;
-  // 	tableNamesMap: Record<string, string>;
-  // 	table: PgTable;
-  // 	tableConfig: TableRelationalConfig;
-  // 	queryConfig: true | DBQueryConfig<'many', true>;
-  // 	tableAlias: string;
-  // 	isRoot?: boolean;
-  // 	joinOn?: SQL;
-  // }): BuildRelationalQueryResult<PgTable, PgColumn> {
-  // 	// For { "<relation>": true }, return a table with selection of all columns
-  // 	if (config === true) {
-  // 		const selectionEntries = Object.entries(tableConfig.columns);
-  // 		const selection: BuildRelationalQueryResult<PgTable, PgColumn>['selection'] = selectionEntries.map((
-  // 			[key, value],
-  // 		) => ({
-  // 			dbKey: value.name,
-  // 			tsKey: key,
-  // 			field: value as PgColumn,
-  // 			relationTableTsKey: undefined,
-  // 			isJson: false,
-  // 			selection: [],
-  // 		}));
-  // 		return {
-  // 			tableTsKey: tableConfig.tsName,
-  // 			sql: table,
-  // 			selection,
-  // 		};
-  // 	}
-  // 	// let selection: BuildRelationalQueryResult<PgTable, PgColumn>['selection'] = [];
-  // 	// let selectionForBuild = selection;
-  // 	const aliasedColumns = Object.fromEntries(
-  // 		Object.entries(tableConfig.columns).map(([key, value]) => [key, aliasedTableColumn(value, tableAlias)]),
-  // 	);
-  // 	const aliasedRelations = Object.fromEntries(
-  // 		Object.entries(tableConfig.relations).map(([key, value]) => [key, aliasedRelation(value, tableAlias)]),
-  // 	);
-  // 	const aliasedFields = Object.assign({}, aliasedColumns, aliasedRelations);
-  // 	let where, hasUserDefinedWhere;
-  // 	if (config.where) {
-  // 		const whereSql = typeof config.where === 'function' ? config.where(aliasedFields, operators) : config.where;
-  // 		where = whereSql && mapColumnsInSQLToAlias(whereSql, tableAlias);
-  // 		hasUserDefinedWhere = !!where;
-  // 	}
-  // 	where = and(joinOn, where);
-  // 	// const fieldsSelection: { tsKey: string; value: PgColumn | SQL.Aliased; isExtra?: boolean }[] = [];
-  // 	let joins: Join[] = [];
-  // 	let selectedColumns: string[] = [];
-  // 	// Figure out which columns to select
-  // 	if (config.columns) {
-  // 		let isIncludeMode = false;
-  // 		for (const [field, value] of Object.entries(config.columns)) {
-  // 			if (value === undefined) {
-  // 				continue;
-  // 			}
-  // 			if (field in tableConfig.columns) {
-  // 				if (!isIncludeMode && value === true) {
-  // 					isIncludeMode = true;
-  // 				}
-  // 				selectedColumns.push(field);
-  // 			}
-  // 		}
-  // 		if (selectedColumns.length > 0) {
-  // 			selectedColumns = isIncludeMode
-  // 				? selectedColumns.filter((c) => config.columns?.[c] === true)
-  // 				: Object.keys(tableConfig.columns).filter((key) => !selectedColumns.includes(key));
-  // 		}
-  // 	} else {
-  // 		// Select all columns if selection is not specified
-  // 		selectedColumns = Object.keys(tableConfig.columns);
-  // 	}
-  // 	// for (const field of selectedColumns) {
-  // 	// 	const column = tableConfig.columns[field]! as PgColumn;
-  // 	// 	fieldsSelection.push({ tsKey: field, value: column });
-  // 	// }
-  // 	let initiallySelectedRelations: {
-  // 		tsKey: string;
-  // 		queryConfig: true | DBQueryConfig<'many', false>;
-  // 		relation: Relation;
-  // 	}[] = [];
-  // 	// let selectedRelations: BuildRelationalQueryResult<PgTable, PgColumn>['selection'] = [];
-  // 	// Figure out which relations to select
-  // 	if (config.with) {
-  // 		initiallySelectedRelations = Object.entries(config.with)
-  // 			.filter((entry): entry is [typeof entry[0], NonNullable<typeof entry[1]>] => !!entry[1])
-  // 			.map(([tsKey, queryConfig]) => ({ tsKey, queryConfig, relation: tableConfig.relations[tsKey]! }));
-  // 	}
-  // 	const manyRelations = initiallySelectedRelations.filter((r) =>
-  // 		is(r.relation, Many)
-  // 		&& (schema[tableNamesMap[r.relation.referencedTable[Table.Symbol.Name]]!]?.primaryKey.length ?? 0) > 0
-  // 	);
-  // 	// If this is the last Many relation (or there are no Many relations), we are on the innermost subquery level
-  // 	const isInnermostQuery = manyRelations.length < 2;
-  // 	const selectedExtras: {
-  // 		tsKey: string;
-  // 		value: SQL.Aliased;
-  // 	}[] = [];
-  // 	// Figure out which extras to select
-  // 	if (isInnermostQuery && config.extras) {
-  // 		const extras = typeof config.extras === 'function'
-  // 			? config.extras(aliasedFields, { sql })
-  // 			: config.extras;
-  // 		for (const [tsKey, value] of Object.entries(extras)) {
-  // 			selectedExtras.push({
-  // 				tsKey,
-  // 				value: mapColumnsInAliasedSQLToAlias(value, tableAlias),
-  // 			});
-  // 		}
-  // 	}
-  // 	// Transform `fieldsSelection` into `selection`
-  // 	// `fieldsSelection` shouldn't be used after this point
-  // 	// for (const { tsKey, value, isExtra } of fieldsSelection) {
-  // 	// 	selection.push({
-  // 	// 		dbKey: is(value, SQL.Aliased) ? value.fieldAlias : tableConfig.columns[tsKey]!.name,
-  // 	// 		tsKey,
-  // 	// 		field: is(value, Column) ? aliasedTableColumn(value, tableAlias) : value,
-  // 	// 		relationTableTsKey: undefined,
-  // 	// 		isJson: false,
-  // 	// 		isExtra,
-  // 	// 		selection: [],
-  // 	// 	});
-  // 	// }
-  // 	let orderByOrig = typeof config.orderBy === 'function'
-  // 		? config.orderBy(aliasedFields, orderByOperators)
-  // 		: config.orderBy ?? [];
-  // 	if (!Array.isArray(orderByOrig)) {
-  // 		orderByOrig = [orderByOrig];
-  // 	}
-  // 	const orderBy = orderByOrig.map((orderByValue) => {
-  // 		if (is(orderByValue, Column)) {
-  // 			return aliasedTableColumn(orderByValue, tableAlias) as PgColumn;
-  // 		}
-  // 		return mapColumnsInSQLToAlias(orderByValue, tableAlias);
-  // 	});
-  // 	const limit = isInnermostQuery ? config.limit : undefined;
-  // 	const offset = isInnermostQuery ? config.offset : undefined;
-  // 	// For non-root queries without additional config except columns, return a table with selection
-  // 	if (
-  // 		!isRoot
-  // 		&& initiallySelectedRelations.length === 0
-  // 		&& selectedExtras.length === 0
-  // 		&& !where
-  // 		&& orderBy.length === 0
-  // 		&& limit === undefined
-  // 		&& offset === undefined
-  // 	) {
-  // 		return {
-  // 			tableTsKey: tableConfig.tsName,
-  // 			sql: table,
-  // 			selection: selectedColumns.map((key) => ({
-  // 				dbKey: tableConfig.columns[key]!.name,
-  // 				tsKey: key,
-  // 				field: tableConfig.columns[key] as PgColumn,
-  // 				relationTableTsKey: undefined,
-  // 				isJson: false,
-  // 				selection: [],
-  // 			})),
-  // 		};
-  // 	}
-  // 	const selectedRelationsWithoutPK:
-  // 	// Process all relations without primary keys, because they need to be joined differently and will all be on the same query level
-  // 	for (
-  // 		const {
-  // 			tsKey: selectedRelationTsKey,
-  // 			queryConfig: selectedRelationConfigValue,
-  // 			relation,
-  // 		} of initiallySelectedRelations
-  // 	) {
-  // 		const normalizedRelation = normalizeRelation(schema, tableNamesMap, relation);
-  // 		const relationTableName = relation.referencedTable[Table.Symbol.Name];
-  // 		const relationTableTsName = tableNamesMap[relationTableName]!;
-  // 		const relationTable = schema[relationTableTsName]!;
-  // 		if (relationTable.primaryKey.length > 0) {
-  // 			continue;
-  // 		}
-  // 		const relationTableAlias = `${tableAlias}_${selectedRelationTsKey}`;
-  // 		const joinOn = and(
-  // 			...normalizedRelation.fields.map((field, i) =>
-  // 				eq(
-  // 					aliasedTableColumn(normalizedRelation.references[i]!, relationTableAlias),
-  // 					aliasedTableColumn(field, tableAlias),
-  // 				)
-  // 			),
-  // 		);
-  // 		const builtRelation = this.buildRelationalQueryWithoutPK({
-  // 			fullSchema,
-  // 			schema,
-  // 			tableNamesMap,
-  // 			table: fullSchema[relationTableTsName] as PgTable,
-  // 			tableConfig: schema[relationTableTsName]!,
-  // 			queryConfig: selectedRelationConfigValue,
-  // 			tableAlias: relationTableAlias,
-  // 			joinOn,
-  // 			nestedQueryRelation: relation,
-  // 		});
-  // 		const field = sql`${sql.identifier(relationTableAlias)}.${sql.identifier('data')}`.as(selectedRelationTsKey);
-  // 		joins.push({
-  // 			on: sql`true`,
-  // 			table: new Subquery(builtRelation.sql as SQL, {}, relationTableAlias),
-  // 			alias: relationTableAlias,
-  // 			joinType: 'left',
-  // 			lateral: true,
-  // 		});
-  // 		selectedRelations.push({
-  // 			dbKey: selectedRelationTsKey,
-  // 			tsKey: selectedRelationTsKey,
-  // 			field,
-  // 			relationTableTsKey: relationTableTsName,
-  // 			isJson: true,
-  // 			selection: builtRelation.selection,
-  // 		});
-  // 	}
-  // 	const oneRelations = initiallySelectedRelations.filter((r): r is typeof r & { relation: One } =>
-  // 		is(r.relation, One)
-  // 	);
-  // 	// Process all One relations with PKs, because they can all be joined on the same level
-  // 	for (
-  // 		const {
-  // 			tsKey: selectedRelationTsKey,
-  // 			queryConfig: selectedRelationConfigValue,
-  // 			relation,
-  // 		} of oneRelations
-  // 	) {
-  // 		const normalizedRelation = normalizeRelation(schema, tableNamesMap, relation);
-  // 		const relationTableName = relation.referencedTable[Table.Symbol.Name];
-  // 		const relationTableTsName = tableNamesMap[relationTableName]!;
-  // 		const relationTableAlias = `${tableAlias}_${selectedRelationTsKey}`;
-  // 		const relationTable = schema[relationTableTsName]!;
-  // 		if (relationTable.primaryKey.length === 0) {
-  // 			continue;
-  // 		}
-  // 		const joinOn = and(
-  // 			...normalizedRelation.fields.map((field, i) =>
-  // 				eq(
-  // 					aliasedTableColumn(normalizedRelation.references[i]!, relationTableAlias),
-  // 					aliasedTableColumn(field, tableAlias),
-  // 				)
-  // 			),
-  // 		);
-  // 		const builtRelation = this.buildRelationalQueryWithPK({
-  // 			fullSchema,
-  // 			schema,
-  // 			tableNamesMap,
-  // 			table: fullSchema[relationTableTsName] as PgTable,
-  // 			tableConfig: schema[relationTableTsName]!,
-  // 			queryConfig: selectedRelationConfigValue,
-  // 			tableAlias: relationTableAlias,
-  // 			joinOn,
-  // 		});
-  // 		const field = sql`case when ${sql.identifier(relationTableAlias)} is null then null else json_build_array(${
-  // 			sql.join(
-  // 				builtRelation.selection.map(({ field }) =>
-  // 					is(field, SQL.Aliased)
-  // 						? sql`${sql.identifier(relationTableAlias)}.${sql.identifier(field.fieldAlias)}`
-  // 						: is(field, Column)
-  // 						? aliasedTableColumn(field, relationTableAlias)
-  // 						: field
-  // 				),
-  // 				sql`, `,
-  // 			)
-  // 		}) end`.as(selectedRelationTsKey);
-  // 		const isLateralJoin = is(builtRelation.sql, SQL);
-  // 		joins.push({
-  // 			on: isLateralJoin ? sql`true` : joinOn,
-  // 			table: is(builtRelation.sql, SQL)
-  // 				? new Subquery(builtRelation.sql, {}, relationTableAlias)
-  // 				: aliasedTable(builtRelation.sql, relationTableAlias),
-  // 			alias: relationTableAlias,
-  // 			joinType: 'left',
-  // 			lateral: is(builtRelation.sql, SQL),
-  // 		});
-  // 		selectedRelations.push({
-  // 			dbKey: selectedRelationTsKey,
-  // 			tsKey: selectedRelationTsKey,
-  // 			field,
-  // 			relationTableTsKey: relationTableTsName,
-  // 			isJson: true,
-  // 			selection: builtRelation.selection,
-  // 		});
-  // 	}
-  // 	let distinct: PgSelectConfig['distinct'];
-  // 	let tableFrom: PgTable | Subquery = table;
-  // 	// Process first Many relation - each one requires a nested subquery
-  // 	const manyRelation = manyRelations[0];
-  // 	if (manyRelation) {
-  // 		const {
-  // 			tsKey: selectedRelationTsKey,
-  // 			queryConfig: selectedRelationQueryConfig,
-  // 			relation,
-  // 		} = manyRelation;
-  // 		distinct = {
-  // 			on: tableConfig.primaryKey.map((c) => aliasedTableColumn(c as PgColumn, tableAlias)),
-  // 		};
-  // 		const normalizedRelation = normalizeRelation(schema, tableNamesMap, relation);
-  // 		const relationTableName = relation.referencedTable[Table.Symbol.Name];
-  // 		const relationTableTsName = tableNamesMap[relationTableName]!;
-  // 		const relationTableAlias = `${tableAlias}_${selectedRelationTsKey}`;
-  // 		const joinOn = and(
-  // 			...normalizedRelation.fields.map((field, i) =>
-  // 				eq(
-  // 					aliasedTableColumn(normalizedRelation.references[i]!, relationTableAlias),
-  // 					aliasedTableColumn(field, tableAlias),
-  // 				)
-  // 			),
-  // 		);
-  // 		const builtRelationJoin = this.buildRelationalQueryWithPK({
-  // 			fullSchema,
-  // 			schema,
-  // 			tableNamesMap,
-  // 			table: fullSchema[relationTableTsName] as PgTable,
-  // 			tableConfig: schema[relationTableTsName]!,
-  // 			queryConfig: selectedRelationQueryConfig,
-  // 			tableAlias: relationTableAlias,
-  // 			joinOn,
-  // 		});
-  // 		const builtRelationSelectionField = sql`case when ${
-  // 			sql.identifier(relationTableAlias)
-  // 		} is null then '[]' else json_agg(json_build_array(${
-  // 			sql.join(
-  // 				builtRelationJoin.selection.map(({ field }) =>
-  // 					is(field, SQL.Aliased)
-  // 						? sql`${sql.identifier(relationTableAlias)}.${sql.identifier(field.fieldAlias)}`
-  // 						: is(field, Column)
-  // 						? aliasedTableColumn(field, relationTableAlias)
-  // 						: field
-  // 				),
-  // 				sql`, `,
-  // 			)
-  // 		})) over (partition by ${sql.join(distinct.on, sql`, `)}) end`.as(selectedRelationTsKey);
-  // 		const isLateralJoin = is(builtRelationJoin.sql, SQL);
-  // 		joins.push({
-  // 			on: isLateralJoin ? sql`true` : joinOn,
-  // 			table: isLateralJoin
-  // 				? new Subquery(builtRelationJoin.sql as SQL, {}, relationTableAlias)
-  // 				: aliasedTable(builtRelationJoin.sql as PgTable, relationTableAlias),
-  // 			alias: relationTableAlias,
-  // 			joinType: 'left',
-  // 			lateral: isLateralJoin,
-  // 		});
-  // 		// Build the "from" subquery with the remaining Many relations
-  // 		const builtTableFrom = this.buildRelationalQueryWithPK({
-  // 			fullSchema,
-  // 			schema,
-  // 			tableNamesMap,
-  // 			table,
-  // 			tableConfig,
-  // 			queryConfig: {
-  // 				...config,
-  // 				where: undefined,
-  // 				orderBy: undefined,
-  // 				limit: undefined,
-  // 				offset: undefined,
-  // 				with: manyRelations.slice(1).reduce<NonNullable<typeof config['with']>>(
-  // 					(result, { tsKey, queryConfig: configValue }) => {
-  // 						result[tsKey] = configValue;
-  // 						return result;
-  // 					},
-  // 					{},
-  // 				),
-  // 			},
-  // 			tableAlias,
-  // 		});
-  // 		selectedRelations.push({
-  // 			dbKey: selectedRelationTsKey,
-  // 			tsKey: selectedRelationTsKey,
-  // 			field: builtRelationSelectionField,
-  // 			relationTableTsKey: relationTableTsName,
-  // 			isJson: true,
-  // 			selection: builtRelationJoin.selection,
-  // 		});
-  // 		// selection = builtTableFrom.selection.map((item) =>
-  // 		// 	is(item.field, SQL.Aliased)
-  // 		// 		? { ...item, field: sql`${sql.identifier(tableAlias)}.${sql.identifier(item.field.fieldAlias)}` }
-  // 		// 		: item
-  // 		// );
-  // 		// selectionForBuild = [{
-  // 		// 	dbKey: '*',
-  // 		// 	tsKey: '*',
-  // 		// 	field: sql`${sql.identifier(tableAlias)}.*`,
-  // 		// 	selection: [],
-  // 		// 	isJson: false,
-  // 		// 	relationTableTsKey: undefined,
-  // 		// }];
-  // 		// const newSelectionItem: (typeof selection)[number] = {
-  // 		// 	dbKey: selectedRelationTsKey,
-  // 		// 	tsKey: selectedRelationTsKey,
-  // 		// 	field,
-  // 		// 	relationTableTsKey: relationTableTsName,
-  // 		// 	isJson: true,
-  // 		// 	selection: builtRelationJoin.selection,
-  // 		// };
-  // 		// selection.push(newSelectionItem);
-  // 		// selectionForBuild.push(newSelectionItem);
-  // 		tableFrom = is(builtTableFrom.sql, PgTable)
-  // 			? builtTableFrom.sql
-  // 			: new Subquery(builtTableFrom.sql, {}, tableAlias);
-  // 	}
-  // 	if (selectedColumns.length === 0 && selectedRelations.length === 0 && selectedExtras.length === 0) {
-  // 		throw new DrizzleError(`No fields selected for table "${tableConfig.tsName}" ("${tableAlias}")`);
-  // 	}
-  // 	let selection: BuildRelationalQueryResult<PgTable, PgColumn>['selection'];
-  // 	function prepareSelectedColumns() {
-  // 		return selectedColumns.map((key) => ({
-  // 			dbKey: tableConfig.columns[key]!.name,
-  // 			tsKey: key,
-  // 			field: tableConfig.columns[key] as PgColumn,
-  // 			relationTableTsKey: undefined,
-  // 			isJson: false,
-  // 			selection: [],
-  // 		}));
-  // 	}
-  // 	function prepareSelectedExtras() {
-  // 		return selectedExtras.map((item) => ({
-  // 			dbKey: item.value.fieldAlias,
-  // 			tsKey: item.tsKey,
-  // 			field: item.value,
-  // 			relationTableTsKey: undefined,
-  // 			isJson: false,
-  // 			selection: [],
-  // 		}));
-  // 	}
-  // 	if (isRoot) {
-  // 		selection = [
-  // 			...prepareSelectedColumns(),
-  // 			...prepareSelectedExtras(),
-  // 		];
-  // 	}
-  // 	if (hasUserDefinedWhere || orderBy.length > 0) {
-  // 		tableFrom = new Subquery(
-  // 			this.buildSelectQuery({
-  // 				table: is(tableFrom, PgTable) ? aliasedTable(tableFrom, tableAlias) : tableFrom,
-  // 				fields: {},
-  // 				fieldsFlat: selectionForBuild.map(({ field }) => ({
-  // 					path: [],
-  // 					field: is(field, Column) ? aliasedTableColumn(field, tableAlias) : field,
-  // 				})),
-  // 				joins,
-  // 				distinct,
-  // 			}),
-  // 			{},
-  // 			tableAlias,
-  // 		);
-  // 		selectionForBuild = selection.map((item) =>
-  // 			is(item.field, SQL.Aliased)
-  // 				? { ...item, field: sql`${sql.identifier(tableAlias)}.${sql.identifier(item.field.fieldAlias)}` }
-  // 				: item
-  // 		);
-  // 		joins = [];
-  // 		distinct = undefined;
-  // 	}
-  // 	const result = this.buildSelectQuery({
-  // 		table: is(tableFrom, PgTable) ? aliasedTable(tableFrom, tableAlias) : tableFrom,
-  // 		fields: {},
-  // 		fieldsFlat: selectionForBuild.map(({ field }) => ({
-  // 			path: [],
-  // 			field: is(field, Column) ? aliasedTableColumn(field, tableAlias) : field,
-  // 		})),
-  // 		where,
-  // 		limit,
-  // 		offset,
-  // 		joins,
-  // 		orderBy,
-  // 		distinct,
-  // 	});
-  // 	return {
-  // 		tableTsKey: tableConfig.tsName,
-  // 		sql: result,
-  // 		selection,
-  // 	};
-  // }
-  buildRelationalQueryWithoutPK({
+  buildRelationalQuery({
     fullSchema,
     schema,
     tableNamesMap,
@@ -58255,7 +53031,7 @@ var PgDialect = class {
     joinOn
   }) {
     let selection = [];
-    let limit, offset, orderBy = [], where;
+    let limit, offset, orderBy, where;
     const joins = [];
     if (config2 === true) {
       const selectionEntries = Object.entries(tableConfig.columns);
@@ -58269,7 +53045,10 @@ var PgDialect = class {
       }));
     } else {
       const aliasedColumns = Object.fromEntries(
-        Object.entries(tableConfig.columns).map(([key, value]) => [key, aliasedTableColumn(value, tableAlias)])
+        Object.entries(tableConfig.columns).map(([key, value]) => [
+          key,
+          aliasedTableColumn(value, tableAlias)
+        ])
       );
       if (config2.where) {
         const whereSql = typeof config2.where === "function" ? config2.where(aliasedColumns, getOperators()) : config2.where;
@@ -58291,7 +53070,9 @@ var PgDialect = class {
           }
         }
         if (selectedColumns.length > 0) {
-          selectedColumns = isIncludeMode ? selectedColumns.filter((c) => config2.columns?.[c] === true) : Object.keys(tableConfig.columns).filter((key) => !selectedColumns.includes(key));
+          selectedColumns = isIncludeMode ? selectedColumns.filter((c) => config2.columns?.[c] === true) : Object.keys(tableConfig.columns).filter(
+            (key) => !selectedColumns.includes(key)
+          );
         }
       } else {
         selectedColumns = Object.keys(tableConfig.columns);
@@ -58302,7 +53083,13 @@ var PgDialect = class {
       }
       let selectedRelations = [];
       if (config2.with) {
-        selectedRelations = Object.entries(config2.with).filter((entry) => !!entry[1]).map(([tsKey, queryConfig]) => ({ tsKey, queryConfig, relation: tableConfig.relations[tsKey] }));
+        selectedRelations = Object.entries(config2.with).filter(
+          (entry) => !!entry[1]
+        ).map(([tsKey, queryConfig]) => ({
+          tsKey,
+          queryConfig,
+          relation: tableConfig.relations[tsKey]
+        }));
       }
       let extras;
       if (config2.extras) {
@@ -58341,19 +53128,26 @@ var PgDialect = class {
         queryConfig: selectedRelationConfigValue,
         relation
       } of selectedRelations) {
-        const normalizedRelation = normalizeRelation(schema, tableNamesMap, relation);
+        const normalizedRelation = normalizeRelation(
+          schema,
+          tableNamesMap,
+          relation
+        );
         const relationTableName = getTableUniqueName(relation.referencedTable);
         const relationTableTsName = tableNamesMap[relationTableName];
         const relationTableAlias = `${tableAlias}_${selectedRelationTsKey}`;
         const joinOn2 = and2(
           ...normalizedRelation.fields.map(
             (field2, i) => eq2(
-              aliasedTableColumn(normalizedRelation.references[i], relationTableAlias),
+              aliasedTableColumn(
+                normalizedRelation.references[i],
+                relationTableAlias
+              ),
               aliasedTableColumn(field2, tableAlias)
             )
           )
         );
-        const builtRelation = this.buildRelationalQueryWithoutPK({
+        const builtRelation = this.buildRelationalQuery({
           fullSchema,
           schema,
           tableNamesMap,
@@ -58364,7 +53158,9 @@ var PgDialect = class {
           joinOn: joinOn2,
           nestedQueryRelation: relation
         });
-        const field = sql2`${sql2.identifier(relationTableAlias)}.${sql2.identifier("data")}`.as(selectedRelationTsKey);
+        const field = sql2`${sql2.identifier(relationTableAlias)}.${sql2.identifier("data")}`.as(
+          selectedRelationTsKey
+        );
         joins.push({
           on: sql2`true`,
           table: new Subquery2(builtRelation.sql, {}, relationTableAlias),
@@ -58383,52 +53179,63 @@ var PgDialect = class {
       }
     }
     if (selection.length === 0) {
-      throw new DrizzleError({ message: `No fields selected for table "${tableConfig.tsName}" ("${tableAlias}")` });
+      throw new DrizzleError({
+        message: `No fields selected for table "${tableConfig.tsName}" ("${tableAlias}")`
+      });
     }
     let result;
     where = and2(joinOn, where);
     if (nestedQueryRelation) {
-      let field = sql2`json_build_array(${sql2.join(
+      let field = sql2`json_array(${sql2.join(
         selection.map(
           ({ field: field2, tsKey, isJson }) => isJson ? sql2`${sql2.identifier(`${tableAlias}_${tsKey}`)}.${sql2.identifier("data")}` : is2(field2, SQL2.Aliased) ? field2.sql : field2
         ),
         sql2`, `
       )})`;
       if (is2(nestedQueryRelation, Many)) {
-        field = sql2`coalesce(json_agg(${field}${orderBy.length > 0 ? sql2` order by ${sql2.join(orderBy, sql2`, `)}` : void 0}), '[]'::json)`;
+        field = sql2`coalesce(json_arrayagg(${field}), json_array())`;
       }
-      const nestedSelection = [{
-        dbKey: "data",
-        tsKey: "data",
-        field: field.as("data"),
-        isJson: true,
-        relationTableTsKey: tableConfig.tsName,
-        selection
-      }];
-      const needsSubquery = limit !== void 0 || offset !== void 0 || orderBy.length > 0;
+      const nestedSelection = [
+        {
+          dbKey: "data",
+          tsKey: "data",
+          field: field.as("data"),
+          isJson: true,
+          relationTableTsKey: tableConfig.tsName,
+          selection
+        }
+      ];
+      const needsSubquery = limit !== void 0 || offset !== void 0 || (orderBy?.length ?? 0) > 0;
       if (needsSubquery) {
         result = this.buildSelectQuery({
           table: aliasedTable(table, tableAlias),
           fields: {},
-          fieldsFlat: [{
-            path: [],
-            field: sql2.raw("*")
-          }],
+          fieldsFlat: [
+            {
+              path: [],
+              field: sql2.raw("*")
+            },
+            ...(orderBy?.length ?? 0) > 0 ? [
+              {
+                path: [],
+                field: sql2`row_number() over (order by ${sql2.join(orderBy, sql2`, `)})`
+              }
+            ] : []
+          ],
           where,
           limit,
           offset,
-          orderBy,
           setOperators: []
         });
         where = void 0;
         limit = void 0;
         offset = void 0;
-        orderBy = [];
+        orderBy = void 0;
       } else {
         result = aliasedTable(table, tableAlias);
       }
       result = this.buildSelectQuery({
-        table: is2(result, PgTable) ? result : new Subquery2(result, {}, tableAlias),
+        table: is2(result, MySqlTable) ? result : new Subquery2(result, {}, tableAlias),
         fields: {},
         fieldsFlat: nestedSelection.map(({ field: field2 }) => ({
           path: [],
@@ -58463,9 +53270,254 @@ var PgDialect = class {
       selection
     };
   }
+  buildRelationalQueryWithoutLateralSubqueries({
+    fullSchema,
+    schema,
+    tableNamesMap,
+    table,
+    tableConfig,
+    queryConfig: config2,
+    tableAlias,
+    nestedQueryRelation,
+    joinOn
+  }) {
+    let selection = [];
+    let limit, offset, orderBy = [], where;
+    if (config2 === true) {
+      const selectionEntries = Object.entries(tableConfig.columns);
+      selection = selectionEntries.map(([key, value]) => ({
+        dbKey: value.name,
+        tsKey: key,
+        field: aliasedTableColumn(value, tableAlias),
+        relationTableTsKey: void 0,
+        isJson: false,
+        selection: []
+      }));
+    } else {
+      const aliasedColumns = Object.fromEntries(
+        Object.entries(tableConfig.columns).map(([key, value]) => [
+          key,
+          aliasedTableColumn(value, tableAlias)
+        ])
+      );
+      if (config2.where) {
+        const whereSql = typeof config2.where === "function" ? config2.where(aliasedColumns, getOperators()) : config2.where;
+        where = whereSql && mapColumnsInSQLToAlias(whereSql, tableAlias);
+      }
+      const fieldsSelection = [];
+      let selectedColumns = [];
+      if (config2.columns) {
+        let isIncludeMode = false;
+        for (const [field, value] of Object.entries(config2.columns)) {
+          if (value === void 0) {
+            continue;
+          }
+          if (field in tableConfig.columns) {
+            if (!isIncludeMode && value === true) {
+              isIncludeMode = true;
+            }
+            selectedColumns.push(field);
+          }
+        }
+        if (selectedColumns.length > 0) {
+          selectedColumns = isIncludeMode ? selectedColumns.filter((c) => config2.columns?.[c] === true) : Object.keys(tableConfig.columns).filter(
+            (key) => !selectedColumns.includes(key)
+          );
+        }
+      } else {
+        selectedColumns = Object.keys(tableConfig.columns);
+      }
+      for (const field of selectedColumns) {
+        const column = tableConfig.columns[field];
+        fieldsSelection.push({ tsKey: field, value: column });
+      }
+      let selectedRelations = [];
+      if (config2.with) {
+        selectedRelations = Object.entries(config2.with).filter(
+          (entry) => !!entry[1]
+        ).map(([tsKey, queryConfig]) => ({
+          tsKey,
+          queryConfig,
+          relation: tableConfig.relations[tsKey]
+        }));
+      }
+      let extras;
+      if (config2.extras) {
+        extras = typeof config2.extras === "function" ? config2.extras(aliasedColumns, { sql: sql2 }) : config2.extras;
+        for (const [tsKey, value] of Object.entries(extras)) {
+          fieldsSelection.push({
+            tsKey,
+            value: mapColumnsInAliasedSQLToAlias(value, tableAlias)
+          });
+        }
+      }
+      for (const { tsKey, value } of fieldsSelection) {
+        selection.push({
+          dbKey: is2(value, SQL2.Aliased) ? value.fieldAlias : tableConfig.columns[tsKey].name,
+          tsKey,
+          field: is2(value, Column2) ? aliasedTableColumn(value, tableAlias) : value,
+          relationTableTsKey: void 0,
+          isJson: false,
+          selection: []
+        });
+      }
+      let orderByOrig = typeof config2.orderBy === "function" ? config2.orderBy(aliasedColumns, getOrderByOperators()) : config2.orderBy ?? [];
+      if (!Array.isArray(orderByOrig)) {
+        orderByOrig = [orderByOrig];
+      }
+      orderBy = orderByOrig.map((orderByValue) => {
+        if (is2(orderByValue, Column2)) {
+          return aliasedTableColumn(orderByValue, tableAlias);
+        }
+        return mapColumnsInSQLToAlias(orderByValue, tableAlias);
+      });
+      limit = config2.limit;
+      offset = config2.offset;
+      for (const {
+        tsKey: selectedRelationTsKey,
+        queryConfig: selectedRelationConfigValue,
+        relation
+      } of selectedRelations) {
+        const normalizedRelation = normalizeRelation(
+          schema,
+          tableNamesMap,
+          relation
+        );
+        const relationTableName = getTableUniqueName(relation.referencedTable);
+        const relationTableTsName = tableNamesMap[relationTableName];
+        const relationTableAlias = `${tableAlias}_${selectedRelationTsKey}`;
+        const joinOn2 = and2(
+          ...normalizedRelation.fields.map(
+            (field2, i) => eq2(
+              aliasedTableColumn(
+                normalizedRelation.references[i],
+                relationTableAlias
+              ),
+              aliasedTableColumn(field2, tableAlias)
+            )
+          )
+        );
+        const builtRelation = this.buildRelationalQueryWithoutLateralSubqueries(
+          {
+            fullSchema,
+            schema,
+            tableNamesMap,
+            table: fullSchema[relationTableTsName],
+            tableConfig: schema[relationTableTsName],
+            queryConfig: is2(relation, One) ? selectedRelationConfigValue === true ? { limit: 1 } : { ...selectedRelationConfigValue, limit: 1 } : selectedRelationConfigValue,
+            tableAlias: relationTableAlias,
+            joinOn: joinOn2,
+            nestedQueryRelation: relation
+          }
+        );
+        let fieldSql = sql2`(${builtRelation.sql})`;
+        if (is2(relation, Many)) {
+          fieldSql = sql2`coalesce(${fieldSql}, json_array())`;
+        }
+        const field = fieldSql.as(selectedRelationTsKey);
+        selection.push({
+          dbKey: selectedRelationTsKey,
+          tsKey: selectedRelationTsKey,
+          field,
+          relationTableTsKey: relationTableTsName,
+          isJson: true,
+          selection: builtRelation.selection
+        });
+      }
+    }
+    if (selection.length === 0) {
+      throw new DrizzleError({
+        message: `No fields selected for table "${tableConfig.tsName}" ("${tableAlias}"). You need to have at least one item in "columns", "with" or "extras". If you need to select all columns, omit the "columns" key or set it to undefined.`
+      });
+    }
+    let result;
+    where = and2(joinOn, where);
+    if (nestedQueryRelation) {
+      let field = sql2`json_array(${sql2.join(
+        selection.map(
+          ({ field: field2 }) => is2(field2, MySqlColumn) ? sql2.identifier(this.casing.getColumnCasing(field2)) : is2(field2, SQL2.Aliased) ? field2.sql : field2
+        ),
+        sql2`, `
+      )})`;
+      if (is2(nestedQueryRelation, Many)) {
+        field = sql2`json_arrayagg(${field})`;
+      }
+      const nestedSelection = [
+        {
+          dbKey: "data",
+          tsKey: "data",
+          field,
+          isJson: true,
+          relationTableTsKey: tableConfig.tsName,
+          selection
+        }
+      ];
+      const needsSubquery = limit !== void 0 || offset !== void 0 || orderBy.length > 0;
+      if (needsSubquery) {
+        result = this.buildSelectQuery({
+          table: aliasedTable(table, tableAlias),
+          fields: {},
+          fieldsFlat: [
+            {
+              path: [],
+              field: sql2.raw("*")
+            },
+            ...orderBy.length > 0 ? [
+              {
+                path: [],
+                field: sql2`row_number() over (order by ${sql2.join(orderBy, sql2`, `)})`
+              }
+            ] : []
+          ],
+          where,
+          limit,
+          offset,
+          setOperators: []
+        });
+        where = void 0;
+        limit = void 0;
+        offset = void 0;
+        orderBy = void 0;
+      } else {
+        result = aliasedTable(table, tableAlias);
+      }
+      result = this.buildSelectQuery({
+        table: is2(result, MySqlTable) ? result : new Subquery2(result, {}, tableAlias),
+        fields: {},
+        fieldsFlat: nestedSelection.map(({ field: field2 }) => ({
+          path: [],
+          field: is2(field2, Column2) ? aliasedTableColumn(field2, tableAlias) : field2
+        })),
+        where,
+        limit,
+        offset,
+        orderBy,
+        setOperators: []
+      });
+    } else {
+      result = this.buildSelectQuery({
+        table: aliasedTable(table, tableAlias),
+        fields: {},
+        fieldsFlat: selection.map(({ field }) => ({
+          path: [],
+          field: is2(field, Column2) ? aliasedTableColumn(field, tableAlias) : field
+        })),
+        where,
+        limit,
+        offset,
+        orderBy,
+        setOperators: []
+      });
+    }
+    return {
+      tableTsKey: tableConfig.tsName,
+      sql: result,
+      selection
+    };
+  }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/query-builders/query-builder.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/query-builders/query-builder.js
 var TypedQueryBuilder = class {
   static [entityKind2] = "TypedQueryBuilder";
   /** @internal */
@@ -58474,9 +53526,9 @@ var TypedQueryBuilder = class {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/select.js
-var PgSelectBuilder = class {
-  static [entityKind2] = "PgSelectBuilder";
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/query-builders/select.js
+var MySqlSelectBuilder = class {
+  static [entityKind2] = "MySqlSelectBuilder";
   fields;
   session;
   dialect;
@@ -58491,65 +53543,75 @@ var PgSelectBuilder = class {
     }
     this.distinct = config2.distinct;
   }
-  authToken;
-  /** @internal */
-  setToken(token) {
-    this.authToken = token;
-    return this;
-  }
-  /**
-   * Specify the table, subquery, or other target that you're
-   * building a select query against.
-   *
-   * {@link https://www.postgresql.org/docs/current/sql-select.html#SQL-FROM | Postgres from documentation}
-   */
-  from(source) {
+  from(source, onIndex) {
     const isPartialSelect = !!this.fields;
-    const src = source;
     let fields;
     if (this.fields) {
       fields = this.fields;
-    } else if (is2(src, Subquery2)) {
+    } else if (is2(source, Subquery2)) {
       fields = Object.fromEntries(
-        Object.keys(src._.selectedFields).map((key) => [key, src[key]])
+        Object.keys(source._.selectedFields).map((key) => [key, source[key]])
       );
-    } else if (is2(src, PgViewBase)) {
-      fields = src[ViewBaseConfig2].selectedFields;
-    } else if (is2(src, SQL2)) {
+    } else if (is2(source, MySqlViewBase)) {
+      fields = source[ViewBaseConfig2].selectedFields;
+    } else if (is2(source, SQL2)) {
       fields = {};
     } else {
-      fields = getTableColumns(src);
+      fields = getTableColumns(source);
     }
-    return new PgSelectBase({
-      table: src,
-      fields,
-      isPartialSelect,
-      session: this.session,
-      dialect: this.dialect,
-      withList: this.withList,
-      distinct: this.distinct
-    }).setToken(this.authToken);
+    let useIndex = [];
+    let forceIndex = [];
+    let ignoreIndex = [];
+    if (is2(source, MySqlTable) && onIndex && typeof onIndex !== "string") {
+      if (onIndex.useIndex) {
+        useIndex = convertIndexToString(toArray(onIndex.useIndex));
+      }
+      if (onIndex.forceIndex) {
+        forceIndex = convertIndexToString(toArray(onIndex.forceIndex));
+      }
+      if (onIndex.ignoreIndex) {
+        ignoreIndex = convertIndexToString(toArray(onIndex.ignoreIndex));
+      }
+    }
+    return new MySqlSelectBase(
+      {
+        table: source,
+        fields,
+        isPartialSelect,
+        session: this.session,
+        dialect: this.dialect,
+        withList: this.withList,
+        distinct: this.distinct,
+        useIndex,
+        forceIndex,
+        ignoreIndex
+      }
+    );
   }
 };
-var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
-  static [entityKind2] = "PgSelectQueryBuilder";
+var MySqlSelectQueryBuilderBase = class extends TypedQueryBuilder {
+  static [entityKind2] = "MySqlSelectQueryBuilder";
   _;
   config;
   joinsNotNullableMap;
   tableName;
   isPartialSelect;
+  /** @internal */
   session;
   dialect;
   cacheConfig = void 0;
   usedTables = /* @__PURE__ */ new Set();
-  constructor({ table, fields, isPartialSelect, session, dialect, withList, distinct }) {
+  constructor({ table, fields, isPartialSelect, session, dialect, withList, distinct, useIndex, forceIndex, ignoreIndex }) {
     super();
     this.config = {
       withList,
       table,
       fields: { ...fields },
       distinct,
-      setOperators: []
+      setOperators: [],
+      useIndex,
+      forceIndex,
+      ignoreIndex
     };
     this.isPartialSelect = isPartialSelect;
     this.session = session;
@@ -58567,7 +53629,10 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
     return [...this.usedTables];
   }
   createJoin(joinType, lateral) {
-    return (table, on) => {
+    return (table, a, b) => {
+      const isCrossJoin = joinType === "cross";
+      let on = isCrossJoin ? void 0 : a;
+      const onIndex = isCrossJoin ? a : b;
       const baseTableName = this.tableName;
       const tableName = getTableLikeName(table);
       for (const item of extractUsedTable(table)) this.usedTables.add(item);
@@ -58596,7 +53661,21 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
       if (!this.config.joins) {
         this.config.joins = [];
       }
-      this.config.joins.push({ on, table, joinType, alias: tableName, lateral });
+      let useIndex = [];
+      let forceIndex = [];
+      let ignoreIndex = [];
+      if (is2(table, MySqlTable) && onIndex && typeof onIndex !== "string") {
+        if (onIndex.useIndex) {
+          useIndex = convertIndexToString(toArray(onIndex.useIndex));
+        }
+        if (onIndex.forceIndex) {
+          forceIndex = convertIndexToString(toArray(onIndex.forceIndex));
+        }
+        if (onIndex.ignoreIndex) {
+          ignoreIndex = convertIndexToString(toArray(onIndex.ignoreIndex));
+        }
+      }
+      this.config.joins.push({ on, table, joinType, alias: tableName, useIndex, forceIndex, ignoreIndex, lateral });
       if (typeof tableName === "string") {
         switch (joinType) {
           case "left": {
@@ -58615,13 +53694,6 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
             this.joinsNotNullableMap[tableName] = true;
             break;
           }
-          case "full": {
-            this.joinsNotNullableMap = Object.fromEntries(
-              Object.entries(this.joinsNotNullableMap).map(([key]) => [key, false])
-            );
-            this.joinsNotNullableMap[tableName] = false;
-            break;
-          }
         }
       }
       return this;
@@ -58636,6 +53708,7 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
    *
    * @param table the table to join.
    * @param on the `on` clause.
+   * @param onIndex index hint.
    *
    * @example
    *
@@ -58652,6 +53725,16 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
    * })
    *   .from(users)
    *   .leftJoin(pets, eq(users.id, pets.ownerId))
+   *
+   * // Select userId and petId with use index hint
+   * const usersIdsAndPetIds: { userId: number; petId: number | null; }[] = await db.select({
+   *   userId: users.id,
+   *   petId: pets.id,
+   * })
+   *   .from(users)
+   *   .leftJoin(pets, eq(users.id, pets.ownerId), {
+   *     useIndex: ['pets_owner_id_index']
+   * })
    * ```
    */
   leftJoin = this.createJoin("left", false);
@@ -58677,6 +53760,7 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
    *
    * @param table the table to join.
    * @param on the `on` clause.
+   * @param onIndex index hint.
    *
    * @example
    *
@@ -58693,6 +53777,16 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
    * })
    *   .from(users)
    *   .rightJoin(pets, eq(users.id, pets.ownerId))
+   *
+   * // Select userId and petId with use index hint
+   * const usersIdsAndPetIds: { userId: number; petId: number | null; }[] = await db.select({
+   *   userId: users.id,
+   *   petId: pets.id,
+   * })
+   *   .from(users)
+   *   .leftJoin(pets, eq(users.id, pets.ownerId), {
+   *     useIndex: ['pets_owner_id_index']
+   * })
    * ```
    */
   rightJoin = this.createJoin("right", false);
@@ -58705,6 +53799,7 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
    *
    * @param table the table to join.
    * @param on the `on` clause.
+   * @param onIndex index hint.
    *
    * @example
    *
@@ -58721,6 +53816,16 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
    * })
    *   .from(users)
    *   .innerJoin(pets, eq(users.id, pets.ownerId))
+   *
+   * // Select userId and petId with use index hint
+   * const usersIdsAndPetIds: { userId: number; petId: number | null; }[] = await db.select({
+   *   userId: users.id,
+   *   petId: pets.id,
+   * })
+   *   .from(users)
+   *   .leftJoin(pets, eq(users.id, pets.ownerId), {
+   *     useIndex: ['pets_owner_id_index']
+   * })
    * ```
    */
   innerJoin = this.createJoin("inner", false);
@@ -58738,34 +53843,6 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
    */
   innerJoinLateral = this.createJoin("inner", true);
   /**
-   * Executes a `full join` operation by combining rows from two tables into a new table.
-   *
-   * Calling this method retrieves all rows from both main and joined tables, merging rows with matching values and filling in `null` for non-matching columns.
-   *
-   * See docs: {@link https://orm.drizzle.team/docs/joins#full-join}
-   *
-   * @param table the table to join.
-   * @param on the `on` clause.
-   *
-   * @example
-   *
-   * ```ts
-   * // Select all users and their pets
-   * const usersWithPets: { user: User | null; pets: Pet | null; }[] = await db.select()
-   *   .from(users)
-   *   .fullJoin(pets, eq(users.id, pets.ownerId))
-   *
-   * // Select userId and petId
-   * const usersIdsAndPetIds: { userId: number | null; petId: number | null; }[] = await db.select({
-   *   userId: users.id,
-   *   petId: pets.id,
-   * })
-   *   .from(users)
-   *   .fullJoin(pets, eq(users.id, pets.ownerId))
-   * ```
-   */
-  fullJoin = this.createJoin("full", false);
-  /**
    * Executes a `cross join` operation by combining rows from two tables into a new table.
    *
    * Calling this method retrieves all rows from both main and joined tables, merging all rows from each table.
@@ -58773,6 +53850,7 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
    * See docs: {@link https://orm.drizzle.team/docs/joins#cross-join}
    *
    * @param table the table to join.
+   * @param onIndex index hint.
    *
    * @example
    *
@@ -58789,6 +53867,16 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
    * })
    *   .from(users)
    *   .crossJoin(pets)
+   *
+   * // Select userId and petId with use index hint
+   * const usersIdsAndPetIds: { userId: number; petId: number; }[] = await db.select({
+   *   userId: users.id,
+   *   petId: pets.id,
+   * })
+   *   .from(users)
+   *   .crossJoin(pets, {
+   *     useIndex: ['pets_owner_id_index']
+   * })
    * ```
    */
   crossJoin = this.createJoin("cross", false);
@@ -58806,7 +53894,7 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
   crossJoinLateral = this.createJoin("cross", true);
   createSetOperator(type, isAll) {
     return (rightSelection) => {
-      const rightSelect = typeof rightSelection === "function" ? rightSelection(getPgSetOperators()) : rightSelection;
+      const rightSelect = typeof rightSelection === "function" ? rightSelection(getMySqlSetOperators()) : rightSelection;
       if (!haveSameKeys(this.getSelectedFields(), rightSelect.getSelectedFields())) {
         throw new Error(
           "Set operator error (union / intersect / except): selected fields are not the same or are in a different order"
@@ -58833,7 +53921,7 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
    *     db.select({ name: customers.name }).from(customers)
    *   );
    * // or
-   * import { union } from 'drizzle-orm/pg-core'
+   * import { union } from 'drizzle-orm/mysql-core'
    *
    * await union(
    *   db.select({ name: users.name }).from(users),
@@ -58859,7 +53947,7 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
    *     db.select({ transaction: inStoreSales.transactionId }).from(inStoreSales)
    *   );
    * // or
-   * import { unionAll } from 'drizzle-orm/pg-core'
+   * import { unionAll } from 'drizzle-orm/mysql-core'
    *
    * await unionAll(
    *   db.select({ transaction: onlineSales.transactionId }).from(onlineSales),
@@ -58885,7 +53973,7 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
    *     db.select({ courseName: depB.courseName }).from(depB)
    *   );
    * // or
-   * import { intersect } from 'drizzle-orm/pg-core'
+   * import { intersect } from 'drizzle-orm/mysql-core'
    *
    * await intersect(
    *   db.select({ courseName: depA.courseName }).from(depA),
@@ -58918,7 +54006,7 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
    *   .from(vipCustomerOrders)
    * );
    * // or
-   * import { intersectAll } from 'drizzle-orm/pg-core'
+   * import { intersectAll } from 'drizzle-orm/mysql-core'
    *
    * await intersectAll(
    *   db.select({
@@ -58952,7 +54040,7 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
    *     db.select({ courseName: depB.courseName }).from(depB)
    *   );
    * // or
-   * import { except } from 'drizzle-orm/pg-core'
+   * import { except } from 'drizzle-orm/mysql-core'
    *
    * await except(
    *   db.select({ courseName: depA.courseName }).from(depA),
@@ -58985,7 +54073,7 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
    *   .from(vipCustomerOrders)
    * );
    * // or
-   * import { exceptAll } from 'drizzle-orm/pg-core'
+   * import { exceptAll } from 'drizzle-orm/mysql-core'
    *
    * await exceptAll(
    *   db.select({
@@ -59173,7 +54261,7 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
    *
    * Calling this method will specify a lock strength for this query that controls how strictly it acquires exclusive access to the rows being queried.
    *
-   * See docs: {@link https://www.postgresql.org/docs/current/sql-select.html#SQL-FOR-UPDATE-SHARE}
+   * See docs: {@link https://dev.mysql.com/doc/refman/8.0/en/innodb-locking-reads.html}
    *
    * @param strength the lock strength.
    * @param config the lock configuration.
@@ -59216,48 +54304,32 @@ var PgSelectQueryBuilderBase = class extends TypedQueryBuilder {
     return this;
   }
 };
-var PgSelectBase = class extends PgSelectQueryBuilderBase {
-  static [entityKind2] = "PgSelect";
-  /** @internal */
-  _prepare(name) {
-    const { session, config: config2, dialect, joinsNotNullableMap, authToken, cacheConfig, usedTables } = this;
-    if (!session) {
+var MySqlSelectBase = class extends MySqlSelectQueryBuilderBase {
+  static [entityKind2] = "MySqlSelect";
+  prepare() {
+    if (!this.session) {
       throw new Error("Cannot execute a query on a query builder. Please use a database instance instead.");
     }
-    const { fields } = config2;
-    return tracer2.startActiveSpan("drizzle.prepareQuery", () => {
-      const fieldsList = orderSelectedFields(fields);
-      const query = session.prepareQuery(dialect.sqlToQuery(this.getSQL()), fieldsList, name, true, void 0, {
-        type: "select",
-        tables: [...usedTables]
-      }, cacheConfig);
-      query.joinsNotNullableMap = joinsNotNullableMap;
-      return query.setToken(authToken);
-    });
-  }
-  /**
-   * Create a prepared statement for this query. This allows
-   * the database to remember this query for the given session
-   * and call it by name, rather than specifying the full query.
-   *
-   * {@link https://www.postgresql.org/docs/current/sql-prepare.html | Postgres prepare documentation}
-   */
-  prepare(name) {
-    return this._prepare(name);
-  }
-  authToken;
-  /** @internal */
-  setToken(token) {
-    this.authToken = token;
-    return this;
+    const fieldsList = orderSelectedFields(this.config.fields);
+    const query = this.session.prepareQuery(this.dialect.sqlToQuery(this.getSQL()), fieldsList, void 0, void 0, void 0, {
+      type: "select",
+      tables: [...this.usedTables]
+    }, this.cacheConfig);
+    query.joinsNotNullableMap = this.joinsNotNullableMap;
+    return query;
   }
   execute = (placeholderValues) => {
-    return tracer2.startActiveSpan("drizzle.operation", () => {
-      return this._prepare().execute(placeholderValues, this.authToken);
-    });
+    return this.prepare().execute(placeholderValues);
   };
+  createIterator = () => {
+    const self = this;
+    return async function* (placeholderValues) {
+      yield* self.prepare().iterator(placeholderValues);
+    };
+  };
+  iterator = this.createIterator();
 };
-applyMixins(PgSelectBase, [QueryPromise]);
+applyMixins(MySqlSelectBase, [QueryPromise]);
 function createSetOperator(type, isAll) {
   return (leftSelect, rightSelect, ...restSelects) => {
     const setOperators = [rightSelect, ...restSelects].map((select) => ({
@@ -59275,7 +54347,7 @@ function createSetOperator(type, isAll) {
     return leftSelect.addSetOperators(setOperators);
   };
 }
-var getPgSetOperators = () => ({
+var getMySqlSetOperators = () => ({
   union,
   unionAll,
   intersect,
@@ -59290,14 +54362,14 @@ var intersectAll = createSetOperator("intersect", true);
 var except = createSetOperator("except", false);
 var exceptAll = createSetOperator("except", true);
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/query-builder.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/query-builders/query-builder.js
 var QueryBuilder = class {
-  static [entityKind2] = "PgQueryBuilder";
+  static [entityKind2] = "MySqlQueryBuilder";
   dialect;
   dialectConfig;
   constructor(dialect) {
-    this.dialect = is2(dialect, PgDialect) ? dialect : void 0;
-    this.dialectConfig = is2(dialect, PgDialect) ? void 0 : dialect;
+    this.dialect = is2(dialect, MySqlDialect) ? dialect : void 0;
+    this.dialectConfig = is2(dialect, MySqlDialect) ? void 0 : dialect;
   }
   $with = (alias, selection) => {
     const queryBuilder = this;
@@ -59320,7 +54392,7 @@ var QueryBuilder = class {
   with(...queries) {
     const self = this;
     function select(fields) {
-      return new PgSelectBuilder({
+      return new MySqlSelectBuilder({
         fields: fields ?? void 0,
         session: void 0,
         dialect: self.getDialect(),
@@ -59328,183 +54400,47 @@ var QueryBuilder = class {
       });
     }
     function selectDistinct(fields) {
-      return new PgSelectBuilder({
+      return new MySqlSelectBuilder({
         fields: fields ?? void 0,
         session: void 0,
         dialect: self.getDialect(),
+        withList: queries,
         distinct: true
       });
     }
-    function selectDistinctOn(on, fields) {
-      return new PgSelectBuilder({
-        fields: fields ?? void 0,
-        session: void 0,
-        dialect: self.getDialect(),
-        distinct: { on }
-      });
-    }
-    return { select, selectDistinct, selectDistinctOn };
+    return { select, selectDistinct };
   }
   select(fields) {
-    return new PgSelectBuilder({
-      fields: fields ?? void 0,
-      session: void 0,
-      dialect: this.getDialect()
-    });
+    return new MySqlSelectBuilder({ fields: fields ?? void 0, session: void 0, dialect: this.getDialect() });
   }
   selectDistinct(fields) {
-    return new PgSelectBuilder({
+    return new MySqlSelectBuilder({
       fields: fields ?? void 0,
       session: void 0,
       dialect: this.getDialect(),
       distinct: true
     });
   }
-  selectDistinctOn(on, fields) {
-    return new PgSelectBuilder({
-      fields: fields ?? void 0,
-      session: void 0,
-      dialect: this.getDialect(),
-      distinct: { on }
-    });
-  }
   // Lazy load dialect to avoid circular dependency
   getDialect() {
     if (!this.dialect) {
-      this.dialect = new PgDialect(this.dialectConfig);
+      this.dialect = new MySqlDialect(this.dialectConfig);
     }
     return this.dialect;
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/utils.js
-function extractUsedTable(table) {
-  if (is2(table, PgTable)) {
-    return [table[Schema2] ? `${table[Schema2]}.${table[Table2.Symbol.BaseName]}` : table[Table2.Symbol.BaseName]];
-  }
-  if (is2(table, Subquery2)) {
-    return table._.usedTables ?? [];
-  }
-  if (is2(table, SQL2)) {
-    return table.usedTables ?? [];
-  }
-  return [];
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/delete.js
-var PgDeleteBase = class extends QueryPromise {
-  constructor(table, session, dialect, withList) {
-    super();
-    this.session = session;
-    this.dialect = dialect;
-    this.config = { table, withList };
-  }
-  static [entityKind2] = "PgDelete";
-  config;
-  cacheConfig;
-  /**
-   * Adds a `where` clause to the query.
-   *
-   * Calling this method will delete only those rows that fulfill a specified condition.
-   *
-   * See docs: {@link https://orm.drizzle.team/docs/delete}
-   *
-   * @param where the `where` clause.
-   *
-   * @example
-   * You can use conditional operators and `sql function` to filter the rows to be deleted.
-   *
-   * ```ts
-   * // Delete all cars with green color
-   * await db.delete(cars).where(eq(cars.color, 'green'));
-   * // or
-   * await db.delete(cars).where(sql`${cars.color} = 'green'`)
-   * ```
-   *
-   * You can logically combine conditional operators with `and()` and `or()` operators:
-   *
-   * ```ts
-   * // Delete all BMW cars with a green color
-   * await db.delete(cars).where(and(eq(cars.color, 'green'), eq(cars.brand, 'BMW')));
-   *
-   * // Delete all cars with the green or blue color
-   * await db.delete(cars).where(or(eq(cars.color, 'green'), eq(cars.color, 'blue')));
-   * ```
-   */
-  where(where) {
-    this.config.where = where;
-    return this;
-  }
-  returning(fields = this.config.table[Table2.Symbol.Columns]) {
-    this.config.returningFields = fields;
-    this.config.returning = orderSelectedFields(fields);
-    return this;
-  }
-  /** @internal */
-  getSQL() {
-    return this.dialect.buildDeleteQuery(this.config);
-  }
-  toSQL() {
-    const { typings: _typings, ...rest } = this.dialect.sqlToQuery(this.getSQL());
-    return rest;
-  }
-  /** @internal */
-  _prepare(name) {
-    return tracer2.startActiveSpan("drizzle.prepareQuery", () => {
-      return this.session.prepareQuery(this.dialect.sqlToQuery(this.getSQL()), this.config.returning, name, true, void 0, {
-        type: "delete",
-        tables: extractUsedTable(this.config.table)
-      }, this.cacheConfig);
-    });
-  }
-  prepare(name) {
-    return this._prepare(name);
-  }
-  authToken;
-  /** @internal */
-  setToken(token) {
-    this.authToken = token;
-    return this;
-  }
-  execute = (placeholderValues) => {
-    return tracer2.startActiveSpan("drizzle.operation", () => {
-      return this._prepare().execute(placeholderValues, this.authToken);
-    });
-  };
-  /** @internal */
-  getSelectedFields() {
-    return this.config.returningFields ? new Proxy(
-      this.config.returningFields,
-      new SelectionProxyHandler({
-        alias: getTableName(this.config.table),
-        sqlAliasedBehavior: "alias",
-        sqlBehavior: "error"
-      })
-    ) : void 0;
-  }
-  $dynamic() {
-    return this;
-  }
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/insert.js
-var PgInsertBuilder = class {
-  constructor(table, session, dialect, withList, overridingSystemValue_) {
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/query-builders/insert.js
+var MySqlInsertBuilder = class {
+  constructor(table, session, dialect) {
     this.table = table;
     this.session = session;
     this.dialect = dialect;
-    this.withList = withList;
-    this.overridingSystemValue_ = overridingSystemValue_;
   }
-  static [entityKind2] = "PgInsertBuilder";
-  authToken;
-  /** @internal */
-  setToken(token) {
-    this.authToken = token;
-    return this;
-  }
-  overridingSystemValue() {
-    this.overridingSystemValue_ = true;
+  static [entityKind2] = "MySqlInsertBuilder";
+  shouldIgnore = false;
+  ignore() {
+    this.shouldIgnore = true;
     return this;
   }
   values(values) {
@@ -59521,15 +54457,7 @@ var PgInsertBuilder = class {
       }
       return result;
     });
-    return new PgInsertBase(
-      this.table,
-      mappedValues,
-      this.session,
-      this.dialect,
-      this.withList,
-      false,
-      this.overridingSystemValue_
-    ).setToken(this.authToken);
+    return new MySqlInsertBase(this.table, mappedValues, this.shouldIgnore, this.session, this.dialect);
   }
   select(selectQuery) {
     const select = typeof selectQuery === "function" ? selectQuery(new QueryBuilder()) : selectQuery;
@@ -59538,310 +54466,121 @@ var PgInsertBuilder = class {
         "Insert select error: selected fields are not the same or are in a different order compared to the table definition"
       );
     }
-    return new PgInsertBase(this.table, select, this.session, this.dialect, this.withList, true);
+    return new MySqlInsertBase(this.table, select, this.shouldIgnore, this.session, this.dialect, true);
   }
 };
-var PgInsertBase = class extends QueryPromise {
-  constructor(table, values, session, dialect, withList, select, overridingSystemValue_) {
+var MySqlInsertBase = class extends QueryPromise {
+  constructor(table, values, ignore, session, dialect, select) {
     super();
     this.session = session;
     this.dialect = dialect;
-    this.config = { table, values, withList, select, overridingSystemValue_ };
+    this.config = { table, values, select, ignore };
   }
-  static [entityKind2] = "PgInsert";
+  static [entityKind2] = "MySqlInsert";
   config;
   cacheConfig;
-  returning(fields = this.config.table[Table2.Symbol.Columns]) {
-    this.config.returningFields = fields;
-    this.config.returning = orderSelectedFields(fields);
-    return this;
-  }
   /**
-   * Adds an `on conflict do nothing` clause to the query.
+   * Adds an `on duplicate key update` clause to the query.
    *
-   * Calling this method simply avoids inserting a row as its alternative action.
+   * Calling this method will update the row if any unique index conflicts. MySQL will automatically determine the conflict target based on the primary key and unique indexes.
    *
-   * See docs: {@link https://orm.drizzle.team/docs/insert#on-conflict-do-nothing}
+   * See docs: {@link https://orm.drizzle.team/docs/insert#on-duplicate-key-update}
    *
-   * @param config The `target` and `where` clauses.
+   * @param config The `set` clause
    *
    * @example
    * ```ts
-   * // Insert one row and cancel the insert if there's a conflict
    * await db.insert(cars)
-   *   .values({ id: 1, brand: 'BMW' })
-   *   .onConflictDoNothing();
-   *
-   * // Explicitly specify conflict target
-   * await db.insert(cars)
-   *   .values({ id: 1, brand: 'BMW' })
-   *   .onConflictDoNothing({ target: cars.id });
+   *   .values({ id: 1, brand: 'BMW'})
+   *   .onDuplicateKeyUpdate({ set: { brand: 'Porsche' }});
    * ```
-   */
-  onConflictDoNothing(config2 = {}) {
-    if (config2.target === void 0) {
-      this.config.onConflict = sql2`do nothing`;
-    } else {
-      let targetColumn = "";
-      targetColumn = Array.isArray(config2.target) ? config2.target.map((it) => this.dialect.escapeName(this.dialect.casing.getColumnCasing(it))).join(",") : this.dialect.escapeName(this.dialect.casing.getColumnCasing(config2.target));
-      const whereSql = config2.where ? sql2` where ${config2.where}` : void 0;
-      this.config.onConflict = sql2`(${sql2.raw(targetColumn)})${whereSql} do nothing`;
-    }
-    return this;
-  }
-  /**
-   * Adds an `on conflict do update` clause to the query.
    *
-   * Calling this method will update the existing row that conflicts with the row proposed for insertion as its alternative action.
+   * While MySQL does not directly support doing nothing on conflict, you can perform a no-op by setting any column's value to itself and achieve the same effect:
    *
-   * See docs: {@link https://orm.drizzle.team/docs/insert#upserts-and-conflicts}
-   *
-   * @param config The `target`, `set` and `where` clauses.
-   *
-   * @example
    * ```ts
-   * // Update the row if there's a conflict
-   * await db.insert(cars)
-   *   .values({ id: 1, brand: 'BMW' })
-   *   .onConflictDoUpdate({
-   *     target: cars.id,
-   *     set: { brand: 'Porsche' }
-   *   });
+   * import { sql } from 'drizzle-orm';
    *
-   * // Upsert with 'where' clause
    * await db.insert(cars)
    *   .values({ id: 1, brand: 'BMW' })
-   *   .onConflictDoUpdate({
-   *     target: cars.id,
-   *     set: { brand: 'newBMW' },
-   *     targetWhere: sql`${cars.createdAt} > '2023-01-01'::date`,
-   *   });
+   *   .onDuplicateKeyUpdate({ set: { id: sql`id` } });
    * ```
    */
-  onConflictDoUpdate(config2) {
-    if (config2.where && (config2.targetWhere || config2.setWhere)) {
-      throw new Error(
-        'You cannot use both "where" and "targetWhere"/"setWhere" at the same time - "where" is deprecated, use "targetWhere" or "setWhere" instead.'
-      );
-    }
-    const whereSql = config2.where ? sql2` where ${config2.where}` : void 0;
-    const targetWhereSql = config2.targetWhere ? sql2` where ${config2.targetWhere}` : void 0;
-    const setWhereSql = config2.setWhere ? sql2` where ${config2.setWhere}` : void 0;
+  onDuplicateKeyUpdate(config2) {
     const setSql = this.dialect.buildUpdateSet(this.config.table, mapUpdateSet(this.config.table, config2.set));
-    let targetColumn = "";
-    targetColumn = Array.isArray(config2.target) ? config2.target.map((it) => this.dialect.escapeName(this.dialect.casing.getColumnCasing(it))).join(",") : this.dialect.escapeName(this.dialect.casing.getColumnCasing(config2.target));
-    this.config.onConflict = sql2`(${sql2.raw(targetColumn)})${targetWhereSql} do update set ${setSql}${whereSql}${setWhereSql}`;
+    this.config.onConflict = sql2`update ${setSql}`;
+    return this;
+  }
+  $returningId() {
+    const returning = [];
+    for (const [key, value] of Object.entries(this.config.table[Table2.Symbol.Columns])) {
+      if (value.primary) {
+        returning.push({ field: value, path: [key] });
+      }
+    }
+    this.config.returning = returning;
     return this;
   }
   /** @internal */
   getSQL() {
-    return this.dialect.buildInsertQuery(this.config);
+    return this.dialect.buildInsertQuery(this.config).sql;
   }
   toSQL() {
     const { typings: _typings, ...rest } = this.dialect.sqlToQuery(this.getSQL());
     return rest;
   }
-  /** @internal */
-  _prepare(name) {
-    return tracer2.startActiveSpan("drizzle.prepareQuery", () => {
-      return this.session.prepareQuery(this.dialect.sqlToQuery(this.getSQL()), this.config.returning, name, true, void 0, {
+  prepare() {
+    const { sql: sql22, generatedIds } = this.dialect.buildInsertQuery(this.config);
+    return this.session.prepareQuery(
+      this.dialect.sqlToQuery(sql22),
+      void 0,
+      void 0,
+      generatedIds,
+      this.config.returning,
+      {
         type: "insert",
         tables: extractUsedTable(this.config.table)
-      }, this.cacheConfig);
-    });
-  }
-  prepare(name) {
-    return this._prepare(name);
-  }
-  authToken;
-  /** @internal */
-  setToken(token) {
-    this.authToken = token;
-    return this;
+      },
+      this.cacheConfig
+    );
   }
   execute = (placeholderValues) => {
-    return tracer2.startActiveSpan("drizzle.operation", () => {
-      return this._prepare().execute(placeholderValues, this.authToken);
-    });
+    return this.prepare().execute(placeholderValues);
   };
-  /** @internal */
-  getSelectedFields() {
-    return this.config.returningFields ? new Proxy(
-      this.config.returningFields,
-      new SelectionProxyHandler({
-        alias: getTableName(this.config.table),
-        sqlAliasedBehavior: "alias",
-        sqlBehavior: "error"
-      })
-    ) : void 0;
-  }
+  createIterator = () => {
+    const self = this;
+    return async function* (placeholderValues) {
+      yield* self.prepare().iterator(placeholderValues);
+    };
+  };
+  iterator = this.createIterator();
   $dynamic() {
     return this;
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/refresh-materialized-view.js
-var PgRefreshMaterializedView = class extends QueryPromise {
-  constructor(view, session, dialect) {
-    super();
-    this.session = session;
-    this.dialect = dialect;
-    this.config = { view };
-  }
-  static [entityKind2] = "PgRefreshMaterializedView";
-  config;
-  concurrently() {
-    if (this.config.withNoData !== void 0) {
-      throw new Error("Cannot use concurrently and withNoData together");
-    }
-    this.config.concurrently = true;
-    return this;
-  }
-  withNoData() {
-    if (this.config.concurrently !== void 0) {
-      throw new Error("Cannot use concurrently and withNoData together");
-    }
-    this.config.withNoData = true;
-    return this;
-  }
-  /** @internal */
-  getSQL() {
-    return this.dialect.buildRefreshMaterializedViewQuery(this.config);
-  }
-  toSQL() {
-    const { typings: _typings, ...rest } = this.dialect.sqlToQuery(this.getSQL());
-    return rest;
-  }
-  /** @internal */
-  _prepare(name) {
-    return tracer2.startActiveSpan("drizzle.prepareQuery", () => {
-      return this.session.prepareQuery(this.dialect.sqlToQuery(this.getSQL()), void 0, name, true);
-    });
-  }
-  prepare(name) {
-    return this._prepare(name);
-  }
-  authToken;
-  /** @internal */
-  setToken(token) {
-    this.authToken = token;
-    return this;
-  }
-  execute = (placeholderValues) => {
-    return tracer2.startActiveSpan("drizzle.operation", () => {
-      return this._prepare().execute(placeholderValues, this.authToken);
-    });
-  };
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/update.js
-var PgUpdateBuilder = class {
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/query-builders/update.js
+var MySqlUpdateBuilder = class {
   constructor(table, session, dialect, withList) {
     this.table = table;
     this.session = session;
     this.dialect = dialect;
     this.withList = withList;
   }
-  static [entityKind2] = "PgUpdateBuilder";
-  authToken;
-  setToken(token) {
-    this.authToken = token;
-    return this;
-  }
+  static [entityKind2] = "MySqlUpdateBuilder";
   set(values) {
-    return new PgUpdateBase(
-      this.table,
-      mapUpdateSet(this.table, values),
-      this.session,
-      this.dialect,
-      this.withList
-    ).setToken(this.authToken);
+    return new MySqlUpdateBase(this.table, mapUpdateSet(this.table, values), this.session, this.dialect, this.withList);
   }
 };
-var PgUpdateBase = class extends QueryPromise {
+var MySqlUpdateBase = class extends QueryPromise {
   constructor(table, set2, session, dialect, withList) {
     super();
     this.session = session;
     this.dialect = dialect;
-    this.config = { set: set2, table, withList, joins: [] };
-    this.tableName = getTableLikeName(table);
-    this.joinsNotNullableMap = typeof this.tableName === "string" ? { [this.tableName]: true } : {};
+    this.config = { set: set2, table, withList };
   }
-  static [entityKind2] = "PgUpdate";
+  static [entityKind2] = "MySqlUpdate";
   config;
-  tableName;
-  joinsNotNullableMap;
   cacheConfig;
-  from(source) {
-    const src = source;
-    const tableName = getTableLikeName(src);
-    if (typeof tableName === "string") {
-      this.joinsNotNullableMap[tableName] = true;
-    }
-    this.config.from = src;
-    return this;
-  }
-  getTableLikeFields(table) {
-    if (is2(table, PgTable)) {
-      return table[Table2.Symbol.Columns];
-    } else if (is2(table, Subquery2)) {
-      return table._.selectedFields;
-    }
-    return table[ViewBaseConfig2].selectedFields;
-  }
-  createJoin(joinType) {
-    return (table, on) => {
-      const tableName = getTableLikeName(table);
-      if (typeof tableName === "string" && this.config.joins.some((join) => join.alias === tableName)) {
-        throw new Error(`Alias "${tableName}" is already used in this query`);
-      }
-      if (typeof on === "function") {
-        const from = this.config.from && !is2(this.config.from, SQL2) ? this.getTableLikeFields(this.config.from) : void 0;
-        on = on(
-          new Proxy(
-            this.config.table[Table2.Symbol.Columns],
-            new SelectionProxyHandler({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })
-          ),
-          from && new Proxy(
-            from,
-            new SelectionProxyHandler({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })
-          )
-        );
-      }
-      this.config.joins.push({ on, table, joinType, alias: tableName });
-      if (typeof tableName === "string") {
-        switch (joinType) {
-          case "left": {
-            this.joinsNotNullableMap[tableName] = false;
-            break;
-          }
-          case "right": {
-            this.joinsNotNullableMap = Object.fromEntries(
-              Object.entries(this.joinsNotNullableMap).map(([key]) => [key, false])
-            );
-            this.joinsNotNullableMap[tableName] = true;
-            break;
-          }
-          case "inner": {
-            this.joinsNotNullableMap[tableName] = true;
-            break;
-          }
-          case "full": {
-            this.joinsNotNullableMap = Object.fromEntries(
-              Object.entries(this.joinsNotNullableMap).map(([key]) => [key, false])
-            );
-            this.joinsNotNullableMap[tableName] = false;
-            break;
-          }
-        }
-      }
-      return this;
-    };
-  }
-  leftJoin = this.createJoin("left");
-  rightJoin = this.createJoin("right");
-  innerJoin = this.createJoin("inner");
-  fullJoin = this.createJoin("full");
   /**
    * Adds a 'where' clause to the query.
    *
@@ -59856,10 +54595,10 @@ var PgUpdateBase = class extends QueryPromise {
    *
    * ```ts
    * // Update all cars with green color
-   * await db.update(cars).set({ color: 'red' })
+   * db.update(cars).set({ color: 'red' })
    *   .where(eq(cars.color, 'green'));
    * // or
-   * await db.update(cars).set({ color: 'red' })
+   * db.update(cars).set({ color: 'red' })
    *   .where(sql`${cars.color} = 'green'`)
    * ```
    *
@@ -59867,11 +54606,11 @@ var PgUpdateBase = class extends QueryPromise {
    *
    * ```ts
    * // Update all BMW cars with a green color
-   * await db.update(cars).set({ color: 'red' })
+   * db.update(cars).set({ color: 'red' })
    *   .where(and(eq(cars.color, 'green'), eq(cars.brand, 'BMW')));
    *
    * // Update all cars with the green or blue color
-   * await db.update(cars).set({ color: 'red' })
+   * db.update(cars).set({ color: 'red' })
    *   .where(or(eq(cars.color, 'green'), eq(cars.color, 'blue')));
    * ```
    */
@@ -59879,26 +54618,24 @@ var PgUpdateBase = class extends QueryPromise {
     this.config.where = where;
     return this;
   }
-  returning(fields) {
-    if (!fields) {
-      fields = Object.assign({}, this.config.table[Table2.Symbol.Columns]);
-      if (this.config.from) {
-        const tableName = getTableLikeName(this.config.from);
-        if (typeof tableName === "string" && this.config.from && !is2(this.config.from, SQL2)) {
-          const fromFields = this.getTableLikeFields(this.config.from);
-          fields[tableName] = fromFields;
-        }
-        for (const join of this.config.joins) {
-          const tableName2 = getTableLikeName(join.table);
-          if (typeof tableName2 === "string" && !is2(join.table, SQL2)) {
-            const fromFields = this.getTableLikeFields(join.table);
-            fields[tableName2] = fromFields;
-          }
-        }
-      }
+  orderBy(...columns) {
+    if (typeof columns[0] === "function") {
+      const orderBy = columns[0](
+        new Proxy(
+          this.config.table[Table2.Symbol.Columns],
+          new SelectionProxyHandler({ sqlAliasedBehavior: "alias", sqlBehavior: "sql" })
+        )
+      );
+      const orderByArray = Array.isArray(orderBy) ? orderBy : [orderBy];
+      this.config.orderBy = orderByArray;
+    } else {
+      const orderByArray = columns;
+      this.config.orderBy = orderByArray;
     }
-    this.config.returningFields = fields;
-    this.config.returning = orderSelectedFields(fields);
+    return this;
+  }
+  limit(limit) {
+    this.config.limit = limit;
     return this;
   }
   /** @internal */
@@ -59909,97 +54646,38 @@ var PgUpdateBase = class extends QueryPromise {
     const { typings: _typings, ...rest } = this.dialect.sqlToQuery(this.getSQL());
     return rest;
   }
-  /** @internal */
-  _prepare(name) {
-    const query = this.session.prepareQuery(this.dialect.sqlToQuery(this.getSQL()), this.config.returning, name, true, void 0, {
-      type: "insert",
-      tables: extractUsedTable(this.config.table)
-    }, this.cacheConfig);
-    query.joinsNotNullableMap = this.joinsNotNullableMap;
-    return query;
-  }
-  prepare(name) {
-    return this._prepare(name);
-  }
-  authToken;
-  /** @internal */
-  setToken(token) {
-    this.authToken = token;
-    return this;
+  prepare() {
+    return this.session.prepareQuery(
+      this.dialect.sqlToQuery(this.getSQL()),
+      void 0,
+      void 0,
+      void 0,
+      this.config.returning,
+      {
+        type: "insert",
+        tables: extractUsedTable(this.config.table)
+      },
+      this.cacheConfig
+    );
   }
   execute = (placeholderValues) => {
-    return this._prepare().execute(placeholderValues, this.authToken);
+    return this.prepare().execute(placeholderValues);
   };
-  /** @internal */
-  getSelectedFields() {
-    return this.config.returningFields ? new Proxy(
-      this.config.returningFields,
-      new SelectionProxyHandler({
-        alias: getTableName(this.config.table),
-        sqlAliasedBehavior: "alias",
-        sqlBehavior: "error"
-      })
-    ) : void 0;
-  }
+  createIterator = () => {
+    const self = this;
+    return async function* (placeholderValues) {
+      yield* self.prepare().iterator(placeholderValues);
+    };
+  };
+  iterator = this.createIterator();
   $dynamic() {
     return this;
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/count.js
-var PgCountBuilder = class _PgCountBuilder extends SQL2 {
-  constructor(params) {
-    super(_PgCountBuilder.buildEmbeddedCount(params.source, params.filters).queryChunks);
-    this.params = params;
-    this.mapWith(Number);
-    this.session = params.session;
-    this.sql = _PgCountBuilder.buildCount(
-      params.source,
-      params.filters
-    );
-  }
-  sql;
-  token;
-  static [entityKind2] = "PgCountBuilder";
-  [Symbol.toStringTag] = "PgCountBuilder";
-  session;
-  static buildEmbeddedCount(source, filters) {
-    return sql2`(select count(*) from ${source}${sql2.raw(" where ").if(filters)}${filters})`;
-  }
-  static buildCount(source, filters) {
-    return sql2`select count(*) as count from ${source}${sql2.raw(" where ").if(filters)}${filters};`;
-  }
-  /** @intrnal */
-  setToken(token) {
-    this.token = token;
-    return this;
-  }
-  then(onfulfilled, onrejected) {
-    return Promise.resolve(this.session.count(this.sql, this.token)).then(
-      onfulfilled,
-      onrejected
-    );
-  }
-  catch(onRejected) {
-    return this.then(void 0, onRejected);
-  }
-  finally(onFinally) {
-    return this.then(
-      (value) => {
-        onFinally?.();
-        return value;
-      },
-      (reason) => {
-        onFinally?.();
-        throw reason;
-      }
-    );
-  }
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/query.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/query-builders/query.js
 var RelationalQueryBuilder = class {
-  constructor(fullSchema, schema, tableNamesMap, table, tableConfig, dialect, session) {
+  constructor(fullSchema, schema, tableNamesMap, table, tableConfig, dialect, session, mode) {
     this.fullSchema = fullSchema;
     this.schema = schema;
     this.tableNamesMap = tableNamesMap;
@@ -60007,10 +54685,11 @@ var RelationalQueryBuilder = class {
     this.tableConfig = tableConfig;
     this.dialect = dialect;
     this.session = session;
+    this.mode = mode;
   }
-  static [entityKind2] = "PgRelationalQueryBuilder";
+  static [entityKind2] = "MySqlRelationalQueryBuilder";
   findMany(config2) {
-    return new PgRelationalQuery(
+    return new MySqlRelationalQuery(
       this.fullSchema,
       this.schema,
       this.tableNamesMap,
@@ -60019,11 +54698,12 @@ var RelationalQueryBuilder = class {
       this.dialect,
       this.session,
       config2 ? config2 : {},
-      "many"
+      "many",
+      this.mode
     );
   }
   findFirst(config2) {
-    return new PgRelationalQuery(
+    return new MySqlRelationalQuery(
       this.fullSchema,
       this.schema,
       this.tableNamesMap,
@@ -60032,12 +54712,13 @@ var RelationalQueryBuilder = class {
       this.dialect,
       this.session,
       config2 ? { ...config2, limit: 1 } : { limit: 1 },
-      "first"
+      "first",
+      this.mode
     );
   }
 };
-var PgRelationalQuery = class extends QueryPromise {
-  constructor(fullSchema, schema, tableNamesMap, table, tableConfig, dialect, session, config2, mode) {
+var MySqlRelationalQuery = class extends QueryPromise {
+  constructor(fullSchema, schema, tableNamesMap, table, tableConfig, dialect, session, config2, queryMode, mode) {
     super();
     this.fullSchema = fullSchema;
     this.schema = schema;
@@ -60047,35 +54728,34 @@ var PgRelationalQuery = class extends QueryPromise {
     this.dialect = dialect;
     this.session = session;
     this.config = config2;
+    this.queryMode = queryMode;
     this.mode = mode;
   }
-  static [entityKind2] = "PgRelationalQuery";
-  /** @internal */
-  _prepare(name) {
-    return tracer2.startActiveSpan("drizzle.prepareQuery", () => {
-      const { query, builtQuery } = this._toSQL();
-      return this.session.prepareQuery(
-        builtQuery,
-        void 0,
-        name,
-        true,
-        (rawRows, mapColumnValue) => {
-          const rows = rawRows.map(
-            (row) => mapRelationalRow(this.schema, this.tableConfig, row, query.selection, mapColumnValue)
-          );
-          if (this.mode === "first") {
-            return rows[0];
-          }
-          return rows;
+  static [entityKind2] = "MySqlRelationalQuery";
+  prepare() {
+    const { query, builtQuery } = this._toSQL();
+    return this.session.prepareQuery(
+      builtQuery,
+      void 0,
+      (rawRows) => {
+        const rows = rawRows.map((row) => mapRelationalRow(this.schema, this.tableConfig, row, query.selection));
+        if (this.queryMode === "first") {
+          return rows[0];
         }
-      );
-    });
-  }
-  prepare(name) {
-    return this._prepare(name);
+        return rows;
+      }
+    );
   }
   _getQuery() {
-    return this.dialect.buildRelationalQueryWithoutPK({
+    const query = this.mode === "planetscale" ? this.dialect.buildRelationalQueryWithoutLateralSubqueries({
+      fullSchema: this.fullSchema,
+      schema: this.schema,
+      tableNamesMap: this.tableNamesMap,
+      table: this.table,
+      tableConfig: this.tableConfig,
+      queryConfig: this.config,
+      tableAlias: this.tableConfig.tsName
+    }) : this.dialect.buildRelationalQuery({
       fullSchema: this.fullSchema,
       schema: this.schema,
       tableNamesMap: this.tableNamesMap,
@@ -60084,76 +54764,39 @@ var PgRelationalQuery = class extends QueryPromise {
       queryConfig: this.config,
       tableAlias: this.tableConfig.tsName
     });
+    return query;
+  }
+  _toSQL() {
+    const query = this._getQuery();
+    const builtQuery = this.dialect.sqlToQuery(query.sql);
+    return { builtQuery, query };
   }
   /** @internal */
   getSQL() {
     return this._getQuery().sql;
   }
-  _toSQL() {
-    const query = this._getQuery();
-    const builtQuery = this.dialect.sqlToQuery(query.sql);
-    return { query, builtQuery };
-  }
   toSQL() {
     return this._toSQL().builtQuery;
   }
-  authToken;
-  /** @internal */
-  setToken(token) {
-    this.authToken = token;
-    return this;
-  }
   execute() {
-    return tracer2.startActiveSpan("drizzle.operation", () => {
-      return this._prepare().execute(void 0, this.authToken);
-    });
+    return this.prepare().execute();
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/raw.js
-var PgRaw = class extends QueryPromise {
-  constructor(execute, sql3, query, mapBatchResult) {
-    super();
-    this.execute = execute;
-    this.sql = sql3;
-    this.query = query;
-    this.mapBatchResult = mapBatchResult;
-  }
-  static [entityKind2] = "PgRaw";
-  /** @internal */
-  getSQL() {
-    return this.sql;
-  }
-  getQuery() {
-    return this.query;
-  }
-  mapResult(result, isFromBatch) {
-    return isFromBatch ? this.mapBatchResult(result) : result;
-  }
-  _prepare() {
-    return this;
-  }
-  /** @internal */
-  isResponseInArrayMode() {
-    return false;
-  }
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/db.js
-var PgDatabase = class {
-  constructor(dialect, session, schema) {
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/db.js
+var MySqlDatabase = class {
+  constructor(dialect, session, schema, mode) {
     this.dialect = dialect;
     this.session = session;
+    this.mode = mode;
     this._ = schema ? {
       schema: schema.schema,
       fullSchema: schema.fullSchema,
-      tableNamesMap: schema.tableNamesMap,
-      session
+      tableNamesMap: schema.tableNamesMap
     } : {
       schema: void 0,
       fullSchema: {},
-      tableNamesMap: {},
-      session
+      tableNamesMap: {}
     };
     this.query = {};
     if (this._.schema) {
@@ -60165,14 +54808,15 @@ var PgDatabase = class {
           schema.fullSchema[tableName],
           columns,
           dialect,
-          session
+          session,
+          this.mode
         );
       }
     }
     this.$cache = { invalidate: async (_params) => {
     } };
   }
-  static [entityKind2] = "PgDatabase";
+  static [entityKind2] = "MySqlDatabase";
   query;
   /**
    * Creates a subquery that defines a temporary named result set as a CTE.
@@ -60225,7 +54869,7 @@ var PgDatabase = class {
     return { as };
   };
   $count(source, filters) {
-    return new PgCountBuilder({ source, filters, session: this.session });
+    return new MySqlCountBuilder({ source, filters, session: this.session });
   }
   $cache;
   /**
@@ -60250,7 +54894,7 @@ var PgDatabase = class {
   with(...queries) {
     const self = this;
     function select(fields) {
-      return new PgSelectBuilder({
+      return new MySqlSelectBuilder({
         fields: fields ?? void 0,
         session: self.session,
         dialect: self.dialect,
@@ -60258,7 +54902,7 @@ var PgDatabase = class {
       });
     }
     function selectDistinct(fields) {
-      return new PgSelectBuilder({
+      return new MySqlSelectBuilder({
         fields: fields ?? void 0,
         session: self.session,
         dialect: self.dialect,
@@ -60266,47 +54910,23 @@ var PgDatabase = class {
         distinct: true
       });
     }
-    function selectDistinctOn(on, fields) {
-      return new PgSelectBuilder({
-        fields: fields ?? void 0,
-        session: self.session,
-        dialect: self.dialect,
-        withList: queries,
-        distinct: { on }
-      });
-    }
     function update(table) {
-      return new PgUpdateBuilder(table, self.session, self.dialect, queries);
-    }
-    function insert(table) {
-      return new PgInsertBuilder(table, self.session, self.dialect, queries);
+      return new MySqlUpdateBuilder(table, self.session, self.dialect, queries);
     }
     function delete_(table) {
-      return new PgDeleteBase(table, self.session, self.dialect, queries);
+      return new MySqlDeleteBase(table, self.session, self.dialect, queries);
     }
-    return { select, selectDistinct, selectDistinctOn, update, insert, delete: delete_ };
+    return { select, selectDistinct, update, delete: delete_ };
   }
   select(fields) {
-    return new PgSelectBuilder({
-      fields: fields ?? void 0,
-      session: this.session,
-      dialect: this.dialect
-    });
+    return new MySqlSelectBuilder({ fields: fields ?? void 0, session: this.session, dialect: this.dialect });
   }
   selectDistinct(fields) {
-    return new PgSelectBuilder({
+    return new MySqlSelectBuilder({
       fields: fields ?? void 0,
       session: this.session,
       dialect: this.dialect,
       distinct: true
-    });
-  }
-  selectDistinctOn(on, fields) {
-    return new PgSelectBuilder({
-      fields: fields ?? void 0,
-      session: this.session,
-      dialect: this.dialect,
-      distinct: { on }
     });
   }
   /**
@@ -60328,16 +54948,10 @@ var PgDatabase = class {
    *
    * // Update rows with filters and conditions
    * await db.update(cars).set({ color: 'red' }).where(eq(cars.brand, 'BMW'));
-   *
-   * // Update with returning clause
-   * const updatedCar: Car[] = await db.update(cars)
-   *   .set({ color: 'red' })
-   *   .where(eq(cars.id, 1))
-   *   .returning();
    * ```
    */
   update(table) {
-    return new PgUpdateBuilder(table, this.session, this.dialect);
+    return new MySqlUpdateBuilder(table, this.session, this.dialect);
   }
   /**
    * Creates an insert query.
@@ -60356,15 +54970,10 @@ var PgDatabase = class {
    *
    * // Insert multiple rows
    * await db.insert(cars).values([{ brand: 'BMW' }, { brand: 'Porsche' }]);
-   *
-   * // Insert with returning clause
-   * const insertedCar: Car[] = await db.insert(cars)
-   *   .values({ brand: 'BMW' })
-   *   .returning();
    * ```
    */
   insert(table) {
-    return new PgInsertBuilder(table, this.session, this.dialect);
+    return new MySqlInsertBuilder(table, this.session, this.dialect);
   }
   /**
    * Creates a delete query.
@@ -60383,42 +54992,23 @@ var PgDatabase = class {
    *
    * // Delete rows with filters and conditions
    * await db.delete(cars).where(eq(cars.color, 'green'));
-   *
-   * // Delete with returning clause
-   * const deletedCar: Car[] = await db.delete(cars)
-   *   .where(eq(cars.id, 1))
-   *   .returning();
    * ```
    */
   delete(table) {
-    return new PgDeleteBase(table, this.session, this.dialect);
+    return new MySqlDeleteBase(table, this.session, this.dialect);
   }
-  refreshMaterializedView(view) {
-    return new PgRefreshMaterializedView(view, this.session, this.dialect);
-  }
-  authToken;
   execute(query) {
-    const sequel = typeof query === "string" ? sql2.raw(query) : query.getSQL();
-    const builtQuery = this.dialect.sqlToQuery(sequel);
-    const prepared = this.session.prepareQuery(
-      builtQuery,
-      void 0,
-      void 0,
-      false
-    );
-    return new PgRaw(
-      () => prepared.execute(void 0, this.authToken),
-      sequel,
-      builtQuery,
-      (result) => prepared.mapResult(result, true)
-    );
+    return this.session.execute(typeof query === "string" ? sql2.raw(query) : query.getSQL());
   }
   transaction(transaction, config2) {
     return this.session.transaction(transaction, config2);
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/cache/core/cache.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql2/session.js
+import { once } from "node:events";
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/cache/core/cache.js
 var Cache = class {
   static [entityKind2] = "Cache";
 };
@@ -60445,10 +55035,9 @@ async function hashQuery(sql3, params) {
   return hashHex;
 }
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/session.js
-var PgPreparedQuery = class {
-  constructor(query, cache2, queryMetadata, cacheConfig) {
-    this.query = query;
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/session.js
+var MySqlPreparedQuery = class {
+  constructor(cache2, queryMetadata, cacheConfig) {
     this.cache = cache2;
     this.queryMetadata = queryMetadata;
     this.cacheConfig = cacheConfig;
@@ -60459,21 +55048,7 @@ var PgPreparedQuery = class {
       this.cacheConfig = void 0;
     }
   }
-  authToken;
-  getQuery() {
-    return this.query;
-  }
-  mapResult(response, _isFromBatch) {
-    return response;
-  }
-  /** @internal */
-  setToken(token) {
-    this.authToken = token;
-    return this;
-  }
-  static [entityKind2] = "PgPreparedQuery";
-  /** @internal */
-  joinsNotNullableMap;
+  static [entityKind2] = "MySqlPreparedQuery";
   /** @internal */
   async queryWithCache(queryString, params, query) {
     if (this.cache === void 0 || is2(this.cache, NoopCache) || this.queryMetadata === void 0) {
@@ -60540,229 +55115,189 @@ var PgPreparedQuery = class {
       throw new DrizzleQueryError(queryString, params, e);
     }
   }
+  /** @internal */
+  joinsNotNullableMap;
 };
-var PgSession = class {
+var MySqlSession = class {
   constructor(dialect) {
     this.dialect = dialect;
   }
-  static [entityKind2] = "PgSession";
-  /** @internal */
-  execute(query, token) {
-    return tracer2.startActiveSpan("drizzle.operation", () => {
-      const prepared = tracer2.startActiveSpan("drizzle.prepareQuery", () => {
-        return this.prepareQuery(
-          this.dialect.sqlToQuery(query),
-          void 0,
-          void 0,
-          false
-        );
-      });
-      return prepared.setToken(token).execute(void 0, token);
-    });
-  }
-  all(query) {
+  static [entityKind2] = "MySqlSession";
+  execute(query) {
     return this.prepareQuery(
       this.dialect.sqlToQuery(query),
-      void 0,
-      void 0,
-      false
-    ).all();
+      void 0
+    ).execute();
   }
-  /** @internal */
-  async count(sql22, token) {
-    const res = await this.execute(sql22, token);
+  async count(sql22) {
+    const res = await this.execute(sql22);
     return Number(
-      res[0]["count"]
+      res[0][0]["count"]
     );
   }
+  getSetTransactionSQL(config2) {
+    const parts = [];
+    if (config2.isolationLevel) {
+      parts.push(`isolation level ${config2.isolationLevel}`);
+    }
+    return parts.length ? sql2`set transaction ${sql2.raw(parts.join(" "))}` : void 0;
+  }
+  getStartTransactionSQL(config2) {
+    const parts = [];
+    if (config2.withConsistentSnapshot) {
+      parts.push("with consistent snapshot");
+    }
+    if (config2.accessMode) {
+      parts.push(config2.accessMode);
+    }
+    return parts.length ? sql2`start transaction ${sql2.raw(parts.join(" "))}` : void 0;
+  }
 };
-var PgTransaction = class extends PgDatabase {
-  constructor(dialect, session, schema, nestedIndex = 0) {
-    super(dialect, session, schema);
+var MySqlTransaction = class extends MySqlDatabase {
+  constructor(dialect, session, schema, nestedIndex, mode) {
+    super(dialect, session, schema, mode);
     this.schema = schema;
     this.nestedIndex = nestedIndex;
   }
-  static [entityKind2] = "PgTransaction";
+  static [entityKind2] = "MySqlTransaction";
   rollback() {
     throw new TransactionRollbackError();
   }
-  /** @internal */
-  getTransactionConfigSQL(config2) {
-    const chunks = [];
-    if (config2.isolationLevel) {
-      chunks.push(`isolation level ${config2.isolationLevel}`);
-    }
-    if (config2.accessMode) {
-      chunks.push(config2.accessMode);
-    }
-    if (typeof config2.deferrable === "boolean") {
-      chunks.push(config2.deferrable ? "deferrable" : "not deferrable");
-    }
-    return sql2.raw(chunks.join(" "));
-  }
-  setTransaction(config2) {
-    return this.session.execute(sql2`set transaction ${this.getTransactionConfigSQL(config2)}`);
-  }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/node-postgres/session.js
-var { Pool: Pool2, types: types2 } = esm_default;
-var NodePgPreparedQuery = class extends PgPreparedQuery {
-  constructor(client, queryString, params, logger2, cache2, queryMetadata, cacheConfig, fields, name, _isResponseInArrayMode, customResultMapper) {
-    super({ sql: queryString, params }, cache2, queryMetadata, cacheConfig);
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql2/session.js
+var MySql2PreparedQuery = class extends MySqlPreparedQuery {
+  constructor(client, queryString, params, logger2, cache2, queryMetadata, cacheConfig, fields, customResultMapper, generatedIds, returningIds) {
+    super(cache2, queryMetadata, cacheConfig);
     this.client = client;
-    this.queryString = queryString;
     this.params = params;
     this.logger = logger2;
     this.fields = fields;
-    this._isResponseInArrayMode = _isResponseInArrayMode;
     this.customResultMapper = customResultMapper;
-    this.rawQueryConfig = {
-      name,
-      text: queryString,
-      types: {
-        // @ts-ignore
-        getTypeParser: (typeId, format) => {
-          if (typeId === types2.builtins.TIMESTAMPTZ) {
-            return (val) => val;
-          }
-          if (typeId === types2.builtins.TIMESTAMP) {
-            return (val) => val;
-          }
-          if (typeId === types2.builtins.DATE) {
-            return (val) => val;
-          }
-          if (typeId === types2.builtins.INTERVAL) {
-            return (val) => val;
-          }
-          if (typeId === 1231) {
-            return (val) => val;
-          }
-          if (typeId === 1115) {
-            return (val) => val;
-          }
-          if (typeId === 1185) {
-            return (val) => val;
-          }
-          if (typeId === 1187) {
-            return (val) => val;
-          }
-          if (typeId === 1182) {
-            return (val) => val;
-          }
-          return types2.getTypeParser(typeId, format);
+    this.generatedIds = generatedIds;
+    this.returningIds = returningIds;
+    this.rawQuery = {
+      sql: queryString,
+      // rowsAsArray: true,
+      typeCast: function(field, next) {
+        if (field.type === "TIMESTAMP" || field.type === "DATETIME" || field.type === "DATE") {
+          return field.string();
         }
+        return next();
       }
     };
-    this.queryConfig = {
-      name,
-      text: queryString,
-      rowMode: "array",
-      types: {
-        // @ts-ignore
-        getTypeParser: (typeId, format) => {
-          if (typeId === types2.builtins.TIMESTAMPTZ) {
-            return (val) => val;
-          }
-          if (typeId === types2.builtins.TIMESTAMP) {
-            return (val) => val;
-          }
-          if (typeId === types2.builtins.DATE) {
-            return (val) => val;
-          }
-          if (typeId === types2.builtins.INTERVAL) {
-            return (val) => val;
-          }
-          if (typeId === 1231) {
-            return (val) => val;
-          }
-          if (typeId === 1115) {
-            return (val) => val;
-          }
-          if (typeId === 1185) {
-            return (val) => val;
-          }
-          if (typeId === 1187) {
-            return (val) => val;
-          }
-          if (typeId === 1182) {
-            return (val) => val;
-          }
-          return types2.getTypeParser(typeId, format);
+    this.query = {
+      sql: queryString,
+      rowsAsArray: true,
+      typeCast: function(field, next) {
+        if (field.type === "TIMESTAMP" || field.type === "DATETIME" || field.type === "DATE") {
+          return field.string();
         }
+        return next();
       }
     };
   }
-  static [entityKind2] = "NodePgPreparedQuery";
-  rawQueryConfig;
-  queryConfig;
+  static [entityKind2] = "MySql2PreparedQuery";
+  rawQuery;
+  query;
   async execute(placeholderValues = {}) {
-    return tracer2.startActiveSpan("drizzle.execute", async () => {
-      const params = fillPlaceholders(this.params, placeholderValues);
-      this.logger.logQuery(this.rawQueryConfig.text, params);
-      const { fields, rawQueryConfig: rawQuery, client, queryConfig: query, joinsNotNullableMap, customResultMapper } = this;
-      if (!fields && !customResultMapper) {
-        return tracer2.startActiveSpan("drizzle.driver.execute", async (span) => {
-          span?.setAttributes({
-            "drizzle.query.name": rawQuery.name,
-            "drizzle.query.text": rawQuery.text,
-            "drizzle.query.params": JSON.stringify(params)
-          });
-          return this.queryWithCache(rawQuery.text, params, async () => {
-            return await client.query(rawQuery, params);
-          });
-        });
+    const params = fillPlaceholders(this.params, placeholderValues);
+    this.logger.logQuery(this.rawQuery.sql, params);
+    const { fields, client, rawQuery, query, joinsNotNullableMap, customResultMapper, returningIds, generatedIds } = this;
+    if (!fields && !customResultMapper) {
+      const res = await this.queryWithCache(rawQuery.sql, params, async () => {
+        return await client.query(rawQuery, params);
+      });
+      const insertId = res[0].insertId;
+      const affectedRows = res[0].affectedRows;
+      if (returningIds) {
+        const returningResponse = [];
+        let j = 0;
+        for (let i = insertId; i < insertId + affectedRows; i++) {
+          for (const column of returningIds) {
+            const key = returningIds[0].path[0];
+            if (is2(column.field, Column2)) {
+              if (column.field.primary && column.field.autoIncrement) {
+                returningResponse.push({ [key]: i });
+              }
+              if (column.field.defaultFn && generatedIds) {
+                returningResponse.push({ [key]: generatedIds[j][key] });
+              }
+            }
+          }
+          j++;
+        }
+        return returningResponse;
       }
-      const result = await tracer2.startActiveSpan("drizzle.driver.execute", (span) => {
-        span?.setAttributes({
-          "drizzle.query.name": query.name,
-          "drizzle.query.text": query.text,
-          "drizzle.query.params": JSON.stringify(params)
-        });
-        return this.queryWithCache(query.text, params, async () => {
-          return await client.query(query, params);
-        });
-      });
-      return tracer2.startActiveSpan("drizzle.mapResponse", () => {
-        return customResultMapper ? customResultMapper(result.rows) : result.rows.map((row) => mapResultRow(fields, row, joinsNotNullableMap));
-      });
+      return res;
+    }
+    const result = await this.queryWithCache(query.sql, params, async () => {
+      return await client.query(query, params);
     });
+    const rows = result[0];
+    if (customResultMapper) {
+      return customResultMapper(rows);
+    }
+    return rows.map((row) => mapResultRow(fields, row, joinsNotNullableMap));
   }
-  all(placeholderValues = {}) {
-    return tracer2.startActiveSpan("drizzle.execute", () => {
-      const params = fillPlaceholders(this.params, placeholderValues);
-      this.logger.logQuery(this.rawQueryConfig.text, params);
-      return tracer2.startActiveSpan("drizzle.driver.execute", (span) => {
-        span?.setAttributes({
-          "drizzle.query.name": this.rawQueryConfig.name,
-          "drizzle.query.text": this.rawQueryConfig.text,
-          "drizzle.query.params": JSON.stringify(params)
-        });
-        return this.queryWithCache(this.rawQueryConfig.text, params, async () => {
-          return this.client.query(this.rawQueryConfig, params);
-        }).then((result) => result.rows);
-      });
-    });
-  }
-  /** @internal */
-  isResponseInArrayMode() {
-    return this._isResponseInArrayMode;
+  async *iterator(placeholderValues = {}) {
+    const params = fillPlaceholders(this.params, placeholderValues);
+    const conn = (isPool(this.client) ? await this.client.getConnection() : this.client).connection;
+    const { fields, query, rawQuery, joinsNotNullableMap, client, customResultMapper } = this;
+    const hasRowsMapper = Boolean(fields || customResultMapper);
+    const driverQuery = hasRowsMapper ? conn.query(query, params) : conn.query(rawQuery, params);
+    const stream = driverQuery.stream();
+    function dataListener() {
+      stream.pause();
+    }
+    stream.on("data", dataListener);
+    try {
+      const onEnd = once(stream, "end");
+      const onError = once(stream, "error");
+      while (true) {
+        stream.resume();
+        const row = await Promise.race([onEnd, onError, new Promise((resolve) => stream.once("data", resolve))]);
+        if (row === void 0 || Array.isArray(row) && row.length === 0) {
+          break;
+        } else if (row instanceof Error) {
+          throw row;
+        } else {
+          if (hasRowsMapper) {
+            if (customResultMapper) {
+              const mappedRow = customResultMapper([row]);
+              yield Array.isArray(mappedRow) ? mappedRow[0] : mappedRow;
+            } else {
+              yield mapResultRow(fields, row, joinsNotNullableMap);
+            }
+          } else {
+            yield row;
+          }
+        }
+      }
+    } finally {
+      stream.off("data", dataListener);
+      if (isPool(client)) {
+        conn.end();
+      }
+    }
   }
 };
-var NodePgSession = class _NodePgSession extends PgSession {
-  constructor(client, dialect, schema, options = {}) {
+var MySql2Session = class _MySql2Session extends MySqlSession {
+  constructor(client, dialect, schema, options) {
     super(dialect);
     this.client = client;
     this.schema = schema;
     this.options = options;
     this.logger = options.logger ?? new NoopLogger();
     this.cache = options.cache ?? new NoopCache();
+    this.mode = options.mode;
   }
-  static [entityKind2] = "NodePgSession";
+  static [entityKind2] = "MySql2Session";
   logger;
+  mode;
   cache;
-  prepareQuery(query, fields, name, isResponseInArrayMode, customResultMapper, queryMetadata, cacheConfig) {
-    return new NodePgPreparedQuery(
+  prepareQuery(query, fields, customResultMapper, generatedIds, returningIds, queryMetadata, cacheConfig) {
+    return new MySql2PreparedQuery(
       this.client,
       query.sql,
       query.params,
@@ -60771,43 +55306,83 @@ var NodePgSession = class _NodePgSession extends PgSession {
       queryMetadata,
       cacheConfig,
       fields,
-      name,
-      isResponseInArrayMode,
-      customResultMapper
+      customResultMapper,
+      generatedIds,
+      returningIds
     );
   }
+  /**
+   * @internal
+   * What is its purpose?
+   */
+  async query(query, params) {
+    this.logger.logQuery(query, params);
+    const result = await this.client.query({
+      sql: query,
+      values: params,
+      rowsAsArray: true,
+      typeCast: function(field, next) {
+        if (field.type === "TIMESTAMP" || field.type === "DATETIME" || field.type === "DATE") {
+          return field.string();
+        }
+        return next();
+      }
+    });
+    return result;
+  }
+  all(query) {
+    const querySql = this.dialect.sqlToQuery(query);
+    this.logger.logQuery(querySql.sql, querySql.params);
+    return this.client.execute(querySql.sql, querySql.params).then((result) => result[0]);
+  }
   async transaction(transaction, config2) {
-    const isPool = this.client instanceof Pool2 || Object.getPrototypeOf(this.client).constructor.name.includes("Pool");
-    const session = isPool ? new _NodePgSession(await this.client.connect(), this.dialect, this.schema, this.options) : this;
-    const tx = new NodePgTransaction(this.dialect, session, this.schema);
-    await tx.execute(sql2`begin${config2 ? sql2` ${tx.getTransactionConfigSQL(config2)}` : void 0}`);
+    const session = isPool(this.client) ? new _MySql2Session(
+      await this.client.getConnection(),
+      this.dialect,
+      this.schema,
+      this.options
+    ) : this;
+    const tx = new MySql2Transaction(
+      this.dialect,
+      session,
+      this.schema,
+      0,
+      this.mode
+    );
+    if (config2) {
+      const setTransactionConfigSql = this.getSetTransactionSQL(config2);
+      if (setTransactionConfigSql) {
+        await tx.execute(setTransactionConfigSql);
+      }
+      const startTransactionSql = this.getStartTransactionSQL(config2);
+      await (startTransactionSql ? tx.execute(startTransactionSql) : tx.execute(sql2`begin`));
+    } else {
+      await tx.execute(sql2`begin`);
+    }
     try {
       const result = await transaction(tx);
       await tx.execute(sql2`commit`);
       return result;
-    } catch (error40) {
+    } catch (err) {
       await tx.execute(sql2`rollback`);
-      throw error40;
+      throw err;
     } finally {
-      if (isPool) session.client.release();
+      if (isPool(this.client)) {
+        session.client.release();
+      }
     }
   }
-  async count(sql22) {
-    const res = await this.execute(sql22);
-    return Number(
-      res["rows"][0]["count"]
-    );
-  }
 };
-var NodePgTransaction = class _NodePgTransaction extends PgTransaction {
-  static [entityKind2] = "NodePgTransaction";
+var MySql2Transaction = class _MySql2Transaction extends MySqlTransaction {
+  static [entityKind2] = "MySql2Transaction";
   async transaction(transaction) {
     const savepointName = `sp${this.nestedIndex + 1}`;
-    const tx = new _NodePgTransaction(
+    const tx = new _MySql2Transaction(
       this.dialect,
       this.session,
       this.schema,
-      this.nestedIndex + 1
+      this.nestedIndex + 1,
+      this.mode
     );
     await tx.execute(sql2.raw(`savepoint ${savepointName}`));
     try {
@@ -60820,35 +55395,45 @@ var NodePgTransaction = class _NodePgTransaction extends PgTransaction {
     }
   }
 };
+function isPool(client) {
+  return "getConnection" in client;
+}
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/node-postgres/driver.js
-var NodePgDriver = class {
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql2/driver.js
+var MySql2Driver = class {
   constructor(client, dialect, options = {}) {
     this.client = client;
     this.dialect = dialect;
     this.options = options;
   }
-  static [entityKind2] = "NodePgDriver";
-  createSession(schema) {
-    return new NodePgSession(this.client, this.dialect, schema, {
+  static [entityKind2] = "MySql2Driver";
+  createSession(schema, mode) {
+    return new MySql2Session(this.client, this.dialect, schema, {
       logger: this.options.logger,
+      mode,
       cache: this.options.cache
     });
   }
 };
-var NodePgDatabase = class extends PgDatabase {
-  static [entityKind2] = "NodePgDatabase";
+var MySql2Database = class extends MySqlDatabase {
+  static [entityKind2] = "MySql2Database";
 };
 function construct(client, config2 = {}) {
-  const dialect = new PgDialect({ casing: config2.casing });
+  const dialect = new MySqlDialect({ casing: config2.casing });
   let logger2;
   if (config2.logger === true) {
     logger2 = new DefaultLogger();
   } else if (config2.logger !== false) {
     logger2 = config2.logger;
   }
+  const clientForInstance = isCallbackClient(client) ? client.promise() : client;
   let schema;
   if (config2.schema) {
+    if (config2.mode === void 0) {
+      throw new DrizzleError({
+        message: 'You need to specify "mode": "planetscale" or "default" when providing a schema. Read more: https://orm.drizzle.team/docs/rqb#modes'
+      });
+    }
     const tablesConfig = extractTablesRelationalConfig(
       config2.schema,
       createTableRelationsHelpers
@@ -60859,9 +55444,10 @@ function construct(client, config2 = {}) {
       tableNamesMap: tablesConfig.tableNamesMap
     };
   }
-  const driver = new NodePgDriver(client, dialect, { logger: logger2, cache: config2.cache });
-  const session = driver.createSession(schema);
-  const db2 = new NodePgDatabase(dialect, session, schema);
+  const mode = config2.mode ?? "default";
+  const driver = new MySql2Driver(clientForInstance, dialect, { logger: logger2, cache: config2.cache });
+  const session = driver.createSession(schema, mode);
+  const db2 = new MySql2Database(dialect, session, schema, mode);
   db2.$client = client;
   db2.$cache = config2.cache;
   if (db2.$cache) {
@@ -60869,20 +55455,26 @@ function construct(client, config2 = {}) {
   }
   return db2;
 }
+function isCallbackClient(client) {
+  return typeof client.promise === "function";
+}
 function drizzle(...params) {
   if (typeof params[0] === "string") {
-    const instance = new esm_default.Pool({
-      connectionString: params[0]
+    const connectionString = params[0];
+    const instance = createPool({
+      uri: connectionString
     });
     return construct(instance, params[1]);
   }
   if (isConfig(params[0])) {
     const { connection, client, ...drizzleConfig } = params[0];
     if (client) return construct(client, drizzleConfig);
-    const instance = typeof connection === "string" ? new esm_default.Pool({
-      connectionString: connection
-    }) : new esm_default.Pool(connection);
-    return construct(instance, drizzleConfig);
+    const instance = typeof connection === "string" ? createPool({
+      uri: connection,
+      supportBigNumbers: true
+    }) : createPool(connection);
+    const db2 = construct(instance, drizzleConfig);
+    return db2;
   }
   return construct(params[0], params[1]);
 }
@@ -60892,6 +55484,9 @@ function drizzle(...params) {
   }
   drizzle2.mock = mock;
 })(drizzle || (drizzle = {}));
+
+// lib/db/src/index.ts
+import mysql from "mysql2/promise";
 
 // lib/db/src/schema/index.ts
 var schema_exports = {};
@@ -69853,10 +64448,10 @@ function _property(property, schema, params) {
     ...normalizeParams(params)
   });
 }
-function _mime(types3, params) {
+function _mime(types, params) {
   return new $ZodCheckMimeType({
     check: "mime_type",
-    mime: types3,
+    mime: types,
     ...normalizeParams(params)
   });
 }
@@ -71739,7 +66334,7 @@ var ZodFile = /* @__PURE__ */ $constructor("ZodFile", (inst, def) => {
   ZodType2.init(inst, def);
   inst.min = (size, params) => inst.check(_minSize(size, params));
   inst.max = (size, params) => inst.check(_maxSize(size, params));
-  inst.mime = (types3, params) => inst.check(_mime(Array.isArray(types3) ? types3 : [types3], params));
+  inst.mime = (types, params) => inst.check(_mime(Array.isArray(types) ? types : [types], params));
 });
 function file(params) {
   return _file(ZodFile, params);
@@ -72051,7 +66646,7 @@ function date5(params) {
 // node_modules/.pnpm/zod@3.25.76/node_modules/zod/v4/classic/external.js
 config(en_default2());
 
-// node_modules/.pnpm/drizzle-zod@0.8.3_drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0__zod@3.25.76/node_modules/drizzle-zod/index.mjs
+// node_modules/.pnpm/drizzle-zod@0.8.3_drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2___zod@3.25.76/node_modules/drizzle-zod/index.mjs
 var CONSTANTS = {
   INT8_MIN: -128,
   INT8_MAX: 127,
@@ -72437,20 +67032,14 @@ var insertBeverageSchema = createInsertSchema(beveragesTable).omit({
 });
 
 // lib/db/src/index.ts
-var import_dotenv = __toESM(require_main(), 1);
+var import_dotenv = __toESM(require_main());
 import path3 from "path";
 import_dotenv.default.config({ path: path3.resolve(__dirname, "../../../.env") });
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL must be set. Did you forget to provision a database?");
 }
-var { Pool: Pool3 } = esm_default;
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?"
-  );
-}
-var pool = new Pool3({ connectionString: process.env.DATABASE_URL });
-var db = drizzle(pool, { schema: schema_exports });
+var pool = mysql.createPool({ uri: process.env.DATABASE_URL });
+var db = drizzle(pool, { schema: schema_exports, mode: "default" });
 
 // src/lib/serialize.ts
 function serializeForResponse(value) {

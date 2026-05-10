@@ -29023,25 +29023,25 @@ var require_eventemitter3 = __commonJS({
 var require_requires_port = __commonJS({
   "node_modules/.pnpm/requires-port@1.0.0/node_modules/requires-port/index.js"(exports, module) {
     "use strict";
-    module.exports = function required2(port2, protocol) {
+    module.exports = function required2(port, protocol) {
       protocol = protocol.split(":")[0];
-      port2 = +port2;
-      if (!port2) return false;
+      port = +port;
+      if (!port) return false;
       switch (protocol) {
         case "http":
         case "ws":
-          return port2 !== 80;
+          return port !== 80;
         case "https":
         case "wss":
-          return port2 !== 443;
+          return port !== 443;
         case "ftp":
-          return port2 !== 21;
+          return port !== 21;
         case "gopher":
-          return port2 !== 70;
+          return port !== 70;
         case "file":
           return false;
       }
-      return port2 !== 0;
+      return port !== 0;
     };
   }
 });
@@ -30138,7 +30138,7 @@ var require_http_proxy = __commonJS({
         throw err;
       }
     };
-    ProxyServer.prototype.listen = function(port2, hostname2) {
+    ProxyServer.prototype.listen = function(port, hostname2) {
       var self = this, closure = function(req, res) {
         self.web(req, res);
       };
@@ -30148,7 +30148,7 @@ var require_http_proxy = __commonJS({
           self.ws(req, socket, head);
         });
       }
-      this._server.listen(port2, hostname2);
+      this._server.listen(port, hostname2);
       return this;
     };
     ProxyServer.prototype.close = function(callback) {
@@ -30419,15 +30419,15 @@ var require_logger_plugin2 = __commonJS({
         const originalUrl = req.originalUrl ?? `${req.baseUrl || ""}${req.url}`;
         let target;
         try {
-          const port2 = (0, logger_plugin_1.getPort)(proxyRes.req?.agent?.sockets);
+          const port = (0, logger_plugin_1.getPort)(proxyRes.req?.agent?.sockets);
           const obj = {
             protocol: proxyRes.req.protocol,
             host: proxyRes.req.host,
             pathname: proxyRes.req.path
           };
           target = new url_1.URL(`${obj.protocol}//${obj.host}${obj.pathname}`);
-          if (port2) {
-            target.port = port2;
+          if (port) {
+            target.port = port;
           }
         } catch (err) {
           target = new url_1.URL(options.target);
@@ -67596,22 +67596,14 @@ app.use("/api", routes_default);
 var app_default = app;
 
 // src/index.ts
-var rawPort = process.env["PORT"];
-if (!rawPort) {
-  throw new Error(
-    "PORT environment variable is required but was not provided."
-  );
-}
-var port = Number(rawPort);
-if (Number.isNaN(port) || port <= 0) {
-  throw new Error(`Invalid PORT value: "${rawPort}"`);
-}
-app_default.listen(port, "0.0.0.0", () => {
-  console.log(`Server is running on port ${port}`);
-  logger.info({ port }, "Server listening");
-});
 app_default.get("/test", (req, res) => {
-  res.send("Server Node.js Berhasil Berjalan!");
+  res.send("Server Node.js AtoZ Berhasil Berjalan!");
+});
+var rawPort = process.env.PORT || 3e3;
+var PORT = Number(rawPort);
+app_default.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+  logger.info({ port: PORT }, "Server listening");
 });
 /*! Bundled license information:
 

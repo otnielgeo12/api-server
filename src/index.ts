@@ -2,26 +2,18 @@ import "dotenv/config";
 import app from "./app";
 import { logger } from "./lib/logger";
 
-const rawPort = process.env["PORT"];
-
-if (!rawPort) {
-  throw new Error(
-    "PORT environment variable is required but was not provided.",
-  );
-}
-
-const port = Number(rawPort);
-
-if (Number.isNaN(port) || port <= 0) {
-  throw new Error(`Invalid PORT value: "${rawPort}"`);
-}
-
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Server is running on port ${port}`);
-
-  logger.info({ port }, "Server listening");
+// 1. Daftarkan semua route SEBELUM app.listen
+app.get('/test', (req, res) => {
+  res.send('Server Node.js AtoZ Berhasil Berjalan!');
 });
 
-app.get('/test', (req, res) => {
-  res.send('Server Node.js Berhasil Berjalan!');
+// 2. Gunakan fallback (nilai cadangan) agar tidak crash
+// Jika Hostinger tidak memberikan PORT, dia akan otomatis pakai 3000
+const rawPort = process.env.PORT || 3000;
+const PORT = Number(rawPort);
+
+// 3. Jalankan server tanpa '0.0.0.0' agar Hostinger yang mengatur routing jaringannya
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+  logger.info({ port: PORT }, "Server listening");
 });

@@ -11,8 +11,6 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@workspace/db": "workspace:*",
-    "@workspace/api-zod": "workspace:*",
     "@clerk/express": "^2.1.9",
     "@clerk/shared": "^4.8.5",
     "@google-cloud/storage": "^7.19.0",

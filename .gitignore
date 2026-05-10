@@ -1,6 +1,0 @@
-node_modules/
-dist/
-.env
-*.tsbuildinfo
-lib/db/dist/
-lib/api-zod/dist/

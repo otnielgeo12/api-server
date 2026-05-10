@@ -1,5 +1,5 @@
 import "dotenv/config";
-import app from "./app.ts";
+import app from "./app";
 import { logger } from "./lib/logger";
 
 const rawPort = process.env["PORT"];
@@ -16,11 +16,12 @@ if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
-app.listen(port, (err) => {
-  if (err) {
-    logger.error({ err }, "Error listening on port");
-    process.exit(1);
-  }
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server is running on port ${port}`);
 
   logger.info({ port }, "Server listening");
+});
+
+app.get('/test', (req, res) => {
+  res.send('Server Node.js Berhasil Berjalan!');
 });

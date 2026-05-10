@@ -67606,12 +67606,12 @@ var port = Number(rawPort);
 if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
-app_default.listen(port, (err) => {
-  if (err) {
-    logger.error({ err }, "Error listening on port");
-    process.exit(1);
-  }
+app_default.listen(port, "0.0.0.0", () => {
+  console.log(`Server is running on port ${port}`);
   logger.info({ port }, "Server listening");
+});
+app_default.get("/test", (req, res) => {
+  res.send("Server Node.js Berhasil Berjalan!");
 });
 /*! Bundled license information:
 

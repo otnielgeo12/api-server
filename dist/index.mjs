@@ -1167,8 +1167,8 @@ var require_depd = __commonJS({
       return deprecate;
     }
     function eehaslisteners(emitter, type) {
-      var count = typeof emitter.listenerCount !== "function" ? emitter.listeners(type).length : emitter.listenerCount(type);
-      return count > 0;
+      var count2 = typeof emitter.listenerCount !== "function" ? emitter.listeners(type).length : emitter.listenerCount(type);
+      return count2 > 0;
     }
     function isignored(namespace) {
       if (process.noDeprecation) {
@@ -18737,14 +18737,14 @@ var require_urlencoded = __commonJS({
       };
     }
     function parameterCount(body, limit) {
-      let count = 0;
+      let count2 = 0;
       let index = -1;
       do {
-        count++;
-        if (count > limit) return void 0;
+        count2++;
+        if (count2 > limit) return void 0;
         index = body.indexOf("&", index + 1);
       } while (index !== -1);
-      return count;
+      return count2;
     }
   }
 });
@@ -21957,13 +21957,13 @@ var require_mediaType = __commonJS({
       return spec.q > 0;
     }
     function quoteCount(string4) {
-      var count = 0;
+      var count2 = 0;
       var index = 0;
       while ((index = string4.indexOf('"', index)) !== -1) {
-        count++;
+        count2++;
         index++;
       }
-      return count;
+      return count2;
     }
     function splitKeyValuePair(str) {
       var index = str.indexOf("=");
@@ -23268,8 +23268,8 @@ var require_send = __commonJS({
       }
     }
     function hasListeners(emitter, type) {
-      var count = typeof emitter.listenerCount !== "function" ? emitter.listeners(type).length : emitter.listenerCount(type);
-      return count > 0;
+      var count2 = typeof emitter.listenerCount !== "function" ? emitter.listeners(type).length : emitter.listenerCount(type);
+      return count2 > 0;
     }
     function normalizeList(val, name) {
       var list = [].concat(val || []);
@@ -30900,7 +30900,7 @@ var require_to_regex_range = __commonJS({
       let zipped = zip(start, stop);
       let digits = zipped.length;
       let pattern = "";
-      let count = 0;
+      let count2 = 0;
       for (let i = 0; i < digits; i++) {
         let [startDigit, stopDigit] = zipped[i];
         if (startDigit === stopDigit) {
@@ -30908,13 +30908,13 @@ var require_to_regex_range = __commonJS({
         } else if (startDigit !== "0" || stopDigit !== "9") {
           pattern += toCharacterClass(startDigit, stopDigit, options);
         } else {
-          count++;
+          count2++;
         }
       }
-      if (count) {
+      if (count2) {
         pattern += options.shorthand === true ? "\\d" : "[0-9]";
       }
-      return { pattern, count: [count], digits };
+      return { pattern, count: [count2], digits };
     }
     function splitToPatterns(min, max, tok, options) {
       let ranges = splitToRanges(min, max);
@@ -32661,13 +32661,13 @@ var require_parse3 = __commonJS({
         consume(token.value);
       };
       const negate = () => {
-        let count = 1;
+        let count2 = 1;
         while (peek() === "!" && (peek(2) !== "(" || peek(3) === "?")) {
           advance();
           state.start++;
-          count++;
+          count2++;
         }
-        if (count % 2 === 0) {
+        if (count2 % 2 === 0) {
           return false;
         }
         state.negated = true;
@@ -48304,10 +48304,10 @@ var PgEnumColumn = class extends PgColumn {
 // node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/subquery.js
 var Subquery = class {
   static [entityKind] = "Subquery";
-  constructor(sql3, selection, alias, isWith = false) {
+  constructor(sql4, selection, alias, isWith = false) {
     this._ = {
       brand: "Subquery",
-      sql: sql3,
+      sql: sql4,
       selectedFields: selection,
       alias,
       isWith
@@ -48818,6 +48818,11 @@ function asc(column) {
 }
 function desc(column) {
   return sql`${column} desc`;
+}
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/sql/functions/aggregate.js
+function count(expression) {
+  return sql`count(${expression || sql.raw("*")})`.mapWith(Number);
 }
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql2/driver.js
@@ -49471,10 +49476,10 @@ var PgEnumColumn2 = class extends PgColumn2 {
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/subquery.js
 var Subquery2 = class {
   static [entityKind2] = "Subquery";
-  constructor(sql3, fields, alias, isWith = false, usedTables = []) {
+  constructor(sql4, fields, alias, isWith = false, usedTables = []) {
     this._ = {
       brand: "Subquery",
-      sql: sql3,
+      sql: sql4,
       selectedFields: fields,
       alias,
       isWith,
@@ -54696,8 +54701,8 @@ var NoopCache = class extends Cache {
   async onMutate(_params) {
   }
 };
-async function hashQuery(sql3, params) {
-  const dataToHash = `${sql3}-${JSON.stringify(params)}`;
+async function hashQuery(sql4, params) {
+  const dataToHash = `${sql4}-${JSON.stringify(params)}`;
   const encoder = new TextEncoder();
   const data = encoder.encode(dataToHash);
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
@@ -59013,8 +59018,8 @@ function az_default() {
 }
 
 // node_modules/.pnpm/zod@3.25.76/node_modules/zod/v4/locales/be.js
-function getBelarusianPlural(count, one, few, many) {
-  const absCount = Math.abs(count);
+function getBelarusianPlural(count2, one, few, many) {
+  const absCount = Math.abs(count2);
   const lastDigit = absCount % 10;
   const lastTwoDigits = absCount % 100;
   if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
@@ -62159,8 +62164,8 @@ function pt_default() {
 }
 
 // node_modules/.pnpm/zod@3.25.76/node_modules/zod/v4/locales/ru.js
-function getRussianPlural(count, one, few, many) {
-  const absCount = Math.abs(count);
+function getRussianPlural(count2, one, few, many) {
+  const absCount = Math.abs(count2);
   const lastDigit = absCount % 10;
   const lastTwoDigits = absCount % 100;
   if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
@@ -67107,10 +67112,10 @@ router8.patch("/site-info", async (req, res) => {
   res.json(UpdateSiteInfoResponse.parse(serializeForResponse(row)));
 });
 router8.get("/dashboard/summary", async (_req, res) => {
-  const [outletCountRow] = await db.select({ count: sql`cast(count(*) as int)` }).from(outletsTable);
-  const [menuCountRow] = await db.select({ count: sql`cast(count(*) as int)` }).from(menuItemsTable);
-  const [bannerCountRow] = await db.select({ count: sql`cast(count(*) as int)` }).from(bannersTable);
-  const [galleryCountRow] = await db.select({ count: sql`cast(count(*) as int)` }).from(galleryImagesTable);
+  const [outletCountRow] = await db.select({ count: count() }).from(outletsTable);
+  const [menuCountRow] = await db.select({ count: count() }).from(menuItemsTable);
+  const [bannerCountRow] = await db.select({ count: count() }).from(bannersTable);
+  const [galleryCountRow] = await db.select({ count: count() }).from(galleryImagesTable);
   const recentMenuItems = await db.select().from(menuItemsTable).orderBy(desc(menuItemsTable.createdAt)).limit(6);
   res.json(
     GetDashboardSummaryResponse.parse({

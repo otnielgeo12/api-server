@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { eq, desc, sql } from "drizzle-orm";
+import { eq, desc, sql, count } from "drizzle-orm";
 import { serializeForResponse as ser } from "../lib/serialize";
 import {
   db,
@@ -60,16 +60,16 @@ router.patch("/site-info", async (req, res): Promise<void> => {
 
 router.get("/dashboard/summary", async (_req, res): Promise<void> => {
   const [outletCountRow] = await db
-    .select({ count: sql<number>`cast(count(*) as int)` })
+    .select({ count: count() })
     .from(outletsTable);
   const [menuCountRow] = await db
-    .select({ count: sql<number>`cast(count(*) as int)` })
+    .select({ count: count() })
     .from(menuItemsTable);
   const [bannerCountRow] = await db
-    .select({ count: sql<number>`cast(count(*) as int)` })
+    .select({ count: count() })
     .from(bannersTable);
   const [galleryCountRow] = await db
-    .select({ count: sql<number>`cast(count(*) as int)` })
+    .select({ count: count() })
     .from(galleryImagesTable);
 
   const recentMenuItems = await db

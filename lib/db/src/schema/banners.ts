@@ -1,21 +1,21 @@
-import { pgTable, serial, text, integer, boolean, timestamp } from "drizzle-orm/pg-core";
+import { mysqlTable, int, varchar, text, boolean, timestamp } from "drizzle-orm/mysql-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
-export const bannersTable = pgTable("banners", {
-  id: serial("id").primaryKey(),
-  title: text("title"),
+export const bannersTable = mysqlTable("banners", {
+  id: int("id").primaryKey().autoincrement(),
+  title: varchar("title", { length: 255 }),
   subtitle: text("subtitle"),
   imagePath: text("image_path").notNull(),
-  ctaLabel: text("cta_label"),
+  ctaLabel: varchar("cta_label", { length: 100 }),
   ctaHref: text("cta_href"),
-  sortOrder: integer("sort_order").notNull().default(0),
+  sortOrder: int("sort_order").notNull().default(0),
   active: boolean("active").notNull().default(true),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at")
     .notNull()
     .defaultNow()
-    .$onUpdate(() => new Date()),
+    .onUpdateNow(),
 });
 
 export const insertBannerSchema = createInsertSchema(bannersTable).omit({

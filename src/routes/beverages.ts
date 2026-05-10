@@ -50,10 +50,15 @@ router.post("/outlets/:outletId/beverages", async (req, res): Promise<void> => {
     res.status(404).json({ error: "Outlet not found" });
     return;
   }
-  const [row] = await db
+  const [result] = await db
     .insert(beveragesTable)
-    .values({ ...parsed.data, outletId: params.data.outletId })
-    .returning();
+    .values({ ...parsed.data, outletId: params.data.outletId });
+    
+  const [row] = await db
+    .select()
+    .from(beveragesTable)
+    .where(eq(beveragesTable.id, result.insertId));
+    
   res.status(201).json(GetBeverageResponse.parse(ser(row)));
 });
 
@@ -85,11 +90,16 @@ router.patch("/beverages/:id", async (req, res): Promise<void> => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [row] = await db
+  await db
     .update(beveragesTable)
     .set(parsed.data)
-    .where(eq(beveragesTable.id, params.data.id))
-    .returning();
+    .where(eq(beveragesTable.id, params.data.id));
+    
+  const [row] = await db
+    .select()
+    .from(beveragesTable)
+    .where(eq(beveragesTable.id, params.data.id));
+
   if (!row) {
     res.status(404).json({ error: "Beverage not found" });
     return;
@@ -103,14 +113,20 @@ router.delete("/beverages/:id", async (req, res): Promise<void> => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [row] = await db
-    .delete(beveragesTable)
-    .where(eq(beveragesTable.id, params.data.id))
-    .returning();
-  if (!row) {
+  const [existing] = await db
+    .select()
+    .from(beveragesTable)
+    .where(eq(beveragesTable.id, params.data.id));
+
+  if (!existing) {
     res.status(404).json({ error: "Beverage not found" });
     return;
   }
+
+  await db
+    .delete(beveragesTable)
+    .where(eq(beveragesTable.id, params.data.id));
+
   res.sendStatus(204);
 });
 

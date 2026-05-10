@@ -1,26 +1,26 @@
-import { pgTable, serial, text, integer, timestamp } from "drizzle-orm/pg-core";
+import { mysqlTable, int, varchar, text, timestamp } from "drizzle-orm/mysql-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
-export const outletsTable = pgTable("outlets", {
-  id: serial("id").primaryKey(),
-  slug: text("slug").notNull().unique(),
-  name: text("name").notNull(),
-  tagline: text("tagline"),
+export const outletsTable = mysqlTable("outlets", {
+  id: int("id").primaryKey().autoincrement(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  name: varchar("name", { length: 255 }).notNull(),
+  tagline: varchar("tagline", { length: 255 }),
   description: text("description"),
   address: text("address"),
-  phone: text("phone"),
-  hours: text("hours"),
-  cuisine: text("cuisine"),
-  accentColor: text("accent_color"),
+  phone: varchar("phone", { length: 50 }),
+  hours: varchar("hours", { length: 255 }),
+  cuisine: varchar("cuisine", { length: 100 }),
+  accentColor: varchar("accent_color", { length: 20 }),
   coverImagePath: text("cover_image_path"),
   cardImagePath: text("card_image_path"),
-  sortOrder: integer("sort_order").notNull().default(0),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
+  sortOrder: int("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at")
     .notNull()
     .defaultNow()
-    .$onUpdate(() => new Date()),
+    .onUpdateNow(),
 });
 
 export const insertOutletSchema = createInsertSchema(outletsTable).omit({

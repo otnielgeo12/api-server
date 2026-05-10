@@ -1,24 +1,24 @@
-import { pgTable, serial, text, integer, boolean, timestamp } from "drizzle-orm/pg-core";
+import { mysqlTable, int, varchar, text, boolean, timestamp } from "drizzle-orm/mysql-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { outletsTable } from "./outlets";
 
-export const beveragesTable = pgTable("beverages", {
-  id: serial("id").primaryKey(),
-  outletId: integer("outlet_id")
+export const beveragesTable = mysqlTable("beverages", {
+  id: int("id").primaryKey().autoincrement(),
+  outletId: int("outlet_id")
     .notNull()
     .references(() => outletsTable.id, { onDelete: "cascade" }),
-  category: text("category").notNull(),
-  name: text("name").notNull(),
+  category: varchar("category", { length: 100 }).notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
-  price: text("price"),
-  sortOrder: integer("sort_order").notNull().default(0),
+  price: varchar("price", { length: 50 }),
+  sortOrder: int("sort_order").notNull().default(0),
   featured: boolean("featured").notNull().default(false),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at")
     .notNull()
     .defaultNow()
-    .$onUpdate(() => new Date()),
+    .onUpdateNow(),
 });
 
 export const insertBeverageSchema = createInsertSchema(beveragesTable).omit({

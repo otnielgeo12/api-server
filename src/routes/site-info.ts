@@ -21,10 +21,15 @@ const router: IRouter = Router();
 async function ensureSiteInfo() {
   const [existing] = await db.select().from(siteInfoTable).limit(1);
   if (existing) return existing;
-  const [created] = await db
+  const [result] = await db
     .insert(siteInfoTable)
-    .values({ brandName: "Avenue Hospitality Group" })
-    .returning();
+    .values({ brandName: "Avenue Hospitality Group" });
+  
+  const [created] = await db
+    .select()
+    .from(siteInfoTable)
+    .where(eq(siteInfoTable.id, result.insertId));
+    
   return created;
 }
 
@@ -40,11 +45,16 @@ router.patch("/site-info", async (req, res): Promise<void> => {
     return;
   }
   const existing = await ensureSiteInfo();
-  const [row] = await db
+  await db
     .update(siteInfoTable)
     .set(parsed.data)
-    .where(eq(siteInfoTable.id, existing.id))
-    .returning();
+    .where(eq(siteInfoTable.id, existing.id));
+    
+  const [row] = await db
+    .select()
+    .from(siteInfoTable)
+    .where(eq(siteInfoTable.id, existing.id));
+    
   res.json(UpdateSiteInfoResponse.parse(ser(row)));
 });
 

@@ -41,7 +41,8 @@ router.post("/banners", async (req, res): Promise<void> => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [row] = await db.insert(bannersTable).values(parsed.data).returning();
+  const [result] = await db.insert(bannersTable).values(parsed.data);
+  const [row] = await db.select().from(bannersTable).where(eq(bannersTable.id, result.insertId));
   res.status(201).json(GetBannerResponse.parse(ser(row)));
 });
 
@@ -73,11 +74,16 @@ router.patch("/banners/:id", async (req, res): Promise<void> => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [row] = await db
+  await db
     .update(bannersTable)
     .set(parsed.data)
-    .where(eq(bannersTable.id, params.data.id))
-    .returning();
+    .where(eq(bannersTable.id, params.data.id));
+  
+  const [row] = await db
+    .select()
+    .from(bannersTable)
+    .where(eq(bannersTable.id, params.data.id));
+    
   if (!row) {
     res.status(404).json({ error: "Banner not found" });
     return;
@@ -91,14 +97,20 @@ router.delete("/banners/:id", async (req, res): Promise<void> => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [row] = await db
-    .delete(bannersTable)
-    .where(eq(bannersTable.id, params.data.id))
-    .returning();
-  if (!row) {
+  const [existing] = await db
+    .select()
+    .from(bannersTable)
+    .where(eq(bannersTable.id, params.data.id));
+
+  if (!existing) {
     res.status(404).json({ error: "Banner not found" });
     return;
   }
+
+  await db
+    .delete(bannersTable)
+    .where(eq(bannersTable.id, params.data.id));
+
   res.sendStatus(204);
 });
 

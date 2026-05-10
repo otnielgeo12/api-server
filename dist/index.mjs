@@ -1238,12 +1238,12 @@ var require_depd = __commonJS({
     }
     function callSiteLocation(callSite) {
       var file2 = callSite.getFileName() || "<anonymous>";
-      var line2 = callSite.getLineNumber();
+      var line = callSite.getLineNumber();
       var colm = callSite.getColumnNumber();
       if (callSite.isEval()) {
         file2 = callSite.getEvalOrigin() + ", " + file2;
       }
-      var site = [file2, line2, colm];
+      var site = [file2, line, colm];
       site.callSite = callSite;
       site.name = callSite.getFunctionName();
       return site;
@@ -16209,9 +16209,9 @@ var require_object_inspect = __commonJS({
       }
       var sepRegex = /[0-9](?=(?:[0-9]{3})+(?![0-9]))/g;
       if (typeof num === "number") {
-        var int2 = num < 0 ? -$floor(-num) : $floor(num);
-        if (int2 !== num) {
-          var intStr = String(int2);
+        var int3 = num < 0 ? -$floor(-num) : $floor(num);
+        if (int3 !== num) {
+          var intStr = String(int3);
           var dec = $slice.call(str, intStr.length + 1);
           return $replace.call(intStr, sepRegex, "$&_") + "." + $replace.call($replace.call(dec, /([0-9]{3})/g, "$&_"), /_$/, "");
         }
@@ -19364,7 +19364,7 @@ var require_ipaddr = __commonJS({
           return ipaddr.IPv6.parse("::ffff:" + this.toString());
         };
         IPv4.prototype.prefixLengthFromSubnetMask = function() {
-          var cidr2, i, k, octet, stop, zeros, zerotable;
+          var cidr, i, k, octet, stop, zeros, zerotable;
           zerotable = {
             0: 8,
             128: 7,
@@ -19376,7 +19376,7 @@ var require_ipaddr = __commonJS({
             254: 1,
             255: 0
           };
-          cidr2 = 0;
+          cidr = 0;
           stop = false;
           for (i = k = 3; k >= 0; i = k += -1) {
             octet = this.octets[i];
@@ -19388,12 +19388,12 @@ var require_ipaddr = __commonJS({
               if (zeros !== 8) {
                 stop = true;
               }
-              cidr2 += zeros;
+              cidr += zeros;
             } else {
               return null;
             }
           }
-          return 32 - cidr2;
+          return 32 - cidr;
         };
         return IPv4;
       })();
@@ -19571,7 +19571,7 @@ var require_ipaddr = __commonJS({
           return new ipaddr.IPv4([high >> 8, high & 255, low >> 8, low & 255]);
         };
         IPv6.prototype.prefixLengthFromSubnetMask = function() {
-          var cidr2, i, k, part, stop, zeros, zerotable;
+          var cidr, i, k, part, stop, zeros, zerotable;
           zerotable = {
             0: 16,
             32768: 15,
@@ -19591,7 +19591,7 @@ var require_ipaddr = __commonJS({
             65534: 1,
             65535: 0
           };
-          cidr2 = 0;
+          cidr = 0;
           stop = false;
           for (i = k = 7; k >= 0; i = k += -1) {
             part = this.parts[i];
@@ -19603,12 +19603,12 @@ var require_ipaddr = __commonJS({
               if (zeros !== 16) {
                 stop = true;
               }
-              cidr2 += zeros;
+              cidr += zeros;
             } else {
               return null;
             }
           }
-          return 128 - cidr2;
+          return 128 - cidr;
         };
         return IPv6;
       })();
@@ -19780,11 +19780,11 @@ var require_ipaddr = __commonJS({
         return new this(octets);
       };
       ipaddr.IPv4.broadcastAddressFromCIDR = function(string4) {
-        var cidr2, error40, i, ipInterfaceOctets, octets, subnetMaskOctets;
+        var cidr, error40, i, ipInterfaceOctets, octets, subnetMaskOctets;
         try {
-          cidr2 = this.parseCIDR(string4);
-          ipInterfaceOctets = cidr2[0].toByteArray();
-          subnetMaskOctets = this.subnetMaskFromPrefixLength(cidr2[1]).toByteArray();
+          cidr = this.parseCIDR(string4);
+          ipInterfaceOctets = cidr[0].toByteArray();
+          subnetMaskOctets = this.subnetMaskFromPrefixLength(cidr[1]).toByteArray();
           octets = [];
           i = 0;
           while (i < 4) {
@@ -19798,11 +19798,11 @@ var require_ipaddr = __commonJS({
         }
       };
       ipaddr.IPv4.networkAddressFromCIDR = function(string4) {
-        var cidr2, error40, i, ipInterfaceOctets, octets, subnetMaskOctets;
+        var cidr, error40, i, ipInterfaceOctets, octets, subnetMaskOctets;
         try {
-          cidr2 = this.parseCIDR(string4);
-          ipInterfaceOctets = cidr2[0].toByteArray();
-          subnetMaskOctets = this.subnetMaskFromPrefixLength(cidr2[1]).toByteArray();
+          cidr = this.parseCIDR(string4);
+          ipInterfaceOctets = cidr[0].toByteArray();
+          subnetMaskOctets = this.subnetMaskFromPrefixLength(cidr[1]).toByteArray();
           octets = [];
           i = 0;
           while (i < 4) {
@@ -22523,18 +22523,18 @@ var require_content_disposition = __commonJS({
       const encoded = match2[2];
       switch (charset) {
         case "iso-8859-1": {
-          const binary = decodeHexEscapes(encoded);
-          return getlatin1(binary);
+          const binary2 = decodeHexEscapes(encoded);
+          return getlatin1(binary2);
         }
         case "utf-8":
         case "utf8": {
           try {
             return decodeURIComponent(encoded);
           } catch {
-            const binary = decodeHexEscapes(encoded);
-            const bytes = new Uint8Array(binary.length);
-            for (let idx = 0; idx < binary.length; idx++) {
-              bytes[idx] = binary.charCodeAt(idx);
+            const binary2 = decodeHexEscapes(encoded);
+            const bytes = new Uint8Array(binary2.length);
+            for (let idx = 0; idx < binary2.length; idx++) {
+              bytes[idx] = binary2.charCodeAt(idx);
             }
             return utf8Decoder.decode(bytes);
           }
@@ -25299,13 +25299,13 @@ var require_time = __commonJS({
       const nanosWithinSecond = currentTimeNs % NS_PER_SEC;
       const msSinceEpoch = Number(secondsSinceEpoch * 1000n + nanosWithinSecond / 1000000n);
       const date6 = new Date(msSinceEpoch);
-      const year = date6.getUTCFullYear();
+      const year2 = date6.getUTCFullYear();
       const month = (date6.getUTCMonth() + 1).toString().padStart(2, "0");
       const day = date6.getUTCDate().toString().padStart(2, "0");
       const hours = date6.getUTCHours().toString().padStart(2, "0");
       const minutes = date6.getUTCMinutes().toString().padStart(2, "0");
       const seconds = date6.getUTCSeconds().toString().padStart(2, "0");
-      return `,"time":"${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${nanosWithinSecond.toString().padStart(9, "0")}Z"`;
+      return `,"time":"${year2}-${month}-${day}T${hours}:${minutes}:${seconds}.${nanosWithinSecond.toString().padStart(9, "0")}Z"`;
     };
     module.exports = { nullTime, epochTime, unixTime, isoTime, isoTimeNano };
   }
@@ -26915,14 +26915,14 @@ var require_tools = __commonJS({
       let result = "";
       let last = 0;
       let found = false;
-      let point2 = 255;
+      let point = 255;
       const l = str.length;
       if (l > 100) {
         return JSON.stringify(str);
       }
-      for (var i = 0; i < l && point2 >= 32; i++) {
-        point2 = str.charCodeAt(i);
-        if (point2 === 34 || point2 === 92) {
+      for (var i = 0; i < l && point >= 32; i++) {
+        point = str.charCodeAt(i);
+        if (point === 34 || point === 92) {
           result += str.slice(last, i) + "\\";
           last = i;
           found = true;
@@ -26933,7 +26933,7 @@ var require_tools = __commonJS({
       } else {
         result += str.slice(last);
       }
-      return point2 < 32 ? JSON.stringify(str) : '"' + result + '"';
+      return point < 32 ? JSON.stringify(str) : '"' + result + '"';
     }
     function asJson(obj, msg, num, time4) {
       if (asJsonChan.hasSubscribers === false) {
@@ -30015,7 +30015,7 @@ var require_ws_incoming = __commonJS({
        * @api private
        */
       stream: function stream(req, socket, options, head, server, clb) {
-        var createHttpHeader = function(line2, headers) {
+        var createHttpHeader = function(line, headers) {
           return Object.keys(headers).reduce(function(head2, key) {
             var value = headers[key];
             if (!Array.isArray(value)) {
@@ -30026,7 +30026,7 @@ var require_ws_incoming = __commonJS({
               head2.push(key + ": " + value[i]);
             }
             return head2;
-          }, [line2]).join("\r\n") + "\r\n\r\n";
+          }, [line]).join("\r\n") + "\r\n\r\n";
         };
         common.setupSocket(socket);
         if (head && head.length) socket.unshift(head);
@@ -30971,8 +30971,8 @@ var require_to_regex_range = __commonJS({
     function countNines(min, len) {
       return Number(String(min).slice(0, -len) + "9".repeat(len));
     }
-    function countZeros(integer3, zeros) {
-      return integer3 - integer3 % Math.pow(10, zeros);
+    function countZeros(integer2, zeros) {
+      return integer2 - integer2 % Math.pow(10, zeros);
     }
     function toQuantifier(digits) {
       let [start = 0, stop = ""] = digits;
@@ -35788,7 +35788,7 @@ var init_jwtPayloadParser = __esm({
       const permissions = per.split(",").map((p) => p.trim());
       return {
         permissions,
-        featurePermissionMap: fpm.split(",").map((permission) => Number.parseInt(permission.trim(), 10)).map((permission) => permission.toString(2).padStart(permissions.length, "0").split("").map((bit2) => Number.parseInt(bit2, 10)).reverse()).filter(Boolean)
+        featurePermissionMap: fpm.split(",").map((permission) => Number.parseInt(permission.trim(), 10)).map((permission) => permission.toString(2).padStart(permissions.length, "0").split("").map((bit) => Number.parseInt(bit, 10)).reverse()).filter(Boolean)
       };
     };
     __experimental_JWTPayloadToAuthObjectProperties = (claims) => {
@@ -50406,1362 +50406,6 @@ function isConfig(data) {
 }
 var textDecoder = typeof TextDecoder === "undefined" ? null : new TextDecoder();
 
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/int.common.js
-var PgIntColumnBaseBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgIntColumnBaseBuilder";
-  generatedAlwaysAsIdentity(sequence) {
-    if (sequence) {
-      const { name, ...options } = sequence;
-      this.config.generatedIdentity = {
-        type: "always",
-        sequenceName: name,
-        sequenceOptions: options
-      };
-    } else {
-      this.config.generatedIdentity = {
-        type: "always"
-      };
-    }
-    this.config.hasDefault = true;
-    this.config.notNull = true;
-    return this;
-  }
-  generatedByDefaultAsIdentity(sequence) {
-    if (sequence) {
-      const { name, ...options } = sequence;
-      this.config.generatedIdentity = {
-        type: "byDefault",
-        sequenceName: name,
-        sequenceOptions: options
-      };
-    } else {
-      this.config.generatedIdentity = {
-        type: "byDefault"
-      };
-    }
-    this.config.hasDefault = true;
-    this.config.notNull = true;
-    return this;
-  }
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/bigint.js
-var PgBigInt53Builder = class extends PgIntColumnBaseBuilder {
-  static [entityKind2] = "PgBigInt53Builder";
-  constructor(name) {
-    super(name, "number", "PgBigInt53");
-  }
-  /** @internal */
-  build(table) {
-    return new PgBigInt53(table, this.config);
-  }
-};
-var PgBigInt53 = class extends PgColumn2 {
-  static [entityKind2] = "PgBigInt53";
-  getSQLType() {
-    return "bigint";
-  }
-  mapFromDriverValue(value) {
-    if (typeof value === "number") {
-      return value;
-    }
-    return Number(value);
-  }
-};
-var PgBigInt64Builder = class extends PgIntColumnBaseBuilder {
-  static [entityKind2] = "PgBigInt64Builder";
-  constructor(name) {
-    super(name, "bigint", "PgBigInt64");
-  }
-  /** @internal */
-  build(table) {
-    return new PgBigInt64(
-      table,
-      this.config
-    );
-  }
-};
-var PgBigInt64 = class extends PgColumn2 {
-  static [entityKind2] = "PgBigInt64";
-  getSQLType() {
-    return "bigint";
-  }
-  // eslint-disable-next-line unicorn/prefer-native-coercion-functions
-  mapFromDriverValue(value) {
-    return BigInt(value);
-  }
-};
-function bigint(a, b) {
-  const { name, config: config2 } = getColumnNameAndConfig(a, b);
-  if (config2.mode === "number") {
-    return new PgBigInt53Builder(name);
-  }
-  return new PgBigInt64Builder(name);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/bigserial.js
-var PgBigSerial53Builder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgBigSerial53Builder";
-  constructor(name) {
-    super(name, "number", "PgBigSerial53");
-    this.config.hasDefault = true;
-    this.config.notNull = true;
-  }
-  /** @internal */
-  build(table) {
-    return new PgBigSerial53(
-      table,
-      this.config
-    );
-  }
-};
-var PgBigSerial53 = class extends PgColumn2 {
-  static [entityKind2] = "PgBigSerial53";
-  getSQLType() {
-    return "bigserial";
-  }
-  mapFromDriverValue(value) {
-    if (typeof value === "number") {
-      return value;
-    }
-    return Number(value);
-  }
-};
-var PgBigSerial64Builder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgBigSerial64Builder";
-  constructor(name) {
-    super(name, "bigint", "PgBigSerial64");
-    this.config.hasDefault = true;
-  }
-  /** @internal */
-  build(table) {
-    return new PgBigSerial64(
-      table,
-      this.config
-    );
-  }
-};
-var PgBigSerial64 = class extends PgColumn2 {
-  static [entityKind2] = "PgBigSerial64";
-  getSQLType() {
-    return "bigserial";
-  }
-  // eslint-disable-next-line unicorn/prefer-native-coercion-functions
-  mapFromDriverValue(value) {
-    return BigInt(value);
-  }
-};
-function bigserial(a, b) {
-  const { name, config: config2 } = getColumnNameAndConfig(a, b);
-  if (config2.mode === "number") {
-    return new PgBigSerial53Builder(name);
-  }
-  return new PgBigSerial64Builder(name);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/boolean.js
-var PgBooleanBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgBooleanBuilder";
-  constructor(name) {
-    super(name, "boolean", "PgBoolean");
-  }
-  /** @internal */
-  build(table) {
-    return new PgBoolean(table, this.config);
-  }
-};
-var PgBoolean = class extends PgColumn2 {
-  static [entityKind2] = "PgBoolean";
-  getSQLType() {
-    return "boolean";
-  }
-};
-function boolean(name) {
-  return new PgBooleanBuilder(name ?? "");
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/char.js
-var PgCharBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgCharBuilder";
-  constructor(name, config2) {
-    super(name, "string", "PgChar");
-    this.config.length = config2.length;
-    this.config.enumValues = config2.enum;
-  }
-  /** @internal */
-  build(table) {
-    return new PgChar(
-      table,
-      this.config
-    );
-  }
-};
-var PgChar = class extends PgColumn2 {
-  static [entityKind2] = "PgChar";
-  length = this.config.length;
-  enumValues = this.config.enumValues;
-  getSQLType() {
-    return this.length === void 0 ? `char` : `char(${this.length})`;
-  }
-};
-function char(a, b = {}) {
-  const { name, config: config2 } = getColumnNameAndConfig(a, b);
-  return new PgCharBuilder(name, config2);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/cidr.js
-var PgCidrBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgCidrBuilder";
-  constructor(name) {
-    super(name, "string", "PgCidr");
-  }
-  /** @internal */
-  build(table) {
-    return new PgCidr(table, this.config);
-  }
-};
-var PgCidr = class extends PgColumn2 {
-  static [entityKind2] = "PgCidr";
-  getSQLType() {
-    return "cidr";
-  }
-};
-function cidr(name) {
-  return new PgCidrBuilder(name ?? "");
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/custom.js
-var PgCustomColumnBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgCustomColumnBuilder";
-  constructor(name, fieldConfig, customTypeParams) {
-    super(name, "custom", "PgCustomColumn");
-    this.config.fieldConfig = fieldConfig;
-    this.config.customTypeParams = customTypeParams;
-  }
-  /** @internal */
-  build(table) {
-    return new PgCustomColumn(
-      table,
-      this.config
-    );
-  }
-};
-var PgCustomColumn = class extends PgColumn2 {
-  static [entityKind2] = "PgCustomColumn";
-  sqlName;
-  mapTo;
-  mapFrom;
-  constructor(table, config2) {
-    super(table, config2);
-    this.sqlName = config2.customTypeParams.dataType(config2.fieldConfig);
-    this.mapTo = config2.customTypeParams.toDriver;
-    this.mapFrom = config2.customTypeParams.fromDriver;
-  }
-  getSQLType() {
-    return this.sqlName;
-  }
-  mapFromDriverValue(value) {
-    return typeof this.mapFrom === "function" ? this.mapFrom(value) : value;
-  }
-  mapToDriverValue(value) {
-    return typeof this.mapTo === "function" ? this.mapTo(value) : value;
-  }
-};
-function customType(customTypeParams) {
-  return (a, b) => {
-    const { name, config: config2 } = getColumnNameAndConfig(a, b);
-    return new PgCustomColumnBuilder(name, config2, customTypeParams);
-  };
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/date.common.js
-var PgDateColumnBaseBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgDateColumnBaseBuilder";
-  defaultNow() {
-    return this.default(sql2`now()`);
-  }
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/date.js
-var PgDateBuilder = class extends PgDateColumnBaseBuilder {
-  static [entityKind2] = "PgDateBuilder";
-  constructor(name) {
-    super(name, "date", "PgDate");
-  }
-  /** @internal */
-  build(table) {
-    return new PgDate(table, this.config);
-  }
-};
-var PgDate = class extends PgColumn2 {
-  static [entityKind2] = "PgDate";
-  getSQLType() {
-    return "date";
-  }
-  mapFromDriverValue(value) {
-    if (typeof value === "string") return new Date(value);
-    return value;
-  }
-  mapToDriverValue(value) {
-    return value.toISOString();
-  }
-};
-var PgDateStringBuilder = class extends PgDateColumnBaseBuilder {
-  static [entityKind2] = "PgDateStringBuilder";
-  constructor(name) {
-    super(name, "string", "PgDateString");
-  }
-  /** @internal */
-  build(table) {
-    return new PgDateString(
-      table,
-      this.config
-    );
-  }
-};
-var PgDateString = class extends PgColumn2 {
-  static [entityKind2] = "PgDateString";
-  getSQLType() {
-    return "date";
-  }
-  mapFromDriverValue(value) {
-    if (typeof value === "string") return value;
-    return value.toISOString().slice(0, -14);
-  }
-};
-function date(a, b) {
-  const { name, config: config2 } = getColumnNameAndConfig(a, b);
-  if (config2?.mode === "date") {
-    return new PgDateBuilder(name);
-  }
-  return new PgDateStringBuilder(name);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/double-precision.js
-var PgDoublePrecisionBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgDoublePrecisionBuilder";
-  constructor(name) {
-    super(name, "number", "PgDoublePrecision");
-  }
-  /** @internal */
-  build(table) {
-    return new PgDoublePrecision(
-      table,
-      this.config
-    );
-  }
-};
-var PgDoublePrecision = class extends PgColumn2 {
-  static [entityKind2] = "PgDoublePrecision";
-  getSQLType() {
-    return "double precision";
-  }
-  mapFromDriverValue(value) {
-    if (typeof value === "string") {
-      return Number.parseFloat(value);
-    }
-    return value;
-  }
-};
-function doublePrecision(name) {
-  return new PgDoublePrecisionBuilder(name ?? "");
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/inet.js
-var PgInetBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgInetBuilder";
-  constructor(name) {
-    super(name, "string", "PgInet");
-  }
-  /** @internal */
-  build(table) {
-    return new PgInet(table, this.config);
-  }
-};
-var PgInet = class extends PgColumn2 {
-  static [entityKind2] = "PgInet";
-  getSQLType() {
-    return "inet";
-  }
-};
-function inet(name) {
-  return new PgInetBuilder(name ?? "");
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/integer.js
-var PgIntegerBuilder = class extends PgIntColumnBaseBuilder {
-  static [entityKind2] = "PgIntegerBuilder";
-  constructor(name) {
-    super(name, "number", "PgInteger");
-  }
-  /** @internal */
-  build(table) {
-    return new PgInteger(table, this.config);
-  }
-};
-var PgInteger = class extends PgColumn2 {
-  static [entityKind2] = "PgInteger";
-  getSQLType() {
-    return "integer";
-  }
-  mapFromDriverValue(value) {
-    if (typeof value === "string") {
-      return Number.parseInt(value);
-    }
-    return value;
-  }
-};
-function integer(name) {
-  return new PgIntegerBuilder(name ?? "");
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/interval.js
-var PgIntervalBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgIntervalBuilder";
-  constructor(name, intervalConfig) {
-    super(name, "string", "PgInterval");
-    this.config.intervalConfig = intervalConfig;
-  }
-  /** @internal */
-  build(table) {
-    return new PgInterval(table, this.config);
-  }
-};
-var PgInterval = class extends PgColumn2 {
-  static [entityKind2] = "PgInterval";
-  fields = this.config.intervalConfig.fields;
-  precision = this.config.intervalConfig.precision;
-  getSQLType() {
-    const fields = this.fields ? ` ${this.fields}` : "";
-    const precision = this.precision ? `(${this.precision})` : "";
-    return `interval${fields}${precision}`;
-  }
-};
-function interval(a, b = {}) {
-  const { name, config: config2 } = getColumnNameAndConfig(a, b);
-  return new PgIntervalBuilder(name, config2);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/json.js
-var PgJsonBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgJsonBuilder";
-  constructor(name) {
-    super(name, "json", "PgJson");
-  }
-  /** @internal */
-  build(table) {
-    return new PgJson(table, this.config);
-  }
-};
-var PgJson = class extends PgColumn2 {
-  static [entityKind2] = "PgJson";
-  constructor(table, config2) {
-    super(table, config2);
-  }
-  getSQLType() {
-    return "json";
-  }
-  mapToDriverValue(value) {
-    return JSON.stringify(value);
-  }
-  mapFromDriverValue(value) {
-    if (typeof value === "string") {
-      try {
-        return JSON.parse(value);
-      } catch {
-        return value;
-      }
-    }
-    return value;
-  }
-};
-function json(name) {
-  return new PgJsonBuilder(name ?? "");
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/jsonb.js
-var PgJsonbBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgJsonbBuilder";
-  constructor(name) {
-    super(name, "json", "PgJsonb");
-  }
-  /** @internal */
-  build(table) {
-    return new PgJsonb(table, this.config);
-  }
-};
-var PgJsonb = class extends PgColumn2 {
-  static [entityKind2] = "PgJsonb";
-  constructor(table, config2) {
-    super(table, config2);
-  }
-  getSQLType() {
-    return "jsonb";
-  }
-  mapToDriverValue(value) {
-    return JSON.stringify(value);
-  }
-  mapFromDriverValue(value) {
-    if (typeof value === "string") {
-      try {
-        return JSON.parse(value);
-      } catch {
-        return value;
-      }
-    }
-    return value;
-  }
-};
-function jsonb(name) {
-  return new PgJsonbBuilder(name ?? "");
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/line.js
-var PgLineBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgLineBuilder";
-  constructor(name) {
-    super(name, "array", "PgLine");
-  }
-  /** @internal */
-  build(table) {
-    return new PgLineTuple(
-      table,
-      this.config
-    );
-  }
-};
-var PgLineTuple = class extends PgColumn2 {
-  static [entityKind2] = "PgLine";
-  getSQLType() {
-    return "line";
-  }
-  mapFromDriverValue(value) {
-    const [a, b, c] = value.slice(1, -1).split(",");
-    return [Number.parseFloat(a), Number.parseFloat(b), Number.parseFloat(c)];
-  }
-  mapToDriverValue(value) {
-    return `{${value[0]},${value[1]},${value[2]}}`;
-  }
-};
-var PgLineABCBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgLineABCBuilder";
-  constructor(name) {
-    super(name, "json", "PgLineABC");
-  }
-  /** @internal */
-  build(table) {
-    return new PgLineABC(
-      table,
-      this.config
-    );
-  }
-};
-var PgLineABC = class extends PgColumn2 {
-  static [entityKind2] = "PgLineABC";
-  getSQLType() {
-    return "line";
-  }
-  mapFromDriverValue(value) {
-    const [a, b, c] = value.slice(1, -1).split(",");
-    return { a: Number.parseFloat(a), b: Number.parseFloat(b), c: Number.parseFloat(c) };
-  }
-  mapToDriverValue(value) {
-    return `{${value.a},${value.b},${value.c}}`;
-  }
-};
-function line(a, b) {
-  const { name, config: config2 } = getColumnNameAndConfig(a, b);
-  if (!config2?.mode || config2.mode === "tuple") {
-    return new PgLineBuilder(name);
-  }
-  return new PgLineABCBuilder(name);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/macaddr.js
-var PgMacaddrBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgMacaddrBuilder";
-  constructor(name) {
-    super(name, "string", "PgMacaddr");
-  }
-  /** @internal */
-  build(table) {
-    return new PgMacaddr(table, this.config);
-  }
-};
-var PgMacaddr = class extends PgColumn2 {
-  static [entityKind2] = "PgMacaddr";
-  getSQLType() {
-    return "macaddr";
-  }
-};
-function macaddr(name) {
-  return new PgMacaddrBuilder(name ?? "");
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/macaddr8.js
-var PgMacaddr8Builder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgMacaddr8Builder";
-  constructor(name) {
-    super(name, "string", "PgMacaddr8");
-  }
-  /** @internal */
-  build(table) {
-    return new PgMacaddr8(table, this.config);
-  }
-};
-var PgMacaddr8 = class extends PgColumn2 {
-  static [entityKind2] = "PgMacaddr8";
-  getSQLType() {
-    return "macaddr8";
-  }
-};
-function macaddr8(name) {
-  return new PgMacaddr8Builder(name ?? "");
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/numeric.js
-var PgNumericBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgNumericBuilder";
-  constructor(name, precision, scale) {
-    super(name, "string", "PgNumeric");
-    this.config.precision = precision;
-    this.config.scale = scale;
-  }
-  /** @internal */
-  build(table) {
-    return new PgNumeric(table, this.config);
-  }
-};
-var PgNumeric = class extends PgColumn2 {
-  static [entityKind2] = "PgNumeric";
-  precision;
-  scale;
-  constructor(table, config2) {
-    super(table, config2);
-    this.precision = config2.precision;
-    this.scale = config2.scale;
-  }
-  mapFromDriverValue(value) {
-    if (typeof value === "string") return value;
-    return String(value);
-  }
-  getSQLType() {
-    if (this.precision !== void 0 && this.scale !== void 0) {
-      return `numeric(${this.precision}, ${this.scale})`;
-    } else if (this.precision === void 0) {
-      return "numeric";
-    } else {
-      return `numeric(${this.precision})`;
-    }
-  }
-};
-var PgNumericNumberBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgNumericNumberBuilder";
-  constructor(name, precision, scale) {
-    super(name, "number", "PgNumericNumber");
-    this.config.precision = precision;
-    this.config.scale = scale;
-  }
-  /** @internal */
-  build(table) {
-    return new PgNumericNumber(
-      table,
-      this.config
-    );
-  }
-};
-var PgNumericNumber = class extends PgColumn2 {
-  static [entityKind2] = "PgNumericNumber";
-  precision;
-  scale;
-  constructor(table, config2) {
-    super(table, config2);
-    this.precision = config2.precision;
-    this.scale = config2.scale;
-  }
-  mapFromDriverValue(value) {
-    if (typeof value === "number") return value;
-    return Number(value);
-  }
-  mapToDriverValue = String;
-  getSQLType() {
-    if (this.precision !== void 0 && this.scale !== void 0) {
-      return `numeric(${this.precision}, ${this.scale})`;
-    } else if (this.precision === void 0) {
-      return "numeric";
-    } else {
-      return `numeric(${this.precision})`;
-    }
-  }
-};
-var PgNumericBigIntBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgNumericBigIntBuilder";
-  constructor(name, precision, scale) {
-    super(name, "bigint", "PgNumericBigInt");
-    this.config.precision = precision;
-    this.config.scale = scale;
-  }
-  /** @internal */
-  build(table) {
-    return new PgNumericBigInt(
-      table,
-      this.config
-    );
-  }
-};
-var PgNumericBigInt = class extends PgColumn2 {
-  static [entityKind2] = "PgNumericBigInt";
-  precision;
-  scale;
-  constructor(table, config2) {
-    super(table, config2);
-    this.precision = config2.precision;
-    this.scale = config2.scale;
-  }
-  mapFromDriverValue = BigInt;
-  mapToDriverValue = String;
-  getSQLType() {
-    if (this.precision !== void 0 && this.scale !== void 0) {
-      return `numeric(${this.precision}, ${this.scale})`;
-    } else if (this.precision === void 0) {
-      return "numeric";
-    } else {
-      return `numeric(${this.precision})`;
-    }
-  }
-};
-function numeric(a, b) {
-  const { name, config: config2 } = getColumnNameAndConfig(a, b);
-  const mode = config2?.mode;
-  return mode === "number" ? new PgNumericNumberBuilder(name, config2?.precision, config2?.scale) : mode === "bigint" ? new PgNumericBigIntBuilder(name, config2?.precision, config2?.scale) : new PgNumericBuilder(name, config2?.precision, config2?.scale);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/point.js
-var PgPointTupleBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgPointTupleBuilder";
-  constructor(name) {
-    super(name, "array", "PgPointTuple");
-  }
-  /** @internal */
-  build(table) {
-    return new PgPointTuple(
-      table,
-      this.config
-    );
-  }
-};
-var PgPointTuple = class extends PgColumn2 {
-  static [entityKind2] = "PgPointTuple";
-  getSQLType() {
-    return "point";
-  }
-  mapFromDriverValue(value) {
-    if (typeof value === "string") {
-      const [x, y] = value.slice(1, -1).split(",");
-      return [Number.parseFloat(x), Number.parseFloat(y)];
-    }
-    return [value.x, value.y];
-  }
-  mapToDriverValue(value) {
-    return `(${value[0]},${value[1]})`;
-  }
-};
-var PgPointObjectBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgPointObjectBuilder";
-  constructor(name) {
-    super(name, "json", "PgPointObject");
-  }
-  /** @internal */
-  build(table) {
-    return new PgPointObject(
-      table,
-      this.config
-    );
-  }
-};
-var PgPointObject = class extends PgColumn2 {
-  static [entityKind2] = "PgPointObject";
-  getSQLType() {
-    return "point";
-  }
-  mapFromDriverValue(value) {
-    if (typeof value === "string") {
-      const [x, y] = value.slice(1, -1).split(",");
-      return { x: Number.parseFloat(x), y: Number.parseFloat(y) };
-    }
-    return value;
-  }
-  mapToDriverValue(value) {
-    return `(${value.x},${value.y})`;
-  }
-};
-function point(a, b) {
-  const { name, config: config2 } = getColumnNameAndConfig(a, b);
-  if (!config2?.mode || config2.mode === "tuple") {
-    return new PgPointTupleBuilder(name);
-  }
-  return new PgPointObjectBuilder(name);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/postgis_extension/utils.js
-function hexToBytes(hex) {
-  const bytes = [];
-  for (let c = 0; c < hex.length; c += 2) {
-    bytes.push(Number.parseInt(hex.slice(c, c + 2), 16));
-  }
-  return new Uint8Array(bytes);
-}
-function bytesToFloat64(bytes, offset) {
-  const buffer = new ArrayBuffer(8);
-  const view = new DataView(buffer);
-  for (let i = 0; i < 8; i++) {
-    view.setUint8(i, bytes[offset + i]);
-  }
-  return view.getFloat64(0, true);
-}
-function parseEWKB(hex) {
-  const bytes = hexToBytes(hex);
-  let offset = 0;
-  const byteOrder = bytes[offset];
-  offset += 1;
-  const view = new DataView(bytes.buffer);
-  const geomType = view.getUint32(offset, byteOrder === 1);
-  offset += 4;
-  let _srid;
-  if (geomType & 536870912) {
-    _srid = view.getUint32(offset, byteOrder === 1);
-    offset += 4;
-  }
-  if ((geomType & 65535) === 1) {
-    const x = bytesToFloat64(bytes, offset);
-    offset += 8;
-    const y = bytesToFloat64(bytes, offset);
-    offset += 8;
-    return [x, y];
-  }
-  throw new Error("Unsupported geometry type");
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/postgis_extension/geometry.js
-var PgGeometryBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgGeometryBuilder";
-  constructor(name) {
-    super(name, "array", "PgGeometry");
-  }
-  /** @internal */
-  build(table) {
-    return new PgGeometry(
-      table,
-      this.config
-    );
-  }
-};
-var PgGeometry = class extends PgColumn2 {
-  static [entityKind2] = "PgGeometry";
-  getSQLType() {
-    return "geometry(point)";
-  }
-  mapFromDriverValue(value) {
-    return parseEWKB(value);
-  }
-  mapToDriverValue(value) {
-    return `point(${value[0]} ${value[1]})`;
-  }
-};
-var PgGeometryObjectBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgGeometryObjectBuilder";
-  constructor(name) {
-    super(name, "json", "PgGeometryObject");
-  }
-  /** @internal */
-  build(table) {
-    return new PgGeometryObject(
-      table,
-      this.config
-    );
-  }
-};
-var PgGeometryObject = class extends PgColumn2 {
-  static [entityKind2] = "PgGeometryObject";
-  getSQLType() {
-    return "geometry(point)";
-  }
-  mapFromDriverValue(value) {
-    const parsed = parseEWKB(value);
-    return { x: parsed[0], y: parsed[1] };
-  }
-  mapToDriverValue(value) {
-    return `point(${value.x} ${value.y})`;
-  }
-};
-function geometry(a, b) {
-  const { name, config: config2 } = getColumnNameAndConfig(a, b);
-  if (!config2?.mode || config2.mode === "tuple") {
-    return new PgGeometryBuilder(name);
-  }
-  return new PgGeometryObjectBuilder(name);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/real.js
-var PgRealBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgRealBuilder";
-  constructor(name, length) {
-    super(name, "number", "PgReal");
-    this.config.length = length;
-  }
-  /** @internal */
-  build(table) {
-    return new PgReal(table, this.config);
-  }
-};
-var PgReal = class extends PgColumn2 {
-  static [entityKind2] = "PgReal";
-  constructor(table, config2) {
-    super(table, config2);
-  }
-  getSQLType() {
-    return "real";
-  }
-  mapFromDriverValue = (value) => {
-    if (typeof value === "string") {
-      return Number.parseFloat(value);
-    }
-    return value;
-  };
-};
-function real(name) {
-  return new PgRealBuilder(name ?? "");
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/serial.js
-var PgSerialBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgSerialBuilder";
-  constructor(name) {
-    super(name, "number", "PgSerial");
-    this.config.hasDefault = true;
-    this.config.notNull = true;
-  }
-  /** @internal */
-  build(table) {
-    return new PgSerial(table, this.config);
-  }
-};
-var PgSerial = class extends PgColumn2 {
-  static [entityKind2] = "PgSerial";
-  getSQLType() {
-    return "serial";
-  }
-};
-function serial(name) {
-  return new PgSerialBuilder(name ?? "");
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/smallint.js
-var PgSmallIntBuilder = class extends PgIntColumnBaseBuilder {
-  static [entityKind2] = "PgSmallIntBuilder";
-  constructor(name) {
-    super(name, "number", "PgSmallInt");
-  }
-  /** @internal */
-  build(table) {
-    return new PgSmallInt(table, this.config);
-  }
-};
-var PgSmallInt = class extends PgColumn2 {
-  static [entityKind2] = "PgSmallInt";
-  getSQLType() {
-    return "smallint";
-  }
-  mapFromDriverValue = (value) => {
-    if (typeof value === "string") {
-      return Number(value);
-    }
-    return value;
-  };
-};
-function smallint(name) {
-  return new PgSmallIntBuilder(name ?? "");
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/smallserial.js
-var PgSmallSerialBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgSmallSerialBuilder";
-  constructor(name) {
-    super(name, "number", "PgSmallSerial");
-    this.config.hasDefault = true;
-    this.config.notNull = true;
-  }
-  /** @internal */
-  build(table) {
-    return new PgSmallSerial(
-      table,
-      this.config
-    );
-  }
-};
-var PgSmallSerial = class extends PgColumn2 {
-  static [entityKind2] = "PgSmallSerial";
-  getSQLType() {
-    return "smallserial";
-  }
-};
-function smallserial(name) {
-  return new PgSmallSerialBuilder(name ?? "");
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/text.js
-var PgTextBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgTextBuilder";
-  constructor(name, config2) {
-    super(name, "string", "PgText");
-    this.config.enumValues = config2.enum;
-  }
-  /** @internal */
-  build(table) {
-    return new PgText(table, this.config);
-  }
-};
-var PgText = class extends PgColumn2 {
-  static [entityKind2] = "PgText";
-  enumValues = this.config.enumValues;
-  getSQLType() {
-    return "text";
-  }
-};
-function text(a, b = {}) {
-  const { name, config: config2 } = getColumnNameAndConfig(a, b);
-  return new PgTextBuilder(name, config2);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/time.js
-var PgTimeBuilder = class extends PgDateColumnBaseBuilder {
-  constructor(name, withTimezone, precision) {
-    super(name, "string", "PgTime");
-    this.withTimezone = withTimezone;
-    this.precision = precision;
-    this.config.withTimezone = withTimezone;
-    this.config.precision = precision;
-  }
-  static [entityKind2] = "PgTimeBuilder";
-  /** @internal */
-  build(table) {
-    return new PgTime(table, this.config);
-  }
-};
-var PgTime = class extends PgColumn2 {
-  static [entityKind2] = "PgTime";
-  withTimezone;
-  precision;
-  constructor(table, config2) {
-    super(table, config2);
-    this.withTimezone = config2.withTimezone;
-    this.precision = config2.precision;
-  }
-  getSQLType() {
-    const precision = this.precision === void 0 ? "" : `(${this.precision})`;
-    return `time${precision}${this.withTimezone ? " with time zone" : ""}`;
-  }
-};
-function time(a, b = {}) {
-  const { name, config: config2 } = getColumnNameAndConfig(a, b);
-  return new PgTimeBuilder(name, config2.withTimezone ?? false, config2.precision);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/timestamp.js
-var PgTimestampBuilder = class extends PgDateColumnBaseBuilder {
-  static [entityKind2] = "PgTimestampBuilder";
-  constructor(name, withTimezone, precision) {
-    super(name, "date", "PgTimestamp");
-    this.config.withTimezone = withTimezone;
-    this.config.precision = precision;
-  }
-  /** @internal */
-  build(table) {
-    return new PgTimestamp(table, this.config);
-  }
-};
-var PgTimestamp = class extends PgColumn2 {
-  static [entityKind2] = "PgTimestamp";
-  withTimezone;
-  precision;
-  constructor(table, config2) {
-    super(table, config2);
-    this.withTimezone = config2.withTimezone;
-    this.precision = config2.precision;
-  }
-  getSQLType() {
-    const precision = this.precision === void 0 ? "" : ` (${this.precision})`;
-    return `timestamp${precision}${this.withTimezone ? " with time zone" : ""}`;
-  }
-  mapFromDriverValue(value) {
-    if (typeof value === "string") return new Date(this.withTimezone ? value : value + "+0000");
-    return value;
-  }
-  mapToDriverValue = (value) => {
-    return value.toISOString();
-  };
-};
-var PgTimestampStringBuilder = class extends PgDateColumnBaseBuilder {
-  static [entityKind2] = "PgTimestampStringBuilder";
-  constructor(name, withTimezone, precision) {
-    super(name, "string", "PgTimestampString");
-    this.config.withTimezone = withTimezone;
-    this.config.precision = precision;
-  }
-  /** @internal */
-  build(table) {
-    return new PgTimestampString(
-      table,
-      this.config
-    );
-  }
-};
-var PgTimestampString = class extends PgColumn2 {
-  static [entityKind2] = "PgTimestampString";
-  withTimezone;
-  precision;
-  constructor(table, config2) {
-    super(table, config2);
-    this.withTimezone = config2.withTimezone;
-    this.precision = config2.precision;
-  }
-  getSQLType() {
-    const precision = this.precision === void 0 ? "" : `(${this.precision})`;
-    return `timestamp${precision}${this.withTimezone ? " with time zone" : ""}`;
-  }
-  mapFromDriverValue(value) {
-    if (typeof value === "string") return value;
-    const shortened = value.toISOString().slice(0, -1).replace("T", " ");
-    if (this.withTimezone) {
-      const offset = value.getTimezoneOffset();
-      const sign = offset <= 0 ? "+" : "-";
-      return `${shortened}${sign}${Math.floor(Math.abs(offset) / 60).toString().padStart(2, "0")}`;
-    }
-    return shortened;
-  }
-};
-function timestamp(a, b = {}) {
-  const { name, config: config2 } = getColumnNameAndConfig(a, b);
-  if (config2?.mode === "string") {
-    return new PgTimestampStringBuilder(name, config2.withTimezone ?? false, config2.precision);
-  }
-  return new PgTimestampBuilder(name, config2?.withTimezone ?? false, config2?.precision);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/uuid.js
-var PgUUIDBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgUUIDBuilder";
-  constructor(name) {
-    super(name, "string", "PgUUID");
-  }
-  /**
-   * Adds `default gen_random_uuid()` to the column definition.
-   */
-  defaultRandom() {
-    return this.default(sql2`gen_random_uuid()`);
-  }
-  /** @internal */
-  build(table) {
-    return new PgUUID(table, this.config);
-  }
-};
-var PgUUID = class extends PgColumn2 {
-  static [entityKind2] = "PgUUID";
-  getSQLType() {
-    return "uuid";
-  }
-};
-function uuid(name) {
-  return new PgUUIDBuilder(name ?? "");
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/varchar.js
-var PgVarcharBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgVarcharBuilder";
-  constructor(name, config2) {
-    super(name, "string", "PgVarchar");
-    this.config.length = config2.length;
-    this.config.enumValues = config2.enum;
-  }
-  /** @internal */
-  build(table) {
-    return new PgVarchar(
-      table,
-      this.config
-    );
-  }
-};
-var PgVarchar = class extends PgColumn2 {
-  static [entityKind2] = "PgVarchar";
-  length = this.config.length;
-  enumValues = this.config.enumValues;
-  getSQLType() {
-    return this.length === void 0 ? `varchar` : `varchar(${this.length})`;
-  }
-};
-function varchar(a, b = {}) {
-  const { name, config: config2 } = getColumnNameAndConfig(a, b);
-  return new PgVarcharBuilder(name, config2);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/vector_extension/bit.js
-var PgBinaryVectorBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgBinaryVectorBuilder";
-  constructor(name, config2) {
-    super(name, "string", "PgBinaryVector");
-    this.config.dimensions = config2.dimensions;
-  }
-  /** @internal */
-  build(table) {
-    return new PgBinaryVector(
-      table,
-      this.config
-    );
-  }
-};
-var PgBinaryVector = class extends PgColumn2 {
-  static [entityKind2] = "PgBinaryVector";
-  dimensions = this.config.dimensions;
-  getSQLType() {
-    return `bit(${this.dimensions})`;
-  }
-};
-function bit(a, b) {
-  const { name, config: config2 } = getColumnNameAndConfig(a, b);
-  return new PgBinaryVectorBuilder(name, config2);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/vector_extension/halfvec.js
-var PgHalfVectorBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgHalfVectorBuilder";
-  constructor(name, config2) {
-    super(name, "array", "PgHalfVector");
-    this.config.dimensions = config2.dimensions;
-  }
-  /** @internal */
-  build(table) {
-    return new PgHalfVector(
-      table,
-      this.config
-    );
-  }
-};
-var PgHalfVector = class extends PgColumn2 {
-  static [entityKind2] = "PgHalfVector";
-  dimensions = this.config.dimensions;
-  getSQLType() {
-    return `halfvec(${this.dimensions})`;
-  }
-  mapToDriverValue(value) {
-    return JSON.stringify(value);
-  }
-  mapFromDriverValue(value) {
-    return value.slice(1, -1).split(",").map((v) => Number.parseFloat(v));
-  }
-};
-function halfvec(a, b) {
-  const { name, config: config2 } = getColumnNameAndConfig(a, b);
-  return new PgHalfVectorBuilder(name, config2);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/vector_extension/sparsevec.js
-var PgSparseVectorBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgSparseVectorBuilder";
-  constructor(name, config2) {
-    super(name, "string", "PgSparseVector");
-    this.config.dimensions = config2.dimensions;
-  }
-  /** @internal */
-  build(table) {
-    return new PgSparseVector(
-      table,
-      this.config
-    );
-  }
-};
-var PgSparseVector = class extends PgColumn2 {
-  static [entityKind2] = "PgSparseVector";
-  dimensions = this.config.dimensions;
-  getSQLType() {
-    return `sparsevec(${this.dimensions})`;
-  }
-};
-function sparsevec(a, b) {
-  const { name, config: config2 } = getColumnNameAndConfig(a, b);
-  return new PgSparseVectorBuilder(name, config2);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/vector_extension/vector.js
-var PgVectorBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgVectorBuilder";
-  constructor(name, config2) {
-    super(name, "array", "PgVector");
-    this.config.dimensions = config2.dimensions;
-  }
-  /** @internal */
-  build(table) {
-    return new PgVector(
-      table,
-      this.config
-    );
-  }
-};
-var PgVector = class extends PgColumn2 {
-  static [entityKind2] = "PgVector";
-  dimensions = this.config.dimensions;
-  getSQLType() {
-    return `vector(${this.dimensions})`;
-  }
-  mapToDriverValue(value) {
-    return JSON.stringify(value);
-  }
-  mapFromDriverValue(value) {
-    return value.slice(1, -1).split(",").map((v) => Number.parseFloat(v));
-  }
-};
-function vector(a, b) {
-  const { name, config: config2 } = getColumnNameAndConfig(a, b);
-  return new PgVectorBuilder(name, config2);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/all.js
-function getPgColumnBuilders() {
-  return {
-    bigint,
-    bigserial,
-    boolean,
-    char,
-    cidr,
-    customType,
-    date,
-    doublePrecision,
-    inet,
-    integer,
-    interval,
-    json,
-    jsonb,
-    line,
-    macaddr,
-    macaddr8,
-    numeric,
-    point,
-    geometry,
-    real,
-    serial,
-    smallint,
-    smallserial,
-    text,
-    time,
-    timestamp,
-    uuid,
-    varchar,
-    bit,
-    halfvec,
-    sparsevec,
-    vector
-  };
-}
-
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/table.js
 var InlineForeignKeys = Symbol.for("drizzle:PgInlineForeignKeys");
 var EnableRLS = Symbol.for("drizzle:EnableRLS");
@@ -51780,42 +50424,6 @@ var PgTable = class extends Table2 {
   [Table2.Symbol.ExtraConfigBuilder] = void 0;
   /** @internal */
   [Table2.Symbol.ExtraConfigColumns] = {};
-};
-function pgTableWithSchema(name, columns, extraConfig, schema, baseName = name) {
-  const rawTable = new PgTable(name, schema, baseName);
-  const parsedColumns = typeof columns === "function" ? columns(getPgColumnBuilders()) : columns;
-  const builtColumns = Object.fromEntries(
-    Object.entries(parsedColumns).map(([name2, colBuilderBase]) => {
-      const colBuilder = colBuilderBase;
-      colBuilder.setName(name2);
-      const column = colBuilder.build(rawTable);
-      rawTable[InlineForeignKeys].push(...colBuilder.buildForeignKeys(column, rawTable));
-      return [name2, column];
-    })
-  );
-  const builtColumnsForExtraConfig = Object.fromEntries(
-    Object.entries(parsedColumns).map(([name2, colBuilderBase]) => {
-      const colBuilder = colBuilderBase;
-      colBuilder.setName(name2);
-      const column = colBuilder.buildExtraConfigColumn(rawTable);
-      return [name2, column];
-    })
-  );
-  const table = Object.assign(rawTable, builtColumns);
-  table[Table2.Symbol.Columns] = builtColumns;
-  table[Table2.Symbol.ExtraConfigColumns] = builtColumnsForExtraConfig;
-  if (extraConfig) {
-    table[PgTable.Symbol.ExtraConfigBuilder] = extraConfig;
-  }
-  return Object.assign(table, {
-    enableRLS: () => {
-      table[PgTable.Symbol.EnableRLS] = true;
-      return table;
-    }
-  });
-}
-var pgTable = (name, columns, extraConfig) => {
-  return pgTableWithSchema(name, columns, extraConfig, void 0);
 };
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/primary-keys.js
@@ -52399,6 +51007,1046 @@ var MySqlColumnWithAutoIncrement = class extends MySqlColumn {
   autoIncrement = this.config.autoIncrement;
 };
 
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/bigint.js
+var MySqlBigInt53Builder = class extends MySqlColumnBuilderWithAutoIncrement {
+  static [entityKind2] = "MySqlBigInt53Builder";
+  constructor(name, unsigned = false) {
+    super(name, "number", "MySqlBigInt53");
+    this.config.unsigned = unsigned;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlBigInt53(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlBigInt53 = class extends MySqlColumnWithAutoIncrement {
+  static [entityKind2] = "MySqlBigInt53";
+  getSQLType() {
+    return `bigint${this.config.unsigned ? " unsigned" : ""}`;
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "number") {
+      return value;
+    }
+    return Number(value);
+  }
+};
+var MySqlBigInt64Builder = class extends MySqlColumnBuilderWithAutoIncrement {
+  static [entityKind2] = "MySqlBigInt64Builder";
+  constructor(name, unsigned = false) {
+    super(name, "bigint", "MySqlBigInt64");
+    this.config.unsigned = unsigned;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlBigInt64(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlBigInt64 = class extends MySqlColumnWithAutoIncrement {
+  static [entityKind2] = "MySqlBigInt64";
+  getSQLType() {
+    return `bigint${this.config.unsigned ? " unsigned" : ""}`;
+  }
+  // eslint-disable-next-line unicorn/prefer-native-coercion-functions
+  mapFromDriverValue(value) {
+    return BigInt(value);
+  }
+};
+function bigint(a, b) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  if (config2.mode === "number") {
+    return new MySqlBigInt53Builder(name, config2.unsigned);
+  }
+  return new MySqlBigInt64Builder(name, config2.unsigned);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/binary.js
+var MySqlBinaryBuilder = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlBinaryBuilder";
+  constructor(name, length) {
+    super(name, "string", "MySqlBinary");
+    this.config.length = length;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlBinary(table, this.config);
+  }
+};
+var MySqlBinary = class extends MySqlColumn {
+  static [entityKind2] = "MySqlBinary";
+  length = this.config.length;
+  mapFromDriverValue(value) {
+    if (typeof value === "string") return value;
+    if (Buffer.isBuffer(value)) return value.toString();
+    const str = [];
+    for (const v of value) {
+      str.push(v === 49 ? "1" : "0");
+    }
+    return str.join("");
+  }
+  getSQLType() {
+    return this.length === void 0 ? `binary` : `binary(${this.length})`;
+  }
+};
+function binary(a, b = {}) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  return new MySqlBinaryBuilder(name, config2.length);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/boolean.js
+var MySqlBooleanBuilder = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlBooleanBuilder";
+  constructor(name) {
+    super(name, "boolean", "MySqlBoolean");
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlBoolean(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlBoolean = class extends MySqlColumn {
+  static [entityKind2] = "MySqlBoolean";
+  getSQLType() {
+    return "boolean";
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "boolean") {
+      return value;
+    }
+    return value === 1;
+  }
+};
+function boolean(name) {
+  return new MySqlBooleanBuilder(name ?? "");
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/char.js
+var MySqlCharBuilder = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlCharBuilder";
+  constructor(name, config2) {
+    super(name, "string", "MySqlChar");
+    this.config.length = config2.length;
+    this.config.enum = config2.enum;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlChar(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlChar = class extends MySqlColumn {
+  static [entityKind2] = "MySqlChar";
+  length = this.config.length;
+  enumValues = this.config.enum;
+  getSQLType() {
+    return this.length === void 0 ? `char` : `char(${this.length})`;
+  }
+};
+function char(a, b = {}) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  return new MySqlCharBuilder(name, config2);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/custom.js
+var MySqlCustomColumnBuilder = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlCustomColumnBuilder";
+  constructor(name, fieldConfig, customTypeParams) {
+    super(name, "custom", "MySqlCustomColumn");
+    this.config.fieldConfig = fieldConfig;
+    this.config.customTypeParams = customTypeParams;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlCustomColumn(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlCustomColumn = class extends MySqlColumn {
+  static [entityKind2] = "MySqlCustomColumn";
+  sqlName;
+  mapTo;
+  mapFrom;
+  constructor(table, config2) {
+    super(table, config2);
+    this.sqlName = config2.customTypeParams.dataType(config2.fieldConfig);
+    this.mapTo = config2.customTypeParams.toDriver;
+    this.mapFrom = config2.customTypeParams.fromDriver;
+  }
+  getSQLType() {
+    return this.sqlName;
+  }
+  mapFromDriverValue(value) {
+    return typeof this.mapFrom === "function" ? this.mapFrom(value) : value;
+  }
+  mapToDriverValue(value) {
+    return typeof this.mapTo === "function" ? this.mapTo(value) : value;
+  }
+};
+function customType(customTypeParams) {
+  return (a, b) => {
+    const { name, config: config2 } = getColumnNameAndConfig(a, b);
+    return new MySqlCustomColumnBuilder(name, config2, customTypeParams);
+  };
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/date.js
+var MySqlDateBuilder = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlDateBuilder";
+  constructor(name) {
+    super(name, "date", "MySqlDate");
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlDate(table, this.config);
+  }
+};
+var MySqlDate = class extends MySqlColumn {
+  static [entityKind2] = "MySqlDate";
+  constructor(table, config2) {
+    super(table, config2);
+  }
+  getSQLType() {
+    return `date`;
+  }
+  mapFromDriverValue(value) {
+    return new Date(value);
+  }
+};
+var MySqlDateStringBuilder = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlDateStringBuilder";
+  constructor(name) {
+    super(name, "string", "MySqlDateString");
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlDateString(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlDateString = class extends MySqlColumn {
+  static [entityKind2] = "MySqlDateString";
+  constructor(table, config2) {
+    super(table, config2);
+  }
+  getSQLType() {
+    return `date`;
+  }
+};
+function date(a, b) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  if (config2?.mode === "string") {
+    return new MySqlDateStringBuilder(name);
+  }
+  return new MySqlDateBuilder(name);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/datetime.js
+var MySqlDateTimeBuilder = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlDateTimeBuilder";
+  constructor(name, config2) {
+    super(name, "date", "MySqlDateTime");
+    this.config.fsp = config2?.fsp;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlDateTime(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlDateTime = class extends MySqlColumn {
+  static [entityKind2] = "MySqlDateTime";
+  fsp;
+  constructor(table, config2) {
+    super(table, config2);
+    this.fsp = config2.fsp;
+  }
+  getSQLType() {
+    const precision = this.fsp === void 0 ? "" : `(${this.fsp})`;
+    return `datetime${precision}`;
+  }
+  mapToDriverValue(value) {
+    return value.toISOString().replace("T", " ").replace("Z", "");
+  }
+  mapFromDriverValue(value) {
+    return /* @__PURE__ */ new Date(value.replace(" ", "T") + "Z");
+  }
+};
+var MySqlDateTimeStringBuilder = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlDateTimeStringBuilder";
+  constructor(name, config2) {
+    super(name, "string", "MySqlDateTimeString");
+    this.config.fsp = config2?.fsp;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlDateTimeString(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlDateTimeString = class extends MySqlColumn {
+  static [entityKind2] = "MySqlDateTimeString";
+  fsp;
+  constructor(table, config2) {
+    super(table, config2);
+    this.fsp = config2.fsp;
+  }
+  getSQLType() {
+    const precision = this.fsp === void 0 ? "" : `(${this.fsp})`;
+    return `datetime${precision}`;
+  }
+};
+function datetime(a, b) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  if (config2?.mode === "string") {
+    return new MySqlDateTimeStringBuilder(name, config2);
+  }
+  return new MySqlDateTimeBuilder(name, config2);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/decimal.js
+var MySqlDecimalBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
+  static [entityKind2] = "MySqlDecimalBuilder";
+  constructor(name, config2) {
+    super(name, "string", "MySqlDecimal");
+    this.config.precision = config2?.precision;
+    this.config.scale = config2?.scale;
+    this.config.unsigned = config2?.unsigned;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlDecimal(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlDecimal = class extends MySqlColumnWithAutoIncrement {
+  static [entityKind2] = "MySqlDecimal";
+  precision = this.config.precision;
+  scale = this.config.scale;
+  unsigned = this.config.unsigned;
+  mapFromDriverValue(value) {
+    if (typeof value === "string") return value;
+    return String(value);
+  }
+  getSQLType() {
+    let type = "";
+    if (this.precision !== void 0 && this.scale !== void 0) {
+      type += `decimal(${this.precision},${this.scale})`;
+    } else if (this.precision === void 0) {
+      type += "decimal";
+    } else {
+      type += `decimal(${this.precision})`;
+    }
+    type = type === "decimal(10,0)" || type === "decimal(10)" ? "decimal" : type;
+    return this.unsigned ? `${type} unsigned` : type;
+  }
+};
+var MySqlDecimalNumberBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
+  static [entityKind2] = "MySqlDecimalNumberBuilder";
+  constructor(name, config2) {
+    super(name, "number", "MySqlDecimalNumber");
+    this.config.precision = config2?.precision;
+    this.config.scale = config2?.scale;
+    this.config.unsigned = config2?.unsigned;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlDecimalNumber(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlDecimalNumber = class extends MySqlColumnWithAutoIncrement {
+  static [entityKind2] = "MySqlDecimalNumber";
+  precision = this.config.precision;
+  scale = this.config.scale;
+  unsigned = this.config.unsigned;
+  mapFromDriverValue(value) {
+    if (typeof value === "number") return value;
+    return Number(value);
+  }
+  mapToDriverValue = String;
+  getSQLType() {
+    let type = "";
+    if (this.precision !== void 0 && this.scale !== void 0) {
+      type += `decimal(${this.precision},${this.scale})`;
+    } else if (this.precision === void 0) {
+      type += "decimal";
+    } else {
+      type += `decimal(${this.precision})`;
+    }
+    type = type === "decimal(10,0)" || type === "decimal(10)" ? "decimal" : type;
+    return this.unsigned ? `${type} unsigned` : type;
+  }
+};
+var MySqlDecimalBigIntBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
+  static [entityKind2] = "MySqlDecimalBigIntBuilder";
+  constructor(name, config2) {
+    super(name, "bigint", "MySqlDecimalBigInt");
+    this.config.precision = config2?.precision;
+    this.config.scale = config2?.scale;
+    this.config.unsigned = config2?.unsigned;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlDecimalBigInt(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlDecimalBigInt = class extends MySqlColumnWithAutoIncrement {
+  static [entityKind2] = "MySqlDecimalBigInt";
+  precision = this.config.precision;
+  scale = this.config.scale;
+  unsigned = this.config.unsigned;
+  mapFromDriverValue = BigInt;
+  mapToDriverValue = String;
+  getSQLType() {
+    let type = "";
+    if (this.precision !== void 0 && this.scale !== void 0) {
+      type += `decimal(${this.precision},${this.scale})`;
+    } else if (this.precision === void 0) {
+      type += "decimal";
+    } else {
+      type += `decimal(${this.precision})`;
+    }
+    type = type === "decimal(10,0)" || type === "decimal(10)" ? "decimal" : type;
+    return this.unsigned ? `${type} unsigned` : type;
+  }
+};
+function decimal(a, b = {}) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  const mode = config2?.mode;
+  return mode === "number" ? new MySqlDecimalNumberBuilder(name, config2) : mode === "bigint" ? new MySqlDecimalBigIntBuilder(name, config2) : new MySqlDecimalBuilder(name, config2);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/double.js
+var MySqlDoubleBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
+  static [entityKind2] = "MySqlDoubleBuilder";
+  constructor(name, config2) {
+    super(name, "number", "MySqlDouble");
+    this.config.precision = config2?.precision;
+    this.config.scale = config2?.scale;
+    this.config.unsigned = config2?.unsigned;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlDouble(table, this.config);
+  }
+};
+var MySqlDouble = class extends MySqlColumnWithAutoIncrement {
+  static [entityKind2] = "MySqlDouble";
+  precision = this.config.precision;
+  scale = this.config.scale;
+  unsigned = this.config.unsigned;
+  getSQLType() {
+    let type = "";
+    if (this.precision !== void 0 && this.scale !== void 0) {
+      type += `double(${this.precision},${this.scale})`;
+    } else if (this.precision === void 0) {
+      type += "double";
+    } else {
+      type += `double(${this.precision})`;
+    }
+    return this.unsigned ? `${type} unsigned` : type;
+  }
+};
+function double(a, b) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  return new MySqlDoubleBuilder(name, config2);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/enum.js
+var MySqlEnumColumnBuilder = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlEnumColumnBuilder";
+  constructor(name, values) {
+    super(name, "string", "MySqlEnumColumn");
+    this.config.enumValues = values;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlEnumColumn(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlEnumColumn = class extends MySqlColumn {
+  static [entityKind2] = "MySqlEnumColumn";
+  enumValues = this.config.enumValues;
+  getSQLType() {
+    return `enum(${this.enumValues.map((value) => `'${value}'`).join(",")})`;
+  }
+};
+var MySqlEnumObjectColumnBuilder = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlEnumObjectColumnBuilder";
+  constructor(name, values) {
+    super(name, "string", "MySqlEnumObjectColumn");
+    this.config.enumValues = values;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlEnumObjectColumn(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlEnumObjectColumn = class extends MySqlColumn {
+  static [entityKind2] = "MySqlEnumObjectColumn";
+  enumValues = this.config.enumValues;
+  getSQLType() {
+    return `enum(${this.enumValues.map((value) => `'${value}'`).join(",")})`;
+  }
+};
+function mysqlEnum(a, b) {
+  if (typeof a === "string" && Array.isArray(b) || Array.isArray(a)) {
+    const name = typeof a === "string" && a.length > 0 ? a : "";
+    const values = (typeof a === "string" ? b : a) ?? [];
+    if (values.length === 0) {
+      throw new Error(`You have an empty array for "${name}" enum values`);
+    }
+    return new MySqlEnumColumnBuilder(name, values);
+  }
+  if (typeof a === "string" && typeof b === "object" || typeof a === "object") {
+    const name = typeof a === "object" ? "" : a;
+    const values = typeof a === "object" ? Object.values(a) : typeof b === "object" ? Object.values(b) : [];
+    if (values.length === 0) {
+      throw new Error(`You have an empty array for "${name}" enum values`);
+    }
+    return new MySqlEnumObjectColumnBuilder(name, values);
+  }
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/float.js
+var MySqlFloatBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
+  static [entityKind2] = "MySqlFloatBuilder";
+  constructor(name, config2) {
+    super(name, "number", "MySqlFloat");
+    this.config.precision = config2?.precision;
+    this.config.scale = config2?.scale;
+    this.config.unsigned = config2?.unsigned;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlFloat(table, this.config);
+  }
+};
+var MySqlFloat = class extends MySqlColumnWithAutoIncrement {
+  static [entityKind2] = "MySqlFloat";
+  precision = this.config.precision;
+  scale = this.config.scale;
+  unsigned = this.config.unsigned;
+  getSQLType() {
+    let type = "";
+    if (this.precision !== void 0 && this.scale !== void 0) {
+      type += `float(${this.precision},${this.scale})`;
+    } else if (this.precision === void 0) {
+      type += "float";
+    } else {
+      type += `float(${this.precision})`;
+    }
+    return this.unsigned ? `${type} unsigned` : type;
+  }
+};
+function float(a, b) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  return new MySqlFloatBuilder(name, config2);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/int.js
+var MySqlIntBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
+  static [entityKind2] = "MySqlIntBuilder";
+  constructor(name, config2) {
+    super(name, "number", "MySqlInt");
+    this.config.unsigned = config2 ? config2.unsigned : false;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlInt(table, this.config);
+  }
+};
+var MySqlInt = class extends MySqlColumnWithAutoIncrement {
+  static [entityKind2] = "MySqlInt";
+  getSQLType() {
+    return `int${this.config.unsigned ? " unsigned" : ""}`;
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string") {
+      return Number(value);
+    }
+    return value;
+  }
+};
+function int(a, b) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  return new MySqlIntBuilder(name, config2);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/json.js
+var MySqlJsonBuilder = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlJsonBuilder";
+  constructor(name) {
+    super(name, "json", "MySqlJson");
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlJson(table, this.config);
+  }
+};
+var MySqlJson = class extends MySqlColumn {
+  static [entityKind2] = "MySqlJson";
+  getSQLType() {
+    return "json";
+  }
+  mapToDriverValue(value) {
+    return JSON.stringify(value);
+  }
+};
+function json(name) {
+  return new MySqlJsonBuilder(name ?? "");
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/mediumint.js
+var MySqlMediumIntBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
+  static [entityKind2] = "MySqlMediumIntBuilder";
+  constructor(name, config2) {
+    super(name, "number", "MySqlMediumInt");
+    this.config.unsigned = config2 ? config2.unsigned : false;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlMediumInt(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlMediumInt = class extends MySqlColumnWithAutoIncrement {
+  static [entityKind2] = "MySqlMediumInt";
+  getSQLType() {
+    return `mediumint${this.config.unsigned ? " unsigned" : ""}`;
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string") {
+      return Number(value);
+    }
+    return value;
+  }
+};
+function mediumint(a, b) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  return new MySqlMediumIntBuilder(name, config2);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/real.js
+var MySqlRealBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
+  static [entityKind2] = "MySqlRealBuilder";
+  constructor(name, config2) {
+    super(name, "number", "MySqlReal");
+    this.config.precision = config2?.precision;
+    this.config.scale = config2?.scale;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlReal(table, this.config);
+  }
+};
+var MySqlReal = class extends MySqlColumnWithAutoIncrement {
+  static [entityKind2] = "MySqlReal";
+  precision = this.config.precision;
+  scale = this.config.scale;
+  getSQLType() {
+    if (this.precision !== void 0 && this.scale !== void 0) {
+      return `real(${this.precision}, ${this.scale})`;
+    } else if (this.precision === void 0) {
+      return "real";
+    } else {
+      return `real(${this.precision})`;
+    }
+  }
+};
+function real(a, b = {}) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  return new MySqlRealBuilder(name, config2);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/serial.js
+var MySqlSerialBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
+  static [entityKind2] = "MySqlSerialBuilder";
+  constructor(name) {
+    super(name, "number", "MySqlSerial");
+    this.config.hasDefault = true;
+    this.config.autoIncrement = true;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlSerial(table, this.config);
+  }
+};
+var MySqlSerial = class extends MySqlColumnWithAutoIncrement {
+  static [entityKind2] = "MySqlSerial";
+  getSQLType() {
+    return "serial";
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string") {
+      return Number(value);
+    }
+    return value;
+  }
+};
+function serial(name) {
+  return new MySqlSerialBuilder(name ?? "");
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/smallint.js
+var MySqlSmallIntBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
+  static [entityKind2] = "MySqlSmallIntBuilder";
+  constructor(name, config2) {
+    super(name, "number", "MySqlSmallInt");
+    this.config.unsigned = config2 ? config2.unsigned : false;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlSmallInt(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlSmallInt = class extends MySqlColumnWithAutoIncrement {
+  static [entityKind2] = "MySqlSmallInt";
+  getSQLType() {
+    return `smallint${this.config.unsigned ? " unsigned" : ""}`;
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string") {
+      return Number(value);
+    }
+    return value;
+  }
+};
+function smallint(a, b) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  return new MySqlSmallIntBuilder(name, config2);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/text.js
+var MySqlTextBuilder = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlTextBuilder";
+  constructor(name, textType, config2) {
+    super(name, "string", "MySqlText");
+    this.config.textType = textType;
+    this.config.enumValues = config2.enum;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlText(table, this.config);
+  }
+};
+var MySqlText = class extends MySqlColumn {
+  static [entityKind2] = "MySqlText";
+  textType = this.config.textType;
+  enumValues = this.config.enumValues;
+  getSQLType() {
+    return this.textType;
+  }
+};
+function text(a, b = {}) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  return new MySqlTextBuilder(name, "text", config2);
+}
+function tinytext(a, b = {}) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  return new MySqlTextBuilder(name, "tinytext", config2);
+}
+function mediumtext(a, b = {}) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  return new MySqlTextBuilder(name, "mediumtext", config2);
+}
+function longtext(a, b = {}) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  return new MySqlTextBuilder(name, "longtext", config2);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/time.js
+var MySqlTimeBuilder = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlTimeBuilder";
+  constructor(name, config2) {
+    super(name, "string", "MySqlTime");
+    this.config.fsp = config2?.fsp;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlTime(table, this.config);
+  }
+};
+var MySqlTime = class extends MySqlColumn {
+  static [entityKind2] = "MySqlTime";
+  fsp = this.config.fsp;
+  getSQLType() {
+    const precision = this.fsp === void 0 ? "" : `(${this.fsp})`;
+    return `time${precision}`;
+  }
+};
+function time(a, b) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  return new MySqlTimeBuilder(name, config2);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/date.common.js
+var MySqlDateColumnBaseBuilder = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlDateColumnBuilder";
+  defaultNow() {
+    return this.default(sql2`(now())`);
+  }
+  // "on update now" also adds an implicit default value to the column - https://dev.mysql.com/doc/refman/8.0/en/timestamp-initialization.html
+  onUpdateNow() {
+    this.config.hasOnUpdateNow = true;
+    this.config.hasDefault = true;
+    return this;
+  }
+};
+var MySqlDateBaseColumn = class extends MySqlColumn {
+  static [entityKind2] = "MySqlDateColumn";
+  hasOnUpdateNow = this.config.hasOnUpdateNow;
+};
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/timestamp.js
+var MySqlTimestampBuilder = class extends MySqlDateColumnBaseBuilder {
+  static [entityKind2] = "MySqlTimestampBuilder";
+  constructor(name, config2) {
+    super(name, "date", "MySqlTimestamp");
+    this.config.fsp = config2?.fsp;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlTimestamp(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlTimestamp = class extends MySqlDateBaseColumn {
+  static [entityKind2] = "MySqlTimestamp";
+  fsp = this.config.fsp;
+  getSQLType() {
+    const precision = this.fsp === void 0 ? "" : `(${this.fsp})`;
+    return `timestamp${precision}`;
+  }
+  mapFromDriverValue(value) {
+    return /* @__PURE__ */ new Date(value + "+0000");
+  }
+  mapToDriverValue(value) {
+    return value.toISOString().slice(0, -1).replace("T", " ");
+  }
+};
+var MySqlTimestampStringBuilder = class extends MySqlDateColumnBaseBuilder {
+  static [entityKind2] = "MySqlTimestampStringBuilder";
+  constructor(name, config2) {
+    super(name, "string", "MySqlTimestampString");
+    this.config.fsp = config2?.fsp;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlTimestampString(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlTimestampString = class extends MySqlDateBaseColumn {
+  static [entityKind2] = "MySqlTimestampString";
+  fsp = this.config.fsp;
+  getSQLType() {
+    const precision = this.fsp === void 0 ? "" : `(${this.fsp})`;
+    return `timestamp${precision}`;
+  }
+};
+function timestamp(a, b = {}) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  if (config2?.mode === "string") {
+    return new MySqlTimestampStringBuilder(name, config2);
+  }
+  return new MySqlTimestampBuilder(name, config2);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/tinyint.js
+var MySqlTinyIntBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
+  static [entityKind2] = "MySqlTinyIntBuilder";
+  constructor(name, config2) {
+    super(name, "number", "MySqlTinyInt");
+    this.config.unsigned = config2 ? config2.unsigned : false;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlTinyInt(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlTinyInt = class extends MySqlColumnWithAutoIncrement {
+  static [entityKind2] = "MySqlTinyInt";
+  getSQLType() {
+    return `tinyint${this.config.unsigned ? " unsigned" : ""}`;
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string") {
+      return Number(value);
+    }
+    return value;
+  }
+};
+function tinyint(a, b) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  return new MySqlTinyIntBuilder(name, config2);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/varbinary.js
+var MySqlVarBinaryBuilder = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlVarBinaryBuilder";
+  /** @internal */
+  constructor(name, config2) {
+    super(name, "string", "MySqlVarBinary");
+    this.config.length = config2?.length;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlVarBinary(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlVarBinary = class extends MySqlColumn {
+  static [entityKind2] = "MySqlVarBinary";
+  length = this.config.length;
+  mapFromDriverValue(value) {
+    if (typeof value === "string") return value;
+    if (Buffer.isBuffer(value)) return value.toString();
+    const str = [];
+    for (const v of value) {
+      str.push(v === 49 ? "1" : "0");
+    }
+    return str.join("");
+  }
+  getSQLType() {
+    return this.length === void 0 ? `varbinary` : `varbinary(${this.length})`;
+  }
+};
+function varbinary(a, b) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  return new MySqlVarBinaryBuilder(name, config2);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/varchar.js
+var MySqlVarCharBuilder = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlVarCharBuilder";
+  /** @internal */
+  constructor(name, config2) {
+    super(name, "string", "MySqlVarChar");
+    this.config.length = config2.length;
+    this.config.enum = config2.enum;
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlVarChar(
+      table,
+      this.config
+    );
+  }
+};
+var MySqlVarChar = class extends MySqlColumn {
+  static [entityKind2] = "MySqlVarChar";
+  length = this.config.length;
+  enumValues = this.config.enum;
+  getSQLType() {
+    return this.length === void 0 ? `varchar` : `varchar(${this.length})`;
+  }
+};
+function varchar(a, b) {
+  const { name, config: config2 } = getColumnNameAndConfig(a, b);
+  return new MySqlVarCharBuilder(name, config2);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/year.js
+var MySqlYearBuilder = class extends MySqlColumnBuilder {
+  static [entityKind2] = "MySqlYearBuilder";
+  constructor(name) {
+    super(name, "number", "MySqlYear");
+  }
+  /** @internal */
+  build(table) {
+    return new MySqlYear(table, this.config);
+  }
+};
+var MySqlYear = class extends MySqlColumn {
+  static [entityKind2] = "MySqlYear";
+  getSQLType() {
+    return `year`;
+  }
+};
+function year(name) {
+  return new MySqlYearBuilder(name ?? "");
+}
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/all.js
+function getMySqlColumnBuilders() {
+  return {
+    bigint,
+    binary,
+    boolean,
+    char,
+    customType,
+    date,
+    datetime,
+    decimal,
+    double,
+    mysqlEnum,
+    float,
+    int,
+    json,
+    mediumint,
+    real,
+    serial,
+    smallint,
+    text,
+    time,
+    timestamp,
+    tinyint,
+    varbinary,
+    varchar,
+    year,
+    longtext,
+    mediumtext,
+    tinytext
+  };
+}
+
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/table.js
 var InlineForeignKeys2 = Symbol.for("drizzle:MySqlInlineForeignKeys");
 var MySqlTable = class extends Table2 {
@@ -52413,6 +52061,29 @@ var MySqlTable = class extends Table2 {
   [InlineForeignKeys2] = [];
   /** @internal */
   [Table2.Symbol.ExtraConfigBuilder] = void 0;
+};
+function mysqlTableWithSchema(name, columns, extraConfig, schema, baseName = name) {
+  const rawTable = new MySqlTable(name, schema, baseName);
+  const parsedColumns = typeof columns === "function" ? columns(getMySqlColumnBuilders()) : columns;
+  const builtColumns = Object.fromEntries(
+    Object.entries(parsedColumns).map(([name2, colBuilderBase]) => {
+      const colBuilder = colBuilderBase;
+      colBuilder.setName(name2);
+      const column = colBuilder.build(rawTable);
+      rawTable[InlineForeignKeys2].push(...colBuilder.buildForeignKeys(column, rawTable));
+      return [name2, column];
+    })
+  );
+  const table = Object.assign(rawTable, builtColumns);
+  table[Table2.Symbol.Columns] = builtColumns;
+  table[Table2.Symbol.ExtraConfigColumns] = builtColumns;
+  if (extraConfig) {
+    table[MySqlTable.Symbol.ExtraConfigBuilder] = extraConfig;
+  }
+  return table;
+}
+var mysqlTable = (name, columns, extraConfig) => {
+  return mysqlTableWithSchema(name, columns, extraConfig, void 0, name);
 };
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/utils.js
@@ -55624,7 +55295,7 @@ __export(external_exports, {
   guid: () => guid2,
   includes: () => _includes,
   instanceof: () => _instanceof,
-  int: () => int,
+  int: () => int2,
   int32: () => int32,
   int64: () => int64,
   intersection: () => intersection,
@@ -55711,7 +55382,7 @@ __export(external_exports, {
   unknown: () => unknown,
   uppercase: () => _uppercase,
   url: () => url,
-  uuid: () => uuid3,
+  uuid: () => uuid2,
   uuidv4: () => uuidv4,
   uuidv6: () => uuidv6,
   uuidv7: () => uuidv7,
@@ -56757,7 +56428,7 @@ __export(regexes_exports, {
   cuid: () => cuid,
   cuid2: () => cuid2,
   date: () => date2,
-  datetime: () => datetime,
+  datetime: () => datetime2,
   domain: () => domain,
   duration: () => duration,
   e164: () => e164,
@@ -56767,7 +56438,7 @@ __export(regexes_exports, {
   guid: () => guid,
   hostname: () => hostname,
   html5Email: () => html5Email,
-  integer: () => integer2,
+  integer: () => integer,
   ipv4: () => ipv4,
   ipv6: () => ipv6,
   ksuid: () => ksuid,
@@ -56782,7 +56453,7 @@ __export(regexes_exports, {
   undefined: () => _undefined,
   unicodeEmail: () => unicodeEmail,
   uppercase: () => uppercase,
-  uuid: () => uuid2,
+  uuid: () => uuid,
   uuid4: () => uuid4,
   uuid6: () => uuid6,
   uuid7: () => uuid7,
@@ -56797,14 +56468,14 @@ var nanoid = /^[a-zA-Z0-9_-]{21}$/;
 var duration = /^P(?:(\d+W)|(?!.*W)(?=\d|T\d)(\d+Y)?(\d+M)?(\d+D)?(T(?=\d)(\d+H)?(\d+M)?(\d+([.,]\d+)?S)?)?)$/;
 var extendedDuration = /^[-+]?P(?!$)(?:(?:[-+]?\d+Y)|(?:[-+]?\d+[.,]\d+Y$))?(?:(?:[-+]?\d+M)|(?:[-+]?\d+[.,]\d+M$))?(?:(?:[-+]?\d+W)|(?:[-+]?\d+[.,]\d+W$))?(?:(?:[-+]?\d+D)|(?:[-+]?\d+[.,]\d+D$))?(?:T(?=[\d+-])(?:(?:[-+]?\d+H)|(?:[-+]?\d+[.,]\d+H$))?(?:(?:[-+]?\d+M)|(?:[-+]?\d+[.,]\d+M$))?(?:[-+]?\d+(?:[.,]\d+)?S)?)??$/;
 var guid = /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$/;
-var uuid2 = (version4) => {
+var uuid = (version4) => {
   if (!version4)
     return /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$/;
   return new RegExp(`^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-${version4}[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$`);
 };
-var uuid4 = /* @__PURE__ */ uuid2(4);
-var uuid6 = /* @__PURE__ */ uuid2(6);
-var uuid7 = /* @__PURE__ */ uuid2(7);
+var uuid4 = /* @__PURE__ */ uuid(4);
+var uuid6 = /* @__PURE__ */ uuid(6);
+var uuid7 = /* @__PURE__ */ uuid(7);
 var email = /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/;
 var html5Email = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 var rfc5322Email = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -56833,7 +56504,7 @@ function timeSource(args) {
 function time2(args) {
   return new RegExp(`^${timeSource(args)}$`);
 }
-function datetime(args) {
+function datetime2(args) {
   const time4 = timeSource({ precision: args.precision });
   const opts = ["Z"];
   if (args.local)
@@ -56848,7 +56519,7 @@ var string = (params) => {
   return new RegExp(`^${regex}$`);
 };
 var bigint2 = /^\d+n?$/;
-var integer2 = /^\d+$/;
+var integer = /^\d+$/;
 var number = /^-?\d+(?:\.\d+)?/i;
 var boolean2 = /true|false/i;
 var _null = /null/i;
@@ -56958,7 +56629,7 @@ var $ZodCheckNumberFormat = /* @__PURE__ */ $constructor("$ZodCheckNumberFormat"
     bag.minimum = minimum;
     bag.maximum = maximum;
     if (isInt)
-      bag.pattern = integer2;
+      bag.pattern = integer;
   });
   inst._zod.check = (payload) => {
     const input = payload.value;
@@ -57417,8 +57088,8 @@ var Doc = class {
     const lines = content.split("\n").filter((x) => x);
     const minIndent = Math.min(...lines.map((x) => x.length - x.trimStart().length));
     const dedented = lines.map((x) => x.slice(minIndent)).map((x) => " ".repeat(this.indent * 2) + x);
-    for (const line2 of dedented) {
-      this.content.push(line2);
+    for (const line of dedented) {
+      this.content.push(line);
     }
   }
   compile() {
@@ -57565,9 +57236,9 @@ var $ZodUUID = /* @__PURE__ */ $constructor("$ZodUUID", (inst, def) => {
     const v = versionMap[def.version];
     if (v === void 0)
       throw new Error(`Invalid UUID version: "${def.version}"`);
-    def.pattern ?? (def.pattern = uuid2(v));
+    def.pattern ?? (def.pattern = uuid(v));
   } else
-    def.pattern ?? (def.pattern = uuid2());
+    def.pattern ?? (def.pattern = uuid());
   $ZodStringFormat.init(inst, def);
 });
 var $ZodEmail = /* @__PURE__ */ $constructor("$ZodEmail", (inst, def) => {
@@ -57655,7 +57326,7 @@ var $ZodKSUID = /* @__PURE__ */ $constructor("$ZodKSUID", (inst, def) => {
   $ZodStringFormat.init(inst, def);
 });
 var $ZodISODateTime = /* @__PURE__ */ $constructor("$ZodISODateTime", (inst, def) => {
-  def.pattern ?? (def.pattern = datetime(def));
+  def.pattern ?? (def.pattern = datetime2(def));
   $ZodStringFormat.init(inst, def);
 });
 var $ZodISODate = /* @__PURE__ */ $constructor("$ZodISODate", (inst, def) => {
@@ -65585,7 +65256,7 @@ __export(iso_exports, {
   ZodISODuration: () => ZodISODuration,
   ZodISOTime: () => ZodISOTime,
   date: () => date3,
-  datetime: () => datetime2,
+  datetime: () => datetime3,
   duration: () => duration2,
   time: () => time3
 });
@@ -65593,7 +65264,7 @@ var ZodISODateTime = /* @__PURE__ */ $constructor("ZodISODateTime", (inst, def) 
   $ZodISODateTime.init(inst, def);
   ZodStringFormat.init(inst, def);
 });
-function datetime2(params) {
+function datetime3(params) {
   return _isoDateTime(ZodISODateTime, params);
 }
 var ZodISODate = /* @__PURE__ */ $constructor("ZodISODate", (inst, def) => {
@@ -65773,7 +65444,7 @@ var ZodString2 = /* @__PURE__ */ $constructor("ZodString", (inst, def) => {
   inst.cidrv4 = (params) => inst.check(_cidrv4(ZodCIDRv4, params));
   inst.cidrv6 = (params) => inst.check(_cidrv6(ZodCIDRv6, params));
   inst.e164 = (params) => inst.check(_e164(ZodE164, params));
-  inst.datetime = (params) => inst.check(datetime2(params));
+  inst.datetime = (params) => inst.check(datetime3(params));
   inst.date = (params) => inst.check(date3(params));
   inst.time = (params) => inst.check(time3(params));
   inst.duration = (params) => inst.check(duration2(params));
@@ -65803,7 +65474,7 @@ var ZodUUID = /* @__PURE__ */ $constructor("ZodUUID", (inst, def) => {
   $ZodUUID.init(inst, def);
   ZodStringFormat.init(inst, def);
 });
-function uuid3(params) {
+function uuid2(params) {
   return _uuid(ZodUUID, params);
 }
 function uuidv4(params) {
@@ -65943,8 +65614,8 @@ var ZodNumber2 = /* @__PURE__ */ $constructor("ZodNumber", (inst, def) => {
   inst.lt = (value, params) => inst.check(_lt(value, params));
   inst.lte = (value, params) => inst.check(_lte(value, params));
   inst.max = (value, params) => inst.check(_lte(value, params));
-  inst.int = (params) => inst.check(int(params));
-  inst.safe = (params) => inst.check(int(params));
+  inst.int = (params) => inst.check(int2(params));
+  inst.safe = (params) => inst.check(int2(params));
   inst.positive = (params) => inst.check(_gt(0, params));
   inst.nonnegative = (params) => inst.check(_gte(0, params));
   inst.negative = (params) => inst.check(_lt(0, params));
@@ -65966,7 +65637,7 @@ var ZodNumberFormat = /* @__PURE__ */ $constructor("ZodNumberFormat", (inst, def
   $ZodNumberFormat.init(inst, def);
   ZodNumber2.init(inst, def);
 });
-function int(params) {
+function int2(params) {
   return _int(ZodNumberFormat, params);
 }
 function float32(params) {
@@ -66735,11 +66406,11 @@ function numberColumnToSchema(column, z, coerce2) {
   let unsigned = column.getSQLType().includes("unsigned");
   let min;
   let max;
-  let integer3 = false;
+  let integer2 = false;
   if (isColumnType(column, ["MySqlTinyInt", "SingleStoreTinyInt"])) {
     min = unsigned ? 0 : CONSTANTS.INT8_MIN;
     max = unsigned ? CONSTANTS.INT8_UNSIGNED_MAX : CONSTANTS.INT8_MAX;
-    integer3 = true;
+    integer2 = true;
   } else if (isColumnType(column, [
     "PgSmallInt",
     "PgSmallSerial",
@@ -66748,7 +66419,7 @@ function numberColumnToSchema(column, z, coerce2) {
   ])) {
     min = unsigned ? 0 : CONSTANTS.INT16_MIN;
     max = unsigned ? CONSTANTS.INT16_UNSIGNED_MAX : CONSTANTS.INT16_MAX;
-    integer3 = true;
+    integer2 = true;
   } else if (isColumnType(column, [
     "PgReal",
     "MySqlFloat",
@@ -66758,7 +66429,7 @@ function numberColumnToSchema(column, z, coerce2) {
   ])) {
     min = unsigned ? 0 : CONSTANTS.INT24_MIN;
     max = unsigned ? CONSTANTS.INT24_UNSIGNED_MAX : CONSTANTS.INT24_MAX;
-    integer3 = isColumnType(column, ["MySqlMediumInt", "SingleStoreMediumInt"]);
+    integer2 = isColumnType(column, ["MySqlMediumInt", "SingleStoreMediumInt"]);
   } else if (isColumnType(column, [
     "PgInteger",
     "PgSerial",
@@ -66767,7 +66438,7 @@ function numberColumnToSchema(column, z, coerce2) {
   ])) {
     min = unsigned ? 0 : CONSTANTS.INT32_MIN;
     max = unsigned ? CONSTANTS.INT32_UNSIGNED_MAX : CONSTANTS.INT32_MAX;
-    integer3 = true;
+    integer2 = true;
   } else if (isColumnType(column, [
     "PgDoublePrecision",
     "MySqlReal",
@@ -66790,16 +66461,16 @@ function numberColumnToSchema(column, z, coerce2) {
     unsigned = unsigned || isColumnType(column, ["MySqlSerial", "SingleStoreSerial"]);
     min = unsigned ? 0 : Number.MIN_SAFE_INTEGER;
     max = Number.MAX_SAFE_INTEGER;
-    integer3 = true;
+    integer2 = true;
   } else if (isColumnType(column, ["MySqlYear", "SingleStoreYear"])) {
     min = 1901;
     max = 2155;
-    integer3 = true;
+    integer2 = true;
   } else {
     min = Number.MIN_SAFE_INTEGER;
     max = Number.MAX_SAFE_INTEGER;
   }
-  let schema = coerce2 === true || coerce2?.number ? integer3 ? z.coerce.number() : z.coerce.number().int() : integer3 ? z.int() : z.number();
+  let schema = coerce2 === true || coerce2?.number ? integer2 ? z.coerce.number() : z.coerce.number().int() : integer2 ? z.int() : z.number();
   schema = schema.gte(min).lte(max);
   return schema;
 }
@@ -66894,22 +66565,22 @@ var createInsertSchema = (entity, refine2) => {
 };
 
 // lib/db/src/schema/outlets.ts
-var outletsTable = pgTable("outlets", {
-  id: serial("id").primaryKey(),
-  slug: text("slug").notNull().unique(),
-  name: text("name").notNull(),
-  tagline: text("tagline"),
+var outletsTable = mysqlTable("outlets", {
+  id: int("id").primaryKey().autoincrement(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  name: varchar("name", { length: 255 }).notNull(),
+  tagline: varchar("tagline", { length: 255 }),
   description: text("description"),
   address: text("address"),
-  phone: text("phone"),
-  hours: text("hours"),
-  cuisine: text("cuisine"),
-  accentColor: text("accent_color"),
+  phone: varchar("phone", { length: 50 }),
+  hours: varchar("hours", { length: 255 }),
+  cuisine: varchar("cuisine", { length: 100 }),
+  accentColor: varchar("accent_color", { length: 20 }),
   coverImagePath: text("cover_image_path"),
   cardImagePath: text("card_image_path"),
-  sortOrder: integer("sort_order").notNull().default(0),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => /* @__PURE__ */ new Date())
+  sortOrder: int("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow()
 });
 var insertOutletSchema = createInsertSchema(outletsTable).omit({
   id: true,
@@ -66918,17 +66589,17 @@ var insertOutletSchema = createInsertSchema(outletsTable).omit({
 });
 
 // lib/db/src/schema/banners.ts
-var bannersTable = pgTable("banners", {
-  id: serial("id").primaryKey(),
-  title: text("title"),
+var bannersTable = mysqlTable("banners", {
+  id: int("id").primaryKey().autoincrement(),
+  title: varchar("title", { length: 255 }),
   subtitle: text("subtitle"),
   imagePath: text("image_path").notNull(),
-  ctaLabel: text("cta_label"),
+  ctaLabel: varchar("cta_label", { length: 100 }),
   ctaHref: text("cta_href"),
-  sortOrder: integer("sort_order").notNull().default(0),
+  sortOrder: int("sort_order").notNull().default(0),
   active: boolean("active").notNull().default(true),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => /* @__PURE__ */ new Date())
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow()
 });
 var insertBannerSchema = createInsertSchema(bannersTable).omit({
   id: true,
@@ -66937,19 +66608,19 @@ var insertBannerSchema = createInsertSchema(bannersTable).omit({
 });
 
 // lib/db/src/schema/menu-items.ts
-var menuItemsTable = pgTable("menu_items", {
-  id: serial("id").primaryKey(),
-  outletId: integer("outlet_id").notNull().references(() => outletsTable.id, { onDelete: "cascade" }),
-  category: text("category").notNull(),
-  name: text("name").notNull(),
+var menuItemsTable = mysqlTable("menu_items", {
+  id: int("id").primaryKey().autoincrement(),
+  outletId: int("outlet_id").notNull().references(() => outletsTable.id, { onDelete: "cascade" }),
+  category: varchar("category", { length: 100 }).notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
-  price: text("price"),
+  price: varchar("price", { length: 50 }),
   imagePath: text("image_path"),
   tags: text("tags"),
-  sortOrder: integer("sort_order").notNull().default(0),
+  sortOrder: int("sort_order").notNull().default(0),
   featured: boolean("featured").notNull().default(false),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => /* @__PURE__ */ new Date())
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow()
 });
 var insertMenuItemSchema = createInsertSchema(menuItemsTable).omit({
   id: true,
@@ -66958,16 +66629,16 @@ var insertMenuItemSchema = createInsertSchema(menuItemsTable).omit({
 });
 
 // lib/db/src/schema/gallery.ts
-var galleryImagesTable = pgTable("gallery_images", {
-  id: serial("id").primaryKey(),
-  outletId: integer("outlet_id").references(() => outletsTable.id, {
+var galleryImagesTable = mysqlTable("gallery_images", {
+  id: int("id").primaryKey().autoincrement(),
+  outletId: int("outlet_id").references(() => outletsTable.id, {
     onDelete: "set null"
   }),
   imagePath: text("image_path").notNull(),
-  caption: text("caption"),
-  sortOrder: integer("sort_order").notNull().default(0),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => /* @__PURE__ */ new Date())
+  caption: varchar("caption", { length: 255 }),
+  sortOrder: int("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow()
 });
 var insertGalleryImageSchema = createInsertSchema(galleryImagesTable).omit({
   id: true,
@@ -66976,15 +66647,15 @@ var insertGalleryImageSchema = createInsertSchema(galleryImagesTable).omit({
 });
 
 // lib/db/src/schema/site-info.ts
-var siteInfoTable = pgTable("site_info", {
-  id: serial("id").primaryKey(),
-  brandName: text("brand_name").notNull(),
-  tagline: text("tagline"),
+var siteInfoTable = mysqlTable("site_info", {
+  id: int("id").primaryKey().autoincrement(),
+  brandName: varchar("brand_name", { length: 255 }).notNull(),
+  tagline: varchar("tagline", { length: 255 }),
   about: text("about"),
-  contactEmail: text("contact_email"),
-  contactPhone: text("contact_phone"),
+  contactEmail: varchar("contact_email", { length: 255 }),
+  contactPhone: varchar("contact_phone", { length: 50 }),
   instagramUrl: text("instagram_url"),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => /* @__PURE__ */ new Date())
+  updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow()
 });
 var insertSiteInfoSchema = createInsertSchema(siteInfoTable).omit({
   id: true,
@@ -66992,19 +66663,19 @@ var insertSiteInfoSchema = createInsertSchema(siteInfoTable).omit({
 });
 
 // lib/db/src/schema/promotions.ts
-var promotionsTable = pgTable("promotions", {
-  id: serial("id").primaryKey(),
-  outletId: integer("outlet_id").notNull().references(() => outletsTable.id, { onDelete: "cascade" }),
-  title: text("title").notNull(),
+var promotionsTable = mysqlTable("promotions", {
+  id: int("id").primaryKey().autoincrement(),
+  outletId: int("outlet_id").notNull().references(() => outletsTable.id, { onDelete: "cascade" }),
+  title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
   imagePath: text("image_path"),
-  ctaLabel: text("cta_label"),
+  ctaLabel: varchar("cta_label", { length: 100 }),
   ctaHref: text("cta_href"),
-  badge: text("badge"),
-  sortOrder: integer("sort_order").notNull().default(0),
+  badge: varchar("badge", { length: 100 }),
+  sortOrder: int("sort_order").notNull().default(0),
   active: boolean("active").notNull().default(true),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => /* @__PURE__ */ new Date())
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow()
 });
 var insertPromotionSchema = createInsertSchema(promotionsTable).omit({
   id: true,
@@ -67013,17 +66684,17 @@ var insertPromotionSchema = createInsertSchema(promotionsTable).omit({
 });
 
 // lib/db/src/schema/beverages.ts
-var beveragesTable = pgTable("beverages", {
-  id: serial("id").primaryKey(),
-  outletId: integer("outlet_id").notNull().references(() => outletsTable.id, { onDelete: "cascade" }),
-  category: text("category").notNull(),
-  name: text("name").notNull(),
+var beveragesTable = mysqlTable("beverages", {
+  id: int("id").primaryKey().autoincrement(),
+  outletId: int("outlet_id").notNull().references(() => outletsTable.id, { onDelete: "cascade" }),
+  category: varchar("category", { length: 100 }).notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
-  price: text("price"),
-  sortOrder: integer("sort_order").notNull().default(0),
+  price: varchar("price", { length: 50 }),
+  sortOrder: int("sort_order").notNull().default(0),
   featured: boolean("featured").notNull().default(false),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => /* @__PURE__ */ new Date())
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow()
 });
 var insertBeverageSchema = createInsertSchema(beveragesTable).omit({
   id: true,
@@ -67063,7 +66734,8 @@ router3.post("/banners", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [row] = await db.insert(bannersTable).values(parsed.data).returning();
+  const [result] = await db.insert(bannersTable).values(parsed.data);
+  const [row] = await db.select().from(bannersTable).where(eq(bannersTable.id, result.insertId));
   res.status(201).json(GetBannerResponse.parse(serializeForResponse(row)));
 });
 router3.get("/banners/:id", async (req, res) => {
@@ -67090,7 +66762,8 @@ router3.patch("/banners/:id", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [row] = await db.update(bannersTable).set(parsed.data).where(eq(bannersTable.id, params.data.id)).returning();
+  await db.update(bannersTable).set(parsed.data).where(eq(bannersTable.id, params.data.id));
+  const [row] = await db.select().from(bannersTable).where(eq(bannersTable.id, params.data.id));
   if (!row) {
     res.status(404).json({ error: "Banner not found" });
     return;
@@ -67103,11 +66776,12 @@ router3.delete("/banners/:id", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [row] = await db.delete(bannersTable).where(eq(bannersTable.id, params.data.id)).returning();
-  if (!row) {
+  const [existing] = await db.select().from(bannersTable).where(eq(bannersTable.id, params.data.id));
+  if (!existing) {
     res.status(404).json({ error: "Banner not found" });
     return;
   }
+  await db.delete(bannersTable).where(eq(bannersTable.id, params.data.id));
   res.sendStatus(204);
 });
 var banners_default = router3;
@@ -67125,7 +66799,8 @@ router4.post("/outlets", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [row] = await db.insert(outletsTable).values(parsed.data).returning();
+  const [result] = await db.insert(outletsTable).values(parsed.data);
+  const [row] = await db.select().from(outletsTable).where(eq(outletsTable.id, result.insertId));
   res.status(201).json(GetOutletResponse.parse(serializeForResponse(row)));
 });
 router4.get("/outlets/by-slug/:slug", async (req, res) => {
@@ -67165,7 +66840,8 @@ router4.patch("/outlets/:id", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [row] = await db.update(outletsTable).set(parsed.data).where(eq(outletsTable.id, params.data.id)).returning();
+  await db.update(outletsTable).set(parsed.data).where(eq(outletsTable.id, params.data.id));
+  const [row] = await db.select().from(outletsTable).where(eq(outletsTable.id, params.data.id));
   if (!row) {
     res.status(404).json({ error: "Outlet not found" });
     return;
@@ -67178,11 +66854,12 @@ router4.delete("/outlets/:id", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [row] = await db.delete(outletsTable).where(eq(outletsTable.id, params.data.id)).returning();
-  if (!row) {
+  const [existing] = await db.select().from(outletsTable).where(eq(outletsTable.id, params.data.id));
+  if (!existing) {
     res.status(404).json({ error: "Outlet not found" });
     return;
   }
+  await db.delete(outletsTable).where(eq(outletsTable.id, params.data.id));
   res.sendStatus(204);
 });
 var outlets_default = router4;
@@ -67215,7 +66892,8 @@ router5.post("/outlets/:outletId/menu-items", async (req, res) => {
     res.status(404).json({ error: "Outlet not found" });
     return;
   }
-  const [row] = await db.insert(menuItemsTable).values({ ...parsed.data, outletId: params.data.outletId }).returning();
+  const [result] = await db.insert(menuItemsTable).values({ ...parsed.data, outletId: params.data.outletId });
+  const [row] = await db.select().from(menuItemsTable).where(eq(menuItemsTable.id, result.insertId));
   res.status(201).json(GetMenuItemResponse.parse(serializeForResponse(row)));
 });
 router5.get("/menu-items/:id", async (req, res) => {
@@ -67242,7 +66920,8 @@ router5.patch("/menu-items/:id", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [row] = await db.update(menuItemsTable).set(parsed.data).where(eq(menuItemsTable.id, params.data.id)).returning();
+  await db.update(menuItemsTable).set(parsed.data).where(eq(menuItemsTable.id, params.data.id));
+  const [row] = await db.select().from(menuItemsTable).where(eq(menuItemsTable.id, params.data.id));
   if (!row) {
     res.status(404).json({ error: "Menu item not found" });
     return;
@@ -67255,11 +66934,12 @@ router5.delete("/menu-items/:id", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [row] = await db.delete(menuItemsTable).where(eq(menuItemsTable.id, params.data.id)).returning();
-  if (!row) {
+  const [existing] = await db.select().from(menuItemsTable).where(eq(menuItemsTable.id, params.data.id));
+  if (!existing) {
     res.status(404).json({ error: "Menu item not found" });
     return;
   }
+  await db.delete(menuItemsTable).where(eq(menuItemsTable.id, params.data.id));
   res.sendStatus(204);
 });
 var menu_items_default = router5;
@@ -67292,7 +66972,8 @@ router6.post("/outlets/:outletId/beverages", async (req, res) => {
     res.status(404).json({ error: "Outlet not found" });
     return;
   }
-  const [row] = await db.insert(beveragesTable).values({ ...parsed.data, outletId: params.data.outletId }).returning();
+  const [result] = await db.insert(beveragesTable).values({ ...parsed.data, outletId: params.data.outletId });
+  const [row] = await db.select().from(beveragesTable).where(eq(beveragesTable.id, result.insertId));
   res.status(201).json(GetBeverageResponse.parse(serializeForResponse(row)));
 });
 router6.get("/beverages/:id", async (req, res) => {
@@ -67319,7 +67000,8 @@ router6.patch("/beverages/:id", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [row] = await db.update(beveragesTable).set(parsed.data).where(eq(beveragesTable.id, params.data.id)).returning();
+  await db.update(beveragesTable).set(parsed.data).where(eq(beveragesTable.id, params.data.id));
+  const [row] = await db.select().from(beveragesTable).where(eq(beveragesTable.id, params.data.id));
   if (!row) {
     res.status(404).json({ error: "Beverage not found" });
     return;
@@ -67332,11 +67014,12 @@ router6.delete("/beverages/:id", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [row] = await db.delete(beveragesTable).where(eq(beveragesTable.id, params.data.id)).returning();
-  if (!row) {
+  const [existing] = await db.select().from(beveragesTable).where(eq(beveragesTable.id, params.data.id));
+  if (!existing) {
     res.status(404).json({ error: "Beverage not found" });
     return;
   }
+  await db.delete(beveragesTable).where(eq(beveragesTable.id, params.data.id));
   res.sendStatus(204);
 });
 var beverages_default = router6;
@@ -67359,7 +67042,8 @@ router7.post("/gallery", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [row] = await db.insert(galleryImagesTable).values(parsed.data).returning();
+  const [result] = await db.insert(galleryImagesTable).values(parsed.data);
+  const [row] = await db.select().from(galleryImagesTable).where(eq(galleryImagesTable.id, result.insertId));
   res.status(201).json(UpdateGalleryImageResponse.parse(serializeForResponse(row)));
 });
 router7.patch("/gallery/:id", async (req, res) => {
@@ -67373,7 +67057,8 @@ router7.patch("/gallery/:id", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [row] = await db.update(galleryImagesTable).set(parsed.data).where(eq(galleryImagesTable.id, params.data.id)).returning();
+  await db.update(galleryImagesTable).set(parsed.data).where(eq(galleryImagesTable.id, params.data.id));
+  const [row] = await db.select().from(galleryImagesTable).where(eq(galleryImagesTable.id, params.data.id));
   if (!row) {
     res.status(404).json({ error: "Gallery image not found" });
     return;
@@ -67386,11 +67071,12 @@ router7.delete("/gallery/:id", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [row] = await db.delete(galleryImagesTable).where(eq(galleryImagesTable.id, params.data.id)).returning();
-  if (!row) {
+  const [existing] = await db.select().from(galleryImagesTable).where(eq(galleryImagesTable.id, params.data.id));
+  if (!existing) {
     res.status(404).json({ error: "Gallery image not found" });
     return;
   }
+  await db.delete(galleryImagesTable).where(eq(galleryImagesTable.id, params.data.id));
   res.sendStatus(204);
 });
 var gallery_default = router7;
@@ -67401,7 +67087,8 @@ var router8 = (0, import_express8.Router)();
 async function ensureSiteInfo() {
   const [existing] = await db.select().from(siteInfoTable).limit(1);
   if (existing) return existing;
-  const [created] = await db.insert(siteInfoTable).values({ brandName: "Avenue Hospitality Group" }).returning();
+  const [result] = await db.insert(siteInfoTable).values({ brandName: "Avenue Hospitality Group" });
+  const [created] = await db.select().from(siteInfoTable).where(eq(siteInfoTable.id, result.insertId));
   return created;
 }
 router8.get("/site-info", async (_req, res) => {
@@ -67415,7 +67102,8 @@ router8.patch("/site-info", async (req, res) => {
     return;
   }
   const existing = await ensureSiteInfo();
-  const [row] = await db.update(siteInfoTable).set(parsed.data).where(eq(siteInfoTable.id, existing.id)).returning();
+  await db.update(siteInfoTable).set(parsed.data).where(eq(siteInfoTable.id, existing.id));
+  const [row] = await db.select().from(siteInfoTable).where(eq(siteInfoTable.id, existing.id));
   res.json(UpdateSiteInfoResponse.parse(serializeForResponse(row)));
 });
 router8.get("/dashboard/summary", async (_req, res) => {
@@ -67473,7 +67161,8 @@ router9.post("/outlets/:outletId/promotions", async (req, res) => {
     res.status(404).json({ error: "Outlet not found" });
     return;
   }
-  const [row] = await db.insert(promotionsTable).values({ ...parsed.data, outletId: params.data.outletId }).returning();
+  const [result] = await db.insert(promotionsTable).values({ ...parsed.data, outletId: params.data.outletId });
+  const [row] = await db.select().from(promotionsTable).where(eq(promotionsTable.id, result.insertId));
   res.status(201).json(GetPromotionResponse.parse(serializeForResponse(row)));
 });
 router9.get("/promotions/:id", async (req, res) => {
@@ -67500,7 +67189,8 @@ router9.patch("/promotions/:id", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [row] = await db.update(promotionsTable).set(parsed.data).where(eq(promotionsTable.id, params.data.id)).returning();
+  await db.update(promotionsTable).set(parsed.data).where(eq(promotionsTable.id, params.data.id));
+  const [row] = await db.select().from(promotionsTable).where(eq(promotionsTable.id, params.data.id));
   if (!row) {
     res.status(404).json({ error: "Promotion not found" });
     return;
@@ -67513,11 +67203,12 @@ router9.delete("/promotions/:id", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [row] = await db.delete(promotionsTable).where(eq(promotionsTable.id, params.data.id)).returning();
-  if (!row) {
+  const [existing] = await db.select().from(promotionsTable).where(eq(promotionsTable.id, params.data.id));
+  if (!existing) {
     res.status(404).json({ error: "Promotion not found" });
     return;
   }
+  await db.delete(promotionsTable).where(eq(promotionsTable.id, params.data.id));
   res.sendStatus(204);
 });
 var promotions_default = router9;

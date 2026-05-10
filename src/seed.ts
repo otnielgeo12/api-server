@@ -241,7 +241,8 @@ async function main() {
     .select({ count: sql<number>`cast(count(*) as int)` })
     .from(outletsTable);
   if (outletCount === 0) {
-    const inserted = await db.insert(outletsTable).values(OUTLETS).returning();
+    await db.insert(outletsTable).values(OUTLETS);
+    const inserted = await db.select().from(outletsTable);
     logger.info({ n: inserted.length }, "Inserted outlets");
 
     const slugToId = new Map(inserted.map((o) => [o.slug, o.id]));
@@ -263,8 +264,8 @@ async function main() {
       });
     }
     if (menuRows.length > 0) {
-      const inserted2 = await db.insert(menuItemsTable).values(menuRows).returning();
-      logger.info({ n: inserted2.length }, "Inserted menu items");
+      await db.insert(menuItemsTable).values(menuRows);
+      logger.info("Inserted menu items");
     }
   } else {
     logger.info({ outletCount }, "Outlets already present, skipping outlet+menu seed");
@@ -274,8 +275,8 @@ async function main() {
     .select({ count: sql<number>`cast(count(*) as int)` })
     .from(bannersTable);
   if (bannerCount === 0) {
-    const inserted = await db.insert(bannersTable).values(BANNERS).returning();
-    logger.info({ n: inserted.length }, "Inserted banners");
+    await db.insert(bannersTable).values(BANNERS);
+    logger.info("Inserted banners");
   } else {
     logger.info({ bannerCount }, "Banners already present, skipping");
   }
@@ -284,8 +285,8 @@ async function main() {
     .select({ count: sql<number>`cast(count(*) as int)` })
     .from(galleryImagesTable);
   if (galleryCount === 0) {
-    const inserted = await db.insert(galleryImagesTable).values(GALLERY).returning();
-    logger.info({ n: inserted.length }, "Inserted gallery images");
+    await db.insert(galleryImagesTable).values(GALLERY);
+    logger.info("Inserted gallery images");
   } else {
     logger.info({ galleryCount }, "Gallery already present, skipping");
   }

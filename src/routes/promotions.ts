@@ -62,10 +62,15 @@ router.post("/outlets/:outletId/promotions", async (req, res): Promise<void> => 
     res.status(404).json({ error: "Outlet not found" });
     return;
   }
-  const [row] = await db
+  const [result] = await db
     .insert(promotionsTable)
-    .values({ ...parsed.data, outletId: params.data.outletId })
-    .returning();
+    .values({ ...parsed.data, outletId: params.data.outletId });
+    
+  const [row] = await db
+    .select()
+    .from(promotionsTable)
+    .where(eq(promotionsTable.id, result.insertId));
+    
   res.status(201).json(GetPromotionResponse.parse(ser(row)));
 });
 
@@ -97,11 +102,16 @@ router.patch("/promotions/:id", async (req, res): Promise<void> => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [row] = await db
+  await db
     .update(promotionsTable)
     .set(parsed.data)
-    .where(eq(promotionsTable.id, params.data.id))
-    .returning();
+    .where(eq(promotionsTable.id, params.data.id));
+    
+  const [row] = await db
+    .select()
+    .from(promotionsTable)
+    .where(eq(promotionsTable.id, params.data.id));
+
   if (!row) {
     res.status(404).json({ error: "Promotion not found" });
     return;
@@ -115,14 +125,20 @@ router.delete("/promotions/:id", async (req, res): Promise<void> => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [row] = await db
-    .delete(promotionsTable)
-    .where(eq(promotionsTable.id, params.data.id))
-    .returning();
-  if (!row) {
+  const [existing] = await db
+    .select()
+    .from(promotionsTable)
+    .where(eq(promotionsTable.id, params.data.id));
+
+  if (!existing) {
     res.status(404).json({ error: "Promotion not found" });
     return;
   }
+
+  await db
+    .delete(promotionsTable)
+    .where(eq(promotionsTable.id, params.data.id));
+
   res.sendStatus(204);
 });
 

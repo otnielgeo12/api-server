@@ -50,10 +50,15 @@ router.post("/outlets/:outletId/menu-items", async (req, res): Promise<void> => 
     res.status(404).json({ error: "Outlet not found" });
     return;
   }
-  const [row] = await db
+  const [result] = await db
     .insert(menuItemsTable)
-    .values({ ...parsed.data, outletId: params.data.outletId })
-    .returning();
+    .values({ ...parsed.data, outletId: params.data.outletId });
+    
+  const [row] = await db
+    .select()
+    .from(menuItemsTable)
+    .where(eq(menuItemsTable.id, result.insertId));
+    
   res.status(201).json(GetMenuItemResponse.parse(ser(row)));
 });
 
@@ -85,11 +90,16 @@ router.patch("/menu-items/:id", async (req, res): Promise<void> => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [row] = await db
+  await db
     .update(menuItemsTable)
     .set(parsed.data)
-    .where(eq(menuItemsTable.id, params.data.id))
-    .returning();
+    .where(eq(menuItemsTable.id, params.data.id));
+    
+  const [row] = await db
+    .select()
+    .from(menuItemsTable)
+    .where(eq(menuItemsTable.id, params.data.id));
+
   if (!row) {
     res.status(404).json({ error: "Menu item not found" });
     return;
@@ -103,14 +113,20 @@ router.delete("/menu-items/:id", async (req, res): Promise<void> => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [row] = await db
-    .delete(menuItemsTable)
-    .where(eq(menuItemsTable.id, params.data.id))
-    .returning();
-  if (!row) {
+  const [existing] = await db
+    .select()
+    .from(menuItemsTable)
+    .where(eq(menuItemsTable.id, params.data.id));
+
+  if (!existing) {
     res.status(404).json({ error: "Menu item not found" });
     return;
   }
+
+  await db
+    .delete(menuItemsTable)
+    .where(eq(menuItemsTable.id, params.data.id));
+
   res.sendStatus(204);
 });
 

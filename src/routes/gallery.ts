@@ -40,10 +40,15 @@ router.post("/gallery", async (req, res): Promise<void> => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [row] = await db
+  const [result] = await db
     .insert(galleryImagesTable)
-    .values(parsed.data)
-    .returning();
+    .values(parsed.data);
+    
+  const [row] = await db
+    .select()
+    .from(galleryImagesTable)
+    .where(eq(galleryImagesTable.id, result.insertId));
+    
   res.status(201).json(UpdateGalleryImageResponse.parse(ser(row)));
 });
 
@@ -58,11 +63,16 @@ router.patch("/gallery/:id", async (req, res): Promise<void> => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [row] = await db
+  await db
     .update(galleryImagesTable)
     .set(parsed.data)
-    .where(eq(galleryImagesTable.id, params.data.id))
-    .returning();
+    .where(eq(galleryImagesTable.id, params.data.id));
+    
+  const [row] = await db
+    .select()
+    .from(galleryImagesTable)
+    .where(eq(galleryImagesTable.id, params.data.id));
+
   if (!row) {
     res.status(404).json({ error: "Gallery image not found" });
     return;
@@ -76,14 +86,20 @@ router.delete("/gallery/:id", async (req, res): Promise<void> => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [row] = await db
-    .delete(galleryImagesTable)
-    .where(eq(galleryImagesTable.id, params.data.id))
-    .returning();
-  if (!row) {
+  const [existing] = await db
+    .select()
+    .from(galleryImagesTable)
+    .where(eq(galleryImagesTable.id, params.data.id));
+
+  if (!existing) {
     res.status(404).json({ error: "Gallery image not found" });
     return;
   }
+
+  await db
+    .delete(galleryImagesTable)
+    .where(eq(galleryImagesTable.id, params.data.id));
+
   res.sendStatus(204);
 });
 

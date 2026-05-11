@@ -40,10 +40,11 @@ export class ObjectStorageService {
     let ext = path.extname(filePath).toLowerCase();
     let contentType = "application/octet-stream";
     if (ext === ".png") contentType = "image/png";
-    if (ext === ".jpg" || ext === ".jpeg") contentType = "image/jpeg";
-    if (ext === ".gif") contentType = "image/gif";
-    if (ext === ".webp") contentType = "image/webp";
-    if (ext === ".svg") contentType = "image/svg+xml";
+    else if (ext === ".jpg" || ext === ".jpeg") contentType = "image/jpeg";
+    else if (ext === ".gif") contentType = "image/gif";
+    else if (ext === ".webp") contentType = "image/webp";
+    else if (ext === ".svg") contentType = "image/svg+xml";
+    else if (filePath.includes("/objects/")) contentType = "image/jpeg"; // Fallback for existing extensionless objects
 
     const headers: Record<string, string> = {
       "Content-Type": contentType,
@@ -54,8 +55,9 @@ export class ObjectStorageService {
     return new Response(webStream, { headers });
   }
 
-  async getObjectEntityUploadURL(): Promise<string> {
-    const objectId = randomUUID();
+  async getObjectEntityUploadURL(originalName?: string): Promise<string> {
+    const ext = originalName ? path.extname(originalName) : "";
+    const objectId = `${randomUUID()}${ext}`;
     return `/api/storage/local-upload/${objectId}`;
   }
 

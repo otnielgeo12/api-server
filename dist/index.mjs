@@ -47573,10 +47573,11 @@ var ObjectStorageService = class {
     let ext = path.extname(filePath).toLowerCase();
     let contentType = "application/octet-stream";
     if (ext === ".png") contentType = "image/png";
-    if (ext === ".jpg" || ext === ".jpeg") contentType = "image/jpeg";
-    if (ext === ".gif") contentType = "image/gif";
-    if (ext === ".webp") contentType = "image/webp";
-    if (ext === ".svg") contentType = "image/svg+xml";
+    else if (ext === ".jpg" || ext === ".jpeg") contentType = "image/jpeg";
+    else if (ext === ".gif") contentType = "image/gif";
+    else if (ext === ".webp") contentType = "image/webp";
+    else if (ext === ".svg") contentType = "image/svg+xml";
+    else if (filePath.includes("/objects/")) contentType = "image/jpeg";
     const headers = {
       "Content-Type": contentType,
       "Cache-Control": `public, max-age=${cacheTtlSec}`,
@@ -47584,8 +47585,9 @@ var ObjectStorageService = class {
     };
     return new Response(webStream, { headers });
   }
-  async getObjectEntityUploadURL() {
-    const objectId = randomUUID();
+  async getObjectEntityUploadURL(originalName) {
+    const ext = originalName ? path.extname(originalName) : "";
+    const objectId = `${randomUUID()}${ext}`;
     return `/api/storage/local-upload/${objectId}`;
   }
   async getObjectEntityFile(objectPath) {
@@ -47621,7 +47623,7 @@ router2.post("/storage/uploads/request-url", async (req, res) => {
   }
   try {
     const { name, size, contentType } = parsed.data;
-    const uploadURL = await objectStorageService.getObjectEntityUploadURL();
+    const uploadURL = await objectStorageService.getObjectEntityUploadURL(name);
     const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
     res.json(
       RequestUploadUrlResponse.parse({

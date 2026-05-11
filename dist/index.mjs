@@ -67276,14 +67276,7 @@ app.use(
   })
 );
 app.use(CLERK_PROXY_PATH, clerkProxyMiddleware());
-app.use(
-  (0, import_cors.default)({
-    credentials: true,
-    origin: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
-  })
-);
+app.use((0, import_cors.default)({ credentials: true, origin: true }));
 app.use(import_express11.default.json({ limit: "50mb" }));
 app.use(import_express11.default.urlencoded({ extended: true, limit: "50mb" }));
 if (process.env.CLERK_SECRET_KEY) {

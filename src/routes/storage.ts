@@ -141,13 +141,14 @@ router.put("/storage/local-upload/:objectId", (req: Request, res: Response) => {
   req.pipe(writeStream);
 
   req.on("end", () => {
+    req.log.info({ objectId }, "Upload completed successfully");
     res.set("ETag", '"local-upload-etag"');
     res.sendStatus(200);
   });
 
   req.on("error", (err) => {
-    req.log.error({ err }, "Error uploading file locally");
-    res.status(500).json({ error: "Upload failed" });
+    req.log.error({ err, objectId }, "Error uploading file locally");
+    res.status(500).json({ error: `Upload failed: ${err.message}` });
   });
 });
 

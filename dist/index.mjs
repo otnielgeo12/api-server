@@ -47691,12 +47691,13 @@ router2.put("/storage/local-upload/:objectId", (req, res) => {
   const writeStream = fs2.createWriteStream(fullPath);
   req.pipe(writeStream);
   req.on("end", () => {
+    req.log.info({ objectId }, "Upload completed successfully");
     res.set("ETag", '"local-upload-etag"');
     res.sendStatus(200);
   });
   req.on("error", (err) => {
-    req.log.error({ err }, "Error uploading file locally");
-    res.status(500).json({ error: "Upload failed" });
+    req.log.error({ err, objectId }, "Error uploading file locally");
+    res.status(500).json({ error: `Upload failed: ${err.message}` });
   });
 });
 router2.get("/storage/local-upload/:objectId", (req, res) => {
@@ -67274,8 +67275,8 @@ app.use(
 );
 app.use(CLERK_PROXY_PATH, clerkProxyMiddleware());
 app.use((0, import_cors.default)({ credentials: true, origin: true }));
-app.use(import_express11.default.json());
-app.use(import_express11.default.urlencoded({ extended: true }));
+app.use(import_express11.default.json({ limit: "50mb" }));
+app.use(import_express11.default.urlencoded({ extended: true, limit: "50mb" }));
 if (process.env.CLERK_SECRET_KEY) {
   const { clerkMiddleware: clerkMiddleware2 } = await Promise.resolve().then(() => (init_dist2(), dist_exports));
   const { publishableKeyFromHost: publishableKeyFromHost2 } = await Promise.resolve().then(() => (init_keys(), keys_exports));

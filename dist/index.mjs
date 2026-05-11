@@ -47685,7 +47685,7 @@ router2.get("/storage/objects/*path", async (req, res) => {
     res.status(500).json({ error: "Failed to serve object" });
   }
 });
-router2.put("/storage/local-upload/:objectId", (req, res) => {
+var handleLocalUpload = (req, res) => {
   const objectId = req.params.objectId;
   const fullPath = path2.join(process.cwd(), "local-storage", objectId.replace(/^\/+/, ""));
   const writeStream = fs2.createWriteStream(fullPath);
@@ -47707,7 +47707,9 @@ router2.put("/storage/local-upload/:objectId", (req, res) => {
       res.status(500).json({ error: `Upload failed: ${err.message}` });
     }
   });
-});
+};
+router2.put("/storage/local-upload/:objectId", handleLocalUpload);
+router2.post("/storage/local-upload/:objectId", handleLocalUpload);
 router2.get("/storage/local-upload/:objectId", (req, res) => {
   const objectId = req.params.objectId;
   const fullPath = path2.join(process.cwd(), "local-storage", objectId);

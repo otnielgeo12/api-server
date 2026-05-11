@@ -129,11 +129,7 @@ router.get("/storage/objects/*path", async (req: Request, res: Response) => {
   }
 });
 
-/**
- * PUT /storage/local-upload/:objectId
- * Local development endpoint to accept uploaded files directly to disk.
- */
-router.put("/storage/local-upload/:objectId", (req: Request, res: Response) => {
+const handleLocalUpload = (req: Request, res: Response) => {
   const objectId = req.params.objectId as string;
   const fullPath = path.join(process.cwd(), "local-storage", objectId.replace(/^\/+/, ""));
   const writeStream = fs.createWriteStream(fullPath);
@@ -159,7 +155,14 @@ router.put("/storage/local-upload/:objectId", (req: Request, res: Response) => {
       res.status(500).json({ error: `Upload failed: ${err.message}` });
     }
   });
-});
+};
+
+/**
+ * PUT & POST /storage/local-upload/:objectId
+ * Local development endpoint to accept uploaded files directly to disk.
+ */
+router.put("/storage/local-upload/:objectId", handleLocalUpload);
+router.post("/storage/local-upload/:objectId", handleLocalUpload);
 
 /**
  * GET /storage/local-upload/:objectId

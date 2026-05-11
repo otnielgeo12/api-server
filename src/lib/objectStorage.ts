@@ -4,7 +4,7 @@ import path from "node:path";
 import { Readable } from "node:stream";
 import { randomUUID } from "node:crypto";
 
-const LOCAL_STORAGE_DIR = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), "..", "..", "local-storage");
+const LOCAL_STORAGE_DIR = path.resolve(process.cwd(), "local-storage");
 
 if (!fs.existsSync(LOCAL_STORAGE_DIR)) {
   fs.mkdirSync(LOCAL_STORAGE_DIR, { recursive: true });

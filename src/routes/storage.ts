@@ -1,5 +1,6 @@
 import { Router, type IRouter, type Request, type Response } from "express";
 import { Readable } from "stream";
+import * as url from "node:url";
 import fs from "fs";
 import path from "path";
 import {
@@ -135,7 +136,8 @@ router.get("/storage/objects/*path", async (req: Request, res: Response) => {
  */
 router.put("/storage/local-upload/:objectId", (req: Request, res: Response) => {
   const objectId = req.params.objectId as string;
-  const fullPath = path.join(process.cwd(), "local-storage", objectId);
+  const localStorageDir = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), "..", "..", "local-storage");
+  const fullPath = path.join(localStorageDir, objectId.replace(/^\/+/, ""));
   const writeStream = fs.createWriteStream(fullPath);
 
   req.pipe(writeStream);

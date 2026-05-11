@@ -18812,8 +18812,8 @@ var require_encodeurl = __commonJS({
     var ENCODE_CHARS_REGEXP = /(?:[^\x21\x23-\x3B\x3D\x3F-\x5F\x61-\x7A\x7C\x7E]|%(?:[^0-9A-Fa-f]|[0-9A-Fa-f][^0-9A-Fa-f]|$))+/g;
     var UNMATCHED_SURROGATE_PAIR_REGEXP = /(^|[^\uD800-\uDBFF])[\uDC00-\uDFFF]|[\uD800-\uDBFF]([^\uDC00-\uDFFF]|$)/g;
     var UNMATCHED_SURROGATE_PAIR_REPLACE = "$1\uFFFD$2";
-    function encodeUrl(url2) {
-      return String(url2).replace(UNMATCHED_SURROGATE_PAIR_REGEXP, UNMATCHED_SURROGATE_PAIR_REPLACE).replace(ENCODE_CHARS_REGEXP, encodeURI);
+    function encodeUrl(url4) {
+      return String(url4).replace(UNMATCHED_SURROGATE_PAIR_REGEXP, UNMATCHED_SURROGATE_PAIR_REPLACE).replace(ENCODE_CHARS_REGEXP, encodeURI);
     }
   }
 });
@@ -18869,35 +18869,35 @@ var require_escape_html = __commonJS({
 var require_parseurl = __commonJS({
   "node_modules/.pnpm/parseurl@1.3.3/node_modules/parseurl/index.js"(exports, module) {
     "use strict";
-    var url2 = __require("url");
-    var parse4 = url2.parse;
-    var Url = url2.Url;
+    var url4 = __require("url");
+    var parse4 = url4.parse;
+    var Url = url4.Url;
     module.exports = parseurl;
     module.exports.original = originalurl;
     function parseurl(req) {
-      var url3 = req.url;
-      if (url3 === void 0) {
+      var url5 = req.url;
+      if (url5 === void 0) {
         return void 0;
       }
       var parsed = req._parsedUrl;
-      if (fresh(url3, parsed)) {
+      if (fresh(url5, parsed)) {
         return parsed;
       }
-      parsed = fastparse(url3);
-      parsed._raw = url3;
+      parsed = fastparse(url5);
+      parsed._raw = url5;
       return req._parsedUrl = parsed;
     }
     function originalurl(req) {
-      var url3 = req.originalUrl;
-      if (typeof url3 !== "string") {
+      var url5 = req.originalUrl;
+      if (typeof url5 !== "string") {
         return parseurl(req);
       }
       var parsed = req._parsedOriginalUrl;
-      if (fresh(url3, parsed)) {
+      if (fresh(url5, parsed)) {
         return parsed;
       }
-      parsed = fastparse(url3);
-      parsed._raw = url3;
+      parsed = fastparse(url5);
+      parsed._raw = url5;
       return req._parsedOriginalUrl = parsed;
     }
     function fastparse(str) {
@@ -18933,18 +18933,18 @@ var require_parseurl = __commonJS({
             return parse4(str);
         }
       }
-      var url3 = Url !== void 0 ? new Url() : {};
-      url3.path = str;
-      url3.href = str;
-      url3.pathname = pathname;
+      var url5 = Url !== void 0 ? new Url() : {};
+      url5.path = str;
+      url5.href = str;
+      url5.pathname = pathname;
       if (search !== null) {
-        url3.query = query;
-        url3.search = search;
+        url5.query = query;
+        url5.search = search;
       }
-      return url3;
+      return url5;
     }
-    function fresh(url3, parsedUrl) {
-      return typeof parsedUrl === "object" && parsedUrl !== null && (Url === void 0 || parsedUrl instanceof Url) && parsedUrl._raw === url3;
+    function fresh(url5, parsedUrl) {
+      return typeof parsedUrl === "object" && parsedUrl !== null && (Url === void 0 || parsedUrl instanceof Url) && parsedUrl._raw === url5;
     }
   }
 });
@@ -21141,14 +21141,14 @@ var require_router = __commonJS({
         return void 0;
       }
     }
-    function getProtohost(url2) {
-      if (typeof url2 !== "string" || url2.length === 0 || url2[0] === "/") {
+    function getProtohost(url4) {
+      if (typeof url4 !== "string" || url4.length === 0 || url4[0] === "/") {
         return void 0;
       }
-      const searchIndex = url2.indexOf("?");
-      const pathLength = searchIndex !== -1 ? searchIndex : url2.length;
-      const fqdnIndex = url2.substring(0, pathLength).indexOf("://");
-      return fqdnIndex !== -1 ? url2.substring(0, url2.indexOf("/", 3 + fqdnIndex)) : void 0;
+      const searchIndex = url4.indexOf("?");
+      const pathLength = searchIndex !== -1 ? searchIndex : url4.length;
+      const fqdnIndex = url4.substring(0, pathLength).indexOf("://");
+      return fqdnIndex !== -1 ? url4.substring(0, url4.indexOf("/", 3 + fqdnIndex)) : void 0;
     }
     function matchLayer(layer, path4) {
       try {
@@ -23715,11 +23715,11 @@ var require_response = __commonJS({
       this.append("Set-Cookie", cookie.serialize(name, String(val), opts));
       return this;
     };
-    res.location = function location(url2) {
-      return this.set("Location", encodeUrl(url2));
+    res.location = function location(url4) {
+      return this.set("Location", encodeUrl(url4));
     };
-    res.redirect = function redirect(url2) {
-      var address = url2;
+    res.redirect = function redirect(url4) {
+      var address = url4;
       var body;
       var status = 302;
       if (arguments.length === 2) {
@@ -23873,7 +23873,7 @@ var require_serve_static = __commonJS({
     var parseUrl = require_parseurl();
     var resolve = __require("path").resolve;
     var send = require_send();
-    var url2 = __require("url");
+    var url4 = __require("url");
     module.exports = serveStatic;
     function serveStatic(root, options) {
       if (!root) {
@@ -23954,7 +23954,7 @@ var require_serve_static = __commonJS({
         var originalUrl = parseUrl.original(this.req);
         originalUrl.path = null;
         originalUrl.pathname = collapseLeadingSlashes(originalUrl.pathname + "/");
-        var loc = encodeUrl(url2.format(originalUrl));
+        var loc = encodeUrl(url4.format(originalUrl));
         var doc = createHtmlDocument("Redirecting", "Redirecting to " + escapeHtml(loc));
         res.statusCode = 301;
         res.setHeader("Content-Type", "text/html; charset=UTF-8");
@@ -29050,7 +29050,7 @@ var require_requires_port = __commonJS({
 var require_common2 = __commonJS({
   "node_modules/.pnpm/http-proxy@1.18.1_debug@4.4.3/node_modules/http-proxy/lib/http-proxy/common.js"(exports) {
     var common = exports;
-    var url2 = __require("url");
+    var url4 = __require("url");
     var extend2 = __require("util")._extend;
     var required2 = require_requires_port();
     var upgradeHeader = /(^|,)\s*upgrade\s*($|,)/i;
@@ -29098,7 +29098,7 @@ var require_common2 = __commonJS({
       }
       var target = options[forward || "target"];
       var targetPath = target && options.prependPath !== false ? target.path || "" : "";
-      var outgoingPath = !options.toProxy ? url2.parse(req.url).path || "" : req.url;
+      var outgoingPath = !options.toProxy ? url4.parse(req.url).path || "" : req.url;
       outgoingPath = !options.ignorePath ? outgoingPath : "";
       outgoing.path = common.urlJoin(targetPath, outgoingPath);
       if (options.changeOrigin) {
@@ -29159,7 +29159,7 @@ var require_common2 = __commonJS({
 // node_modules/.pnpm/http-proxy@1.18.1_debug@4.4.3/node_modules/http-proxy/lib/http-proxy/passes/web-outgoing.js
 var require_web_outgoing = __commonJS({
   "node_modules/.pnpm/http-proxy@1.18.1_debug@4.4.3/node_modules/http-proxy/lib/http-proxy/passes/web-outgoing.js"(exports, module) {
-    var url2 = __require("url");
+    var url4 = __require("url");
     var common = require_common2();
     var redirectRegex = /^201|30(1|2|7|8)$/;
     module.exports = {
@@ -29197,8 +29197,8 @@ var require_web_outgoing = __commonJS({
       },
       setRedirectHostRewrite: function setRedirectHostRewrite(req, res, proxyRes, options) {
         if ((options.hostRewrite || options.autoRewrite || options.protocolRewrite) && proxyRes.headers["location"] && redirectRegex.test(proxyRes.statusCode)) {
-          var target = url2.parse(options.target);
-          var u = url2.parse(proxyRes.headers["location"]);
+          var target = url4.parse(options.target);
+          var u = url4.parse(proxyRes.headers["location"]);
           if (target.host != u.host) {
             return;
           }
@@ -29300,8 +29300,8 @@ var require_debug = __commonJS({
 // node_modules/.pnpm/follow-redirects@1.16.0_debug@4.4.3/node_modules/follow-redirects/index.js
 var require_follow_redirects = __commonJS({
   "node_modules/.pnpm/follow-redirects@1.16.0_debug@4.4.3/node_modules/follow-redirects/index.js"(exports, module) {
-    var url2 = __require("url");
-    var URL2 = url2.URL;
+    var url4 = __require("url");
+    var URL2 = url4.URL;
     var http = __require("http");
     var https = __require("https");
     var Writable = __require("stream").Writable;
@@ -29562,7 +29562,7 @@ var require_follow_redirects = __commonJS({
       for (var event of events) {
         request.on(event, eventHandlers[event]);
       }
-      this._currentUrl = /^\//.test(this._options.path) ? url2.format(this._options) : (
+      this._currentUrl = /^\//.test(this._options.path) ? url4.format(this._options) : (
         // When making a request to a proxy, […]
         // a client MUST send the target URI in absolute-form […].
         this._options.path
@@ -29630,7 +29630,7 @@ var require_follow_redirects = __commonJS({
       var currentHostHeader = removeMatchingHeaders(/^host$/i, this._options.headers);
       var currentUrlParts = parseUrl(this._currentUrl);
       var currentHost = currentHostHeader || currentUrlParts.host;
-      var currentUrl = /^\w+:/.test(location) ? this._currentUrl : url2.format(Object.assign(currentUrlParts, { host: currentHost }));
+      var currentUrl = /^\w+:/.test(location) ? this._currentUrl : url4.format(Object.assign(currentUrlParts, { host: currentHost }));
       var redirectUrl = resolveUrl(location, currentUrl);
       debug("redirecting to", redirectUrl.href);
       this._isRedirect = true;
@@ -29708,7 +29708,7 @@ var require_follow_redirects = __commonJS({
       if (useNativeURL) {
         parsed = new URL2(input);
       } else {
-        parsed = validateUrl(url2.parse(input));
+        parsed = validateUrl(url4.parse(input));
         if (!isString(parsed.protocol)) {
           throw new InvalidUrlError({ input });
         }
@@ -29716,7 +29716,7 @@ var require_follow_redirects = __commonJS({
       return parsed;
     }
     function resolveUrl(relative, base) {
-      return useNativeURL ? new URL2(relative, base) : parseUrl(url2.resolve(base, relative));
+      return useNativeURL ? new URL2(relative, base) : parseUrl(url4.resolve(base, relative));
     }
     function validateUrl(input) {
       if (/^\[/.test(input.hostname) && !/^\[[:0-9a-f]+\]$/i.test(input.hostname)) {
@@ -29919,16 +29919,16 @@ var require_web_incoming = __commonJS({
         var proxyError = createErrorHandler(proxyReq, options.target);
         req.on("error", proxyError);
         proxyReq.on("error", proxyError);
-        function createErrorHandler(proxyReq2, url2) {
+        function createErrorHandler(proxyReq2, url4) {
           return function proxyError2(err) {
             if (req.socket.destroyed && err.code === "ECONNRESET") {
-              server.emit("econnreset", err, req, res, url2);
+              server.emit("econnreset", err, req, res, url4);
               return proxyReq2.abort();
             }
             if (clb) {
-              clb(err, req, res, url2);
+              clb(err, req, res, url4);
             } else {
-              server.emit("error", err, req, res, url2);
+              server.emit("error", err, req, res, url4);
             }
           };
         }
@@ -33665,7 +33665,7 @@ var require_path_filter = __commonJS({
     exports.matchPathFilter = matchPathFilter;
     var isGlob = require_is_glob();
     var micromatch = require_micromatch();
-    var url2 = __require("url");
+    var url4 = __require("url");
     var errors_1 = require_errors();
     function matchPathFilter(pathFilter = "/", uri, req) {
       if (isStringPath(pathFilter)) {
@@ -33712,7 +33712,7 @@ var require_path_filter = __commonJS({
       return isMultiPath;
     }
     function getUrlPathName(uri) {
-      return uri && url2.parse(uri).pathname;
+      return uri && url4.parse(uri).pathname;
     }
     function isStringPath(pathFilter) {
       return typeof pathFilter === "string" && !isGlob(pathFilter);
@@ -34165,7 +34165,7 @@ var require_options_adapter = __commonJS({
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.legacyOptionsAdapter = legacyOptionsAdapter;
-    var url2 = __require("url");
+    var url4 = __require("url");
     var debug_1 = require_debug2();
     var logger_1 = require_logger2();
     var debug = debug_1.Debug.extend("legacy-options-adapter");
@@ -34180,7 +34180,7 @@ var require_options_adapter = __commonJS({
     function legacyOptionsAdapter(legacyContext, legacyOptions) {
       let options = {};
       let logger2;
-      if (typeof legacyContext === "string" && !!url2.parse(legacyContext).host) {
+      if (typeof legacyContext === "string" && !!url4.parse(legacyContext).host) {
         throw new Error(`Shorthand syntax is removed from legacyCreateProxyMiddleware().
       Please use "legacyCreateProxyMiddleware({ target: 'http://www.example.org' })" instead.
 
@@ -34450,9 +34450,9 @@ var init_chunk_NSSCXFJG = __esm({
       });
       const protocol = req.protocol || (req.secure ? "https" : "http");
       const host = req.get("host") || "localhost";
-      const url2 = new URL(req.originalUrl || req.url, `${protocol}://${host}`);
+      const url4 = new URL(req.originalUrl || req.url, `${protocol}://${host}`);
       const hasBody = ["POST", "PUT", "PATCH"].includes(req.method);
-      return new Request(url2.toString(), {
+      return new Request(url4.toString(), {
         method: req.method,
         headers,
         body: hasBody ? Readable3.toWeb(req) : void 0,
@@ -34629,9 +34629,9 @@ function isPublishableKey(key = "") {
 }
 function createDevOrStagingUrlCache() {
   const devOrStagingUrlCache = /* @__PURE__ */ new Map();
-  return { isDevOrStagingUrl: (url2) => {
-    if (!url2) return false;
-    const hostname2 = typeof url2 === "string" ? url2 : url2.hostname;
+  return { isDevOrStagingUrl: (url4) => {
+    if (!url4) return false;
+    const hostname2 = typeof url4 === "string" ? url4 : url4.hostname;
     let res = devOrStagingUrlCache.get(hostname2);
     if (res === void 0) {
       res = DEV_OR_STAGING_SUFFIXES.some((s2) => hostname2.endsWith(s2));
@@ -36217,9 +36217,9 @@ async function fetchJWKSFromBAPI(apiUrl, key, apiVersion) {
       reason: TokenVerificationErrorReason.RemoteJWKFailedToLoad
     });
   }
-  const url2 = new URL(apiUrl);
-  url2.pathname = joinPaths(url2.pathname, apiVersion, "/jwks");
-  const response = await runtime.fetch(url2.href, {
+  const url4 = new URL(apiUrl);
+  url4.pathname = joinPaths(url4.pathname, apiVersion, "/jwks");
+  const response = await runtime.fetch(url4.href, {
     headers: {
       Authorization: `Bearer ${key}`,
       "Clerk-API-Version": SUPPORTED_BAPI_VERSION,
@@ -36240,7 +36240,7 @@ async function fetchJWKSFromBAPI(apiUrl, key, apiVersion) {
     }
     throw new TokenVerificationError({
       action: TokenVerificationErrorAction.ContactSupport,
-      message: `Error loading Clerk JWKS from ${url2.href} with code=${response.status}`,
+      message: `Error loading Clerk JWKS from ${url4.href} with code=${response.status}`,
       reason: TokenVerificationErrorReason.RemoteJWKFailedToLoad
     });
   }
@@ -36623,8 +36623,8 @@ function buildRequest(options) {
     if (requireSecretKey) {
       assertValidSecretKey(secretKey);
     }
-    const url2 = skipApiVersionInUrl ? joinPaths(apiUrl, path4) : joinPaths(apiUrl, apiVersion, path4);
-    const finalUrl = new URL(url2);
+    const url4 = skipApiVersionInUrl ? joinPaths(apiUrl, path4) : joinPaths(apiUrl, apiVersion, path4);
+    const finalUrl = new URL(url4);
     if (queryParams) {
       const snakecasedQueryParams = snakecase_keys_default({ ...queryParams });
       for (const [key, val] of Object.entries(snakecasedQueryParams)) {
@@ -39633,10 +39633,10 @@ var init_chunk_ZFGNNAZZ = __esm({
       }
     };
     AgentTask = class _AgentTask {
-      constructor(agentId, taskId, url2) {
+      constructor(agentId, taskId, url4) {
         this.agentId = agentId;
         this.taskId = taskId;
-        this.url = url2;
+        this.url = url4;
       }
       /**
        * Creates a AgentTask instance from a JSON object.
@@ -39649,13 +39649,13 @@ var init_chunk_ZFGNNAZZ = __esm({
       }
     };
     ActorToken = class _ActorToken {
-      constructor(id, status, userId, actor, token, url2, createdAt, updatedAt) {
+      constructor(id, status, userId, actor, token, url4, createdAt, updatedAt) {
         this.id = id;
         this.status = status;
         this.userId = userId;
         this.actor = actor;
         this.token = token;
-        this.url = url2;
+        this.url = url4;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
       }
@@ -40356,14 +40356,14 @@ var init_chunk_ZFGNNAZZ = __esm({
       }
     };
     Invitation = class _Invitation {
-      constructor(id, emailAddress, publicMetadata, createdAt, updatedAt, status, url2, revoked) {
+      constructor(id, emailAddress, publicMetadata, createdAt, updatedAt, status, url4, revoked) {
         this.id = id;
         this.emailAddress = emailAddress;
         this.publicMetadata = publicMetadata;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.status = status;
-        this.url = url2;
+        this.url = url4;
         this.revoked = revoked;
         this._raw = null;
       }
@@ -40641,7 +40641,7 @@ var init_chunk_ZFGNNAZZ = __esm({
       }
     };
     OrganizationInvitation = class _OrganizationInvitation {
-      constructor(id, emailAddress, role, roleName, organizationId, createdAt, updatedAt, expiresAt, url2, status, publicMetadata = {}, privateMetadata = {}, publicOrganizationData) {
+      constructor(id, emailAddress, role, roleName, organizationId, createdAt, updatedAt, expiresAt, url4, status, publicMetadata = {}, privateMetadata = {}, publicOrganizationData) {
         this.id = id;
         this.emailAddress = emailAddress;
         this.role = role;
@@ -40650,7 +40650,7 @@ var init_chunk_ZFGNNAZZ = __esm({
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.expiresAt = expiresAt;
-        this.url = url2;
+        this.url = url4;
         this.status = status;
         this.publicMetadata = publicMetadata;
         this.privateMetadata = privateMetadata;
@@ -40803,9 +40803,9 @@ var init_chunk_ZFGNNAZZ = __esm({
       }
     };
     RedirectUrl = class _RedirectUrl {
-      constructor(id, url2, createdAt, updatedAt) {
+      constructor(id, url4, createdAt, updatedAt) {
         this.id = id;
-        this.url = url2;
+        this.url = url4;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
       }
@@ -40875,12 +40875,12 @@ var init_chunk_ZFGNNAZZ = __esm({
       }
     };
     SignInToken = class _SignInToken {
-      constructor(id, userId, token, status, url2, createdAt, updatedAt) {
+      constructor(id, userId, token, status, url4, createdAt, updatedAt) {
         this.id = id;
         this.userId = userId;
         this.token = token;
         this.status = status;
-        this.url = url2;
+        this.url = url4;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
       }
@@ -41229,7 +41229,7 @@ var init_chunk_ZFGNNAZZ = __esm({
     };
     ClerkRequest = class extends Request {
       constructor(input, init) {
-        const url2 = typeof input !== "string" && "url" in input ? input.url : String(input);
+        const url4 = typeof input !== "string" && "url" in input ? input.url : String(input);
         let cloneInit;
         if (init) {
           cloneInit = init;
@@ -41243,7 +41243,7 @@ var init_chunk_ZFGNNAZZ = __esm({
             }
           });
         }
-        super(url2, cloneInit);
+        super(url4, cloneInit);
         this.clerkUrl = this.deriveUrlFromHeaders(this);
         this.cookies = this.parseCookies(this);
       }
@@ -41339,29 +41339,29 @@ var init_chunk_ZFGNNAZZ = __esm({
         const redirectUrl = this.removeDevBrowserFromURL(this.authenticateContext.clerkUrl);
         let baseUrl = this.authenticateContext.frontendApi.startsWith("http") ? this.authenticateContext.frontendApi : `https://${this.authenticateContext.frontendApi}`;
         baseUrl = baseUrl.replace(/\/+$/, "") + "/";
-        const url2 = new URL("v1/client/handshake", baseUrl);
-        url2.searchParams.append("redirect_url", redirectUrl?.href || "");
-        url2.searchParams.append("__clerk_api_version", SUPPORTED_BAPI_VERSION);
-        url2.searchParams.append(
+        const url4 = new URL("v1/client/handshake", baseUrl);
+        url4.searchParams.append("redirect_url", redirectUrl?.href || "");
+        url4.searchParams.append("__clerk_api_version", SUPPORTED_BAPI_VERSION);
+        url4.searchParams.append(
           constants.QueryParameters.SuffixedCookies,
           this.authenticateContext.usesSuffixedCookies().toString()
         );
-        url2.searchParams.append(constants.QueryParameters.HandshakeReason, reason);
-        url2.searchParams.append(constants.QueryParameters.HandshakeFormat, "nonce");
+        url4.searchParams.append(constants.QueryParameters.HandshakeReason, reason);
+        url4.searchParams.append(constants.QueryParameters.HandshakeFormat, "nonce");
         if (this.authenticateContext.sessionToken) {
-          url2.searchParams.append(constants.QueryParameters.Session, this.authenticateContext.sessionToken);
+          url4.searchParams.append(constants.QueryParameters.Session, this.authenticateContext.sessionToken);
         }
         if (this.authenticateContext.instanceType === "development" && this.authenticateContext.devBrowserToken) {
-          url2.searchParams.append(constants.QueryParameters.DevBrowser, this.authenticateContext.devBrowserToken);
+          url4.searchParams.append(constants.QueryParameters.DevBrowser, this.authenticateContext.devBrowserToken);
         }
         const toActivate = this.getOrganizationSyncTarget(this.authenticateContext.clerkUrl, this.organizationMatcher);
         if (toActivate) {
           const params = this.getOrganizationSyncQueryParams(toActivate);
           params.forEach((value, key) => {
-            url2.searchParams.append(key, value);
+            url4.searchParams.append(key, value);
           });
         }
-        return new Headers({ [constants.Headers.Location]: url2.href });
+        return new Headers({ [constants.Headers.Location]: url4.href });
       }
       /**
        * Gets cookies from either a handshake nonce or a handshake token
@@ -41496,14 +41496,14 @@ ${developmentError.getFullMessage()}`
         headers.append("Set-Cookie", `${cookieName}=${newCounterValue}; SameSite=Lax; HttpOnly; Max-Age=2`);
         return false;
       }
-      removeDevBrowserFromURL(url2) {
-        const updatedURL = new URL(url2);
+      removeDevBrowserFromURL(url4) {
+        const updatedURL = new URL(url4);
         updatedURL.searchParams.delete(constants.QueryParameters.DevBrowser);
         updatedURL.searchParams.delete(constants.QueryParameters.LegacyDevBrowser);
         return updatedURL;
       }
-      getOrganizationSyncTarget(url2, matchers) {
-        return matchers.findTarget(url2);
+      getOrganizationSyncTarget(url4, matchers) {
+        return matchers.findTarget(url4);
       }
       getOrganizationSyncQueryParams(toActivate) {
         const ret = /* @__PURE__ */ new Map();
@@ -41536,19 +41536,19 @@ ${developmentError.getFullMessage()}`
           throw new Error(`Invalid pattern "${pattern}": ${e}`);
         }
       }
-      findTarget(url2) {
-        const orgTarget = this.findOrganizationTarget(url2);
+      findTarget(url4) {
+        const orgTarget = this.findOrganizationTarget(url4);
         if (orgTarget) {
           return orgTarget;
         }
-        return this.findPersonalAccountTarget(url2);
+        return this.findPersonalAccountTarget(url4);
       }
-      findOrganizationTarget(url2) {
+      findOrganizationTarget(url4) {
         if (!this.organizationPattern) {
           return null;
         }
         try {
-          const result = this.organizationPattern(url2.pathname);
+          const result = this.organizationPattern(url4.pathname);
           if (!result || !("params" in result)) {
             return null;
           }
@@ -41565,12 +41565,12 @@ ${developmentError.getFullMessage()}`
           return null;
         }
       }
-      findPersonalAccountTarget(url2) {
+      findPersonalAccountTarget(url4) {
         if (!this.personalAccountPattern) {
           return null;
         }
         try {
-          const result = this.personalAccountPattern(url2.pathname);
+          const result = this.personalAccountPattern(url4.pathname);
           return result ? { type: "personalAccount" } : null;
         } catch (e) {
           console.error("Failed to match personal account pattern:", e);
@@ -42749,8 +42749,8 @@ var init_proxy2 = __esm({
 });
 
 // node_modules/.pnpm/@clerk+shared@4.10.2/node_modules/@clerk/shared/dist/runtime/handleValueOrFn-iAIjw-kJ.mjs
-function handleValueOrFn(value, url2, defaultValue) {
-  if (typeof value === "function") return value(url2);
+function handleValueOrFn(value, url4, defaultValue) {
+  if (typeof value === "function") return value(url4);
   if (typeof value !== "undefined") return value;
   if (typeof defaultValue !== "undefined") return defaultValue;
 }
@@ -47534,6 +47534,7 @@ var health_default = router;
 // src/routes/storage.ts
 var import_express2 = __toESM(require_express2(), 1);
 import { Readable as Readable2 } from "stream";
+import * as url2 from "node:url";
 import fs2 from "fs";
 import path2 from "path";
 
@@ -47543,7 +47544,7 @@ import fsPromises from "node:fs/promises";
 import path from "node:path";
 import { Readable } from "node:stream";
 import { randomUUID } from "node:crypto";
-var LOCAL_STORAGE_DIR = path.resolve(process.cwd(), "local-storage");
+var LOCAL_STORAGE_DIR = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), "..", "..", "local-storage");
 if (!fs.existsSync(LOCAL_STORAGE_DIR)) {
   fs.mkdirSync(LOCAL_STORAGE_DIR, { recursive: true });
 }
@@ -47558,7 +47559,7 @@ var ObjectStorageService = class {
   constructor() {
   }
   async searchPublicObject(filePath) {
-    const fullPath = path.join(LOCAL_STORAGE_DIR, filePath);
+    const fullPath = path.join(LOCAL_STORAGE_DIR, filePath.replace(/^\/+/, ""));
     try {
       await fsPromises.access(fullPath);
       return fullPath;
@@ -47594,7 +47595,7 @@ var ObjectStorageService = class {
     if (!objectPath.startsWith("/objects/")) {
       throw new ObjectNotFoundError();
     }
-    const objectId = objectPath.replace("/objects/", "");
+    const objectId = objectPath.replace("/objects/", "").replace(/^\/+/, "");
     const fullPath = path.join(LOCAL_STORAGE_DIR, objectId);
     try {
       await fsPromises.access(fullPath);
@@ -47687,7 +47688,8 @@ router2.get("/storage/objects/*path", async (req, res) => {
 });
 router2.put("/storage/local-upload/:objectId", (req, res) => {
   const objectId = req.params.objectId;
-  const fullPath = path2.join(process.cwd(), "local-storage", objectId);
+  const localStorageDir = path2.resolve(path2.dirname(url2.fileURLToPath(import.meta.url)), "..", "..", "local-storage");
+  const fullPath = path2.join(localStorageDir, objectId.replace(/^\/+/, ""));
   const writeStream = fs2.createWriteStream(fullPath);
   req.pipe(writeStream);
   req.on("end", () => {
@@ -55389,7 +55391,7 @@ __export(external_exports, {
   union: () => union2,
   unknown: () => unknown,
   uppercase: () => _uppercase,
-  url: () => url,
+  url: () => url3,
   uuid: () => uuid2,
   uuidv4: () => uuidv4,
   uuidv6: () => uuidv6,
@@ -57258,11 +57260,11 @@ var $ZodURL = /* @__PURE__ */ $constructor("$ZodURL", (inst, def) => {
   inst._zod.check = (payload) => {
     try {
       const orig = payload.value;
-      const url2 = new URL(orig);
-      const href = url2.href;
+      const url4 = new URL(orig);
+      const href = url4.href;
       if (def.hostname) {
         def.hostname.lastIndex = 0;
-        if (!def.hostname.test(url2.hostname)) {
+        if (!def.hostname.test(url4.hostname)) {
           payload.issues.push({
             code: "invalid_format",
             format: "url",
@@ -57276,7 +57278,7 @@ var $ZodURL = /* @__PURE__ */ $constructor("$ZodURL", (inst, def) => {
       }
       if (def.protocol) {
         def.protocol.lastIndex = 0;
-        if (!def.protocol.test(url2.protocol.endsWith(":") ? url2.protocol.slice(0, -1) : url2.protocol)) {
+        if (!def.protocol.test(url4.protocol.endsWith(":") ? url4.protocol.slice(0, -1) : url4.protocol)) {
           payload.issues.push({
             code: "invalid_format",
             format: "url",
@@ -65498,7 +65500,7 @@ var ZodURL = /* @__PURE__ */ $constructor("ZodURL", (inst, def) => {
   $ZodURL.init(inst, def);
   ZodStringFormat.init(inst, def);
 });
-function url(params) {
+function url3(params) {
   return _url(ZodURL, params);
 }
 var ZodEmoji = /* @__PURE__ */ $constructor("ZodEmoji", (inst, def) => {

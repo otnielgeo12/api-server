@@ -4,7 +4,7 @@ import path from "node:path";
 import { Readable } from "node:stream";
 import { randomUUID } from "node:crypto";
 
-const LOCAL_STORAGE_DIR = path.resolve(process.cwd(), "local-storage");
+const LOCAL_STORAGE_DIR = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), "..", "..", "local-storage");
 
 if (!fs.existsSync(LOCAL_STORAGE_DIR)) {
   fs.mkdirSync(LOCAL_STORAGE_DIR, { recursive: true });
@@ -22,7 +22,7 @@ export class ObjectStorageService {
   constructor() {}
 
   async searchPublicObject(filePath: string): Promise<string | null> {
-    const fullPath = path.join(LOCAL_STORAGE_DIR, filePath);
+    const fullPath = path.join(LOCAL_STORAGE_DIR, filePath.replace(/^\/+/, ""));
     try {
       await fsPromises.access(fullPath);
       return fullPath;
@@ -65,7 +65,7 @@ export class ObjectStorageService {
     if (!objectPath.startsWith("/objects/")) {
       throw new ObjectNotFoundError();
     }
-    const objectId = objectPath.replace("/objects/", "");
+    const objectId = objectPath.replace("/objects/", "").replace(/^\/+/, "");
     const fullPath = path.join(LOCAL_STORAGE_DIR, objectId);
     try {
       await fsPromises.access(fullPath);

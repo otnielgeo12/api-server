@@ -47577,7 +47577,7 @@ var ObjectStorageService = class {
     else if (ext === ".gif") contentType = "image/gif";
     else if (ext === ".webp") contentType = "image/webp";
     else if (ext === ".svg") contentType = "image/svg+xml";
-    else if (filePath.includes("/objects/")) contentType = "image/jpeg";
+    else if (!ext || ext === "") contentType = "image/jpeg";
     const headers = {
       "Content-Type": contentType,
       "Cache-Control": `public, max-age=${cacheTtlSec}`,
@@ -47690,14 +47690,22 @@ router2.put("/storage/local-upload/:objectId", (req, res) => {
   const fullPath = path2.join(process.cwd(), "local-storage", objectId.replace(/^\/+/, ""));
   const writeStream = fs2.createWriteStream(fullPath);
   req.pipe(writeStream);
-  req.on("end", () => {
+  writeStream.on("finish", () => {
     req.log.info({ objectId }, "Upload completed successfully");
     res.set("ETag", '"local-upload-etag"');
     res.sendStatus(200);
   });
+  writeStream.on("error", (err) => {
+    req.log.error({ err, objectId }, "Error writing file locally");
+    if (!res.headersSent) {
+      res.status(500).json({ error: `Upload failed: ${err.message}` });
+    }
+  });
   req.on("error", (err) => {
-    req.log.error({ err, objectId }, "Error uploading file locally");
-    res.status(500).json({ error: `Upload failed: ${err.message}` });
+    req.log.error({ err, objectId }, "Error receiving file upload stream");
+    if (!res.headersSent) {
+      res.status(500).json({ error: `Upload failed: ${err.message}` });
+    }
   });
 });
 router2.get("/storage/local-upload/:objectId", (req, res) => {

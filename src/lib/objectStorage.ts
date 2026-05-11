@@ -44,7 +44,7 @@ export class ObjectStorageService {
     else if (ext === ".gif") contentType = "image/gif";
     else if (ext === ".webp") contentType = "image/webp";
     else if (ext === ".svg") contentType = "image/svg+xml";
-    else if (filePath.includes("/objects/")) contentType = "image/jpeg"; // Fallback for existing extensionless objects
+    else if (!ext || ext === "") contentType = "image/jpeg"; // Fallback for existing extensionless objects
 
     const headers: Record<string, string> = {
       "Content-Type": contentType,

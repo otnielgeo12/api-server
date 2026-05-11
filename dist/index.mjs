@@ -47586,8 +47586,7 @@ var ObjectStorageService = class {
     return new Response(webStream, { headers });
   }
   async getObjectEntityUploadURL(originalName) {
-    const ext = originalName ? path.extname(originalName) : "";
-    const objectId = `${randomUUID()}${ext}`;
+    const objectId = randomUUID();
     return `/api/upload-file/${objectId}`;
   }
   async getObjectEntityFile(objectPath) {

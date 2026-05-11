@@ -56,8 +56,7 @@ export class ObjectStorageService {
   }
 
   async getObjectEntityUploadURL(originalName?: string): Promise<string> {
-    const ext = originalName ? path.extname(originalName) : "";
-    const objectId = `${randomUUID()}${ext}`;
+    const objectId = randomUUID();
     return `/api/upload-file/${objectId}`;
   }
 

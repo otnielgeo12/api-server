@@ -47588,7 +47588,7 @@ var ObjectStorageService = class {
   async getObjectEntityUploadURL(originalName) {
     const ext = originalName ? path.extname(originalName) : "";
     const objectId = `${randomUUID()}${ext}`;
-    return `/api/storage/local-upload/${objectId}`;
+    return `/api/upload-file/${objectId}`;
   }
   async getObjectEntityFile(objectPath) {
     if (!objectPath.startsWith("/objects/")) {
@@ -47604,8 +47604,8 @@ var ObjectStorageService = class {
     }
   }
   normalizeObjectEntityPath(rawPath) {
-    if (rawPath.startsWith("/api/storage/local-upload/")) {
-      const id = rawPath.replace("/api/storage/local-upload/", "");
+    if (rawPath.startsWith("/api/upload-file/")) {
+      const id = rawPath.replace("/api/upload-file/", "");
       return `/objects/${id}`;
     }
     return rawPath;
@@ -47686,6 +47686,7 @@ router2.get("/storage/objects/*path", async (req, res) => {
   }
 });
 var handleLocalUpload = (req, res) => {
+  req.log.info({ method: req.method, url: req.url, headers: req.headers }, "Incoming upload request");
   const objectId = req.params.objectId;
   const fullPath = path2.join(process.cwd(), "local-storage", objectId.replace(/^\/+/, ""));
   const writeStream = fs2.createWriteStream(fullPath);
@@ -47708,8 +47709,8 @@ var handleLocalUpload = (req, res) => {
     }
   });
 };
-router2.put("/storage/local-upload/:objectId", handleLocalUpload);
-router2.post("/storage/local-upload/:objectId", handleLocalUpload);
+router2.put("/upload-file/:objectId", handleLocalUpload);
+router2.post("/upload-file/:objectId", handleLocalUpload);
 router2.get("/storage/local-upload/:objectId", (req, res) => {
   const objectId = req.params.objectId;
   const fullPath = path2.join(process.cwd(), "local-storage", objectId);

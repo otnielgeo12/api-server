@@ -58,7 +58,7 @@ export class ObjectStorageService {
   async getObjectEntityUploadURL(originalName?: string): Promise<string> {
     const ext = originalName ? path.extname(originalName) : "";
     const objectId = `${randomUUID()}${ext}`;
-    return `/api/storage/local-upload/${objectId}`;
+    return `/api/upload-file/${objectId}`;
   }
 
   async getObjectEntityFile(objectPath: string): Promise<string> {
@@ -76,8 +76,8 @@ export class ObjectStorageService {
   }
 
   normalizeObjectEntityPath(rawPath: string): string {
-    if (rawPath.startsWith("/api/storage/local-upload/")) {
-      const id = rawPath.replace("/api/storage/local-upload/", "");
+    if (rawPath.startsWith("/api/upload-file/")) {
+      const id = rawPath.replace("/api/upload-file/", "");
       return `/objects/${id}`;
     }
     return rawPath;

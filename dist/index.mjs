@@ -119,7 +119,7 @@ var require_main = __commonJS({
     var fs3 = __require("fs");
     var path4 = __require("path");
     var os = __require("os");
-    var crypto2 = __require("crypto");
+    var crypto4 = __require("crypto");
     var packageJson = require_package();
     var version4 = packageJson.version;
     var LINE = /(?:^|^)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/mg;
@@ -338,7 +338,7 @@ var require_main = __commonJS({
       const authTag = ciphertext.subarray(-16);
       ciphertext = ciphertext.subarray(12, -16);
       try {
-        const aesgcm = crypto2.createDecipheriv("aes-256-gcm", key, nonce);
+        const aesgcm = crypto4.createDecipheriv("aes-256-gcm", key, nonce);
         aesgcm.setAuthTag(authTag);
         return `${aesgcm.update(ciphertext)}${aesgcm.final()}`;
       } catch (error40) {
@@ -5749,10 +5749,10 @@ var require_raw_body = __commonJS({
       if (done) {
         return readStream(stream, encoding, length, limit, wrap(done));
       }
-      return new Promise(function executor(resolve, reject) {
+      return new Promise(function executor(resolve2, reject) {
         readStream(stream, encoding, length, limit, function onRead(err, buf) {
           if (err) return reject(err);
-          resolve(buf);
+          resolve2(buf);
         });
       });
     }
@@ -15554,7 +15554,7 @@ var require_mime_types = __commonJS({
   "node_modules/.pnpm/mime-types@3.0.2/node_modules/mime-types/index.js"(exports) {
     "use strict";
     var db2 = require_mime_db();
-    var extname = __require("path").extname;
+    var extname3 = __require("path").extname;
     var mimeScore = require_mimeScore();
     var EXTRACT_TYPE_REGEXP = /^\s*([^;\s]*)(?:;|\s|$)/;
     var TEXT_TYPE_REGEXP = /^text\//i;
@@ -15610,7 +15610,7 @@ var require_mime_types = __commonJS({
       if (!path4 || typeof path4 !== "string") {
         return false;
       }
-      var extension2 = extname("x." + path4).toLowerCase().slice(1);
+      var extension2 = extname3("x." + path4).toLowerCase().slice(1);
       if (!extension2) {
         return false;
       }
@@ -19085,14 +19085,14 @@ var require_view = __commonJS({
     var fs3 = __require("node:fs");
     var dirname = path4.dirname;
     var basename = path4.basename;
-    var extname = path4.extname;
-    var join = path4.join;
-    var resolve = path4.resolve;
+    var extname3 = path4.extname;
+    var join3 = path4.join;
+    var resolve2 = path4.resolve;
     module.exports = View3;
     function View3(name, options) {
       var opts = options || {};
       this.defaultEngine = opts.defaultEngine;
-      this.ext = extname(name);
+      this.ext = extname3(name);
       this.name = name;
       this.root = opts.root;
       if (!this.ext && !this.defaultEngine) {
@@ -19121,7 +19121,7 @@ var require_view = __commonJS({
       debug('lookup "%s"', name);
       for (var i = 0; i < roots.length && !path5; i++) {
         var root = roots[i];
-        var loc = resolve(root, name);
+        var loc = resolve2(root, name);
         var dir = dirname(loc);
         var file2 = basename(loc);
         path5 = this.resolve(dir, file2);
@@ -19146,16 +19146,16 @@ var require_view = __commonJS({
       });
       sync = false;
     };
-    View3.prototype.resolve = function resolve2(dir, file2) {
+    View3.prototype.resolve = function resolve3(dir, file2) {
       var ext = this.ext;
-      var path5 = join(dir, file2);
-      var stat = tryStat(path5);
-      if (stat && stat.isFile()) {
+      var path5 = join3(dir, file2);
+      var stat2 = tryStat(path5);
+      if (stat2 && stat2.isFile()) {
         return path5;
       }
-      path5 = join(dir, basename(file2, ext), "index" + ext);
-      stat = tryStat(path5);
-      if (stat && stat.isFile()) {
+      path5 = join3(dir, basename(file2, ext), "index" + ext);
+      stat2 = tryStat(path5);
+      if (stat2 && stat2.isFile()) {
         return path5;
       }
     };
@@ -19175,14 +19175,14 @@ var require_etag = __commonJS({
   "node_modules/.pnpm/etag@1.8.1/node_modules/etag/index.js"(exports, module) {
     "use strict";
     module.exports = etag;
-    var crypto2 = __require("crypto");
+    var crypto4 = __require("crypto");
     var Stats = __require("fs").Stats;
     var toString = Object.prototype.toString;
     function entitytag(entity) {
       if (entity.length === 0) {
         return '"0-2jmj7l5rSw0yVb/vlWAYkK/YBwk"';
       }
-      var hash = crypto2.createHash("sha1").update(entity, "utf8").digest("base64").substring(0, 27);
+      var hash = crypto4.createHash("sha1").update(entity, "utf8").digest("base64").substring(0, 27);
       var len = typeof entity === "string" ? Buffer.byteLength(entity, "utf8") : entity.length;
       return '"' + len.toString(16) + "-" + hash + '"';
     }
@@ -19204,9 +19204,9 @@ var require_etag = __commonJS({
       }
       return obj && typeof obj === "object" && "ctime" in obj && toString.call(obj.ctime) === "[object Date]" && "mtime" in obj && toString.call(obj.mtime) === "[object Date]" && "ino" in obj && typeof obj.ino === "number" && "size" in obj && typeof obj.size === "number";
     }
-    function stattag(stat) {
-      var mtime = stat.mtime.getTime().toString(16);
-      var size = stat.size.toString(16);
+    function stattag(stat2) {
+      var mtime = stat2.mtime.getTime().toString(16);
+      var size = stat2.size.toString(16);
       return '"' + size + "-" + mtime + '"';
     }
   }
@@ -21301,7 +21301,7 @@ var require_application = __commonJS({
     var compileETag = require_utils3().compileETag;
     var compileQueryParser = require_utils3().compileQueryParser;
     var compileTrust = require_utils3().compileTrust;
-    var resolve = __require("node:path").resolve;
+    var resolve2 = __require("node:path").resolve;
     var once2 = require_once();
     var Router11 = require_router();
     var slice = Array.prototype.slice;
@@ -21355,7 +21355,7 @@ var require_application = __commonJS({
       this.mountpath = "/";
       this.locals.settings = this.settings;
       this.set("view", View3);
-      this.set("views", resolve("views"));
+      this.set("views", resolve2("views"));
       this.set("jsonp callback name", "callback");
       if (env === "production") {
         this.enable("view cache");
@@ -22657,17 +22657,17 @@ var require_content_disposition = __commonJS({
 // node_modules/.pnpm/cookie-signature@1.2.2/node_modules/cookie-signature/index.js
 var require_cookie_signature = __commonJS({
   "node_modules/.pnpm/cookie-signature@1.2.2/node_modules/cookie-signature/index.js"(exports) {
-    var crypto2 = __require("crypto");
+    var crypto4 = __require("crypto");
     exports.sign = function(val, secret) {
       if ("string" != typeof val) throw new TypeError("Cookie value must be provided as a string.");
       if (null == secret) throw new TypeError("Secret key must be provided.");
-      return val + "." + crypto2.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
+      return val + "." + crypto4.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
     };
     exports.unsign = function(input, secret) {
       if ("string" != typeof input) throw new TypeError("Signed cookie string must be provided.");
       if (null == secret) throw new TypeError("Secret key must be provided.");
       var tentativeValue = input.slice(0, input.lastIndexOf(".")), expectedInput = exports.sign(tentativeValue, secret), expectedBuffer = Buffer.from(expectedInput), inputBuffer = Buffer.from(input);
-      return expectedBuffer.length === inputBuffer.length && crypto2.timingSafeEqual(expectedBuffer, inputBuffer) ? tentativeValue : false;
+      return expectedBuffer.length === inputBuffer.length && crypto4.timingSafeEqual(expectedBuffer, inputBuffer) ? tentativeValue : false;
     };
   }
 });
@@ -22857,10 +22857,10 @@ var require_send = __commonJS({
     var statuses = require_statuses();
     var Stream = __require("stream");
     var util2 = __require("util");
-    var extname = path4.extname;
-    var join = path4.join;
+    var extname3 = path4.extname;
+    var join3 = path4.join;
     var normalize = path4.normalize;
-    var resolve = path4.resolve;
+    var resolve2 = path4.resolve;
     var sep = path4.sep;
     var BYTES_RANGE_REGEXP = /^ *bytes=/;
     var MAX_MAXAGE = 60 * 60 * 24 * 365 * 1e3;
@@ -22889,7 +22889,7 @@ var require_send = __commonJS({
       this._maxage = opts.maxAge || opts.maxage;
       this._maxage = typeof this._maxage === "string" ? ms(this._maxage) : Number(this._maxage);
       this._maxage = !isNaN(this._maxage) ? Math.min(Math.max(0, this._maxage), MAX_MAXAGE) : 0;
-      this._root = opts.root ? resolve(opts.root) : null;
+      this._root = opts.root ? resolve2(opts.root) : null;
     }
     util2.inherits(SendStream, Stream);
     SendStream.prototype.error = function error40(status, err) {
@@ -23030,7 +23030,7 @@ var require_send = __commonJS({
           return res;
         }
         parts = path5.split(sep);
-        path5 = normalize(join(root, path5));
+        path5 = normalize(join3(root, path5));
       } else {
         if (UP_PATH_REGEXP.test(path5)) {
           debug('malicious path "%s"', path5);
@@ -23038,7 +23038,7 @@ var require_send = __commonJS({
           return res;
         }
         parts = normalize(path5).split(sep);
-        path5 = resolve(path5);
+        path5 = resolve2(path5);
       }
       if (containsDotFile(parts)) {
         debug('%s dotfile "%s"', this._dotfiles, path5);
@@ -23061,8 +23061,8 @@ var require_send = __commonJS({
       this.sendFile(path5);
       return res;
     };
-    SendStream.prototype.send = function send2(path5, stat) {
-      var len = stat.size;
+    SendStream.prototype.send = function send2(path5, stat2) {
+      var len = stat2.size;
       var options = this.options;
       var opts = {};
       var res = this.res;
@@ -23074,7 +23074,7 @@ var require_send = __commonJS({
         return;
       }
       debug('pipe "%s"', path5);
-      this.setHeader(path5, stat);
+      this.setHeader(path5, stat2);
       this.type(path5);
       if (this.isConditionalGET()) {
         if (this.isPreconditionFailure()) {
@@ -23130,16 +23130,16 @@ var require_send = __commonJS({
       var i = 0;
       var self = this;
       debug('stat "%s"', path5);
-      fs3.stat(path5, function onstat(err, stat) {
+      fs3.stat(path5, function onstat(err, stat2) {
         var pathEndsWithSep = path5[path5.length - 1] === sep;
-        if (err && err.code === "ENOENT" && !extname(path5) && !pathEndsWithSep) {
+        if (err && err.code === "ENOENT" && !extname3(path5) && !pathEndsWithSep) {
           return next(err);
         }
         if (err) return self.onStatError(err);
-        if (stat.isDirectory()) return self.redirect(path5);
+        if (stat2.isDirectory()) return self.redirect(path5);
         if (pathEndsWithSep) return self.error(404);
-        self.emit("file", path5, stat);
-        self.send(path5, stat);
+        self.emit("file", path5, stat2);
+        self.send(path5, stat2);
       });
       function next(err) {
         if (self._extensions.length <= i) {
@@ -23147,11 +23147,11 @@ var require_send = __commonJS({
         }
         var p = path5 + "." + self._extensions[i++];
         debug('stat "%s"', p);
-        fs3.stat(p, function(err2, stat) {
+        fs3.stat(p, function(err2, stat2) {
           if (err2) return next(err2);
-          if (stat.isDirectory()) return next();
-          self.emit("file", p, stat);
-          self.send(p, stat);
+          if (stat2.isDirectory()) return next();
+          self.emit("file", p, stat2);
+          self.send(p, stat2);
         });
       }
     };
@@ -23163,13 +23163,13 @@ var require_send = __commonJS({
           if (err) return self.onStatError(err);
           return self.error(404);
         }
-        var p = join(path5, self._index[i]);
+        var p = join3(path5, self._index[i]);
         debug('stat "%s"', p);
-        fs3.stat(p, function(err2, stat) {
+        fs3.stat(p, function(err2, stat2) {
           if (err2) return next(err2);
-          if (stat.isDirectory()) return next();
-          self.emit("file", p, stat);
-          self.send(p, stat);
+          if (stat2.isDirectory()) return next();
+          self.emit("file", p, stat2);
+          self.send(p, stat2);
         });
       }
       next();
@@ -23195,14 +23195,14 @@ var require_send = __commonJS({
     SendStream.prototype.type = function type(path5) {
       var res = this.res;
       if (res.getHeader("Content-Type")) return;
-      var ext = extname(path5);
+      var ext = extname3(path5);
       var type2 = mime.contentType(ext) || "application/octet-stream";
       debug("content-type %s", type2);
       res.setHeader("Content-Type", type2);
     };
-    SendStream.prototype.setHeader = function setHeader(path5, stat) {
+    SendStream.prototype.setHeader = function setHeader(path5, stat2) {
       var res = this.res;
-      this.emit("headers", res, path5, stat);
+      this.emit("headers", res, path5, stat2);
       if (this._acceptRanges && !res.getHeader("Accept-Ranges")) {
         debug("accept ranges");
         res.setHeader("Accept-Ranges", "bytes");
@@ -23216,12 +23216,12 @@ var require_send = __commonJS({
         res.setHeader("Cache-Control", cacheControl);
       }
       if (this._lastModified && !res.getHeader("Last-Modified")) {
-        var modified = stat.mtime.toUTCString();
+        var modified = stat2.mtime.toUTCString();
         debug("modified %s", modified);
         res.setHeader("Last-Modified", modified);
       }
       if (this._etag && !res.getHeader("ETag")) {
-        var val = etag(stat);
+        var val = etag(stat2);
         debug("etag %s", val);
         res.setHeader("ETag", val);
       }
@@ -23415,8 +23415,8 @@ var require_response = __commonJS({
     var setCharset = require_utils3().setCharset;
     var cookie = require_cookie();
     var send = require_send();
-    var extname = path4.extname;
-    var resolve = path4.resolve;
+    var extname3 = path4.extname;
+    var resolve2 = path4.resolve;
     var vary = require_vary();
     var { Buffer: Buffer2 } = __require("node:buffer");
     var res = Object.create(http.ServerResponse.prototype);
@@ -23622,7 +23622,7 @@ var require_response = __commonJS({
       }
       opts = Object.create(opts);
       opts.headers = headers;
-      var fullPath = !opts.root ? resolve(path5) : path5;
+      var fullPath = !opts.root ? resolve2(path5) : path5;
       return this.sendFile(fullPath, opts, done);
     };
     res.contentType = res.type = function contentType(type) {
@@ -23653,7 +23653,7 @@ var require_response = __commonJS({
     };
     res.attachment = function attachment(filename) {
       if (filename) {
-        this.type(extname(filename));
+        this.type(extname3(filename));
       }
       this.set("Content-Disposition", contentDisposition(filename));
       return this;
@@ -23871,7 +23871,7 @@ var require_serve_static = __commonJS({
     var encodeUrl = require_encodeurl();
     var escapeHtml = require_escape_html();
     var parseUrl = require_parseurl();
-    var resolve = __require("path").resolve;
+    var resolve2 = __require("path").resolve;
     var send = require_send();
     var url2 = __require("url");
     module.exports = serveStatic;
@@ -23890,7 +23890,7 @@ var require_serve_static = __commonJS({
         throw new TypeError("option setHeaders must be function");
       }
       opts.maxage = opts.maxage || opts.maxAge || 0;
-      opts.root = resolve(root);
+      opts.root = resolve2(root);
       var onDirectory = redirect ? createRedirectDirectoryListener() : createNotFoundDirectoryListener();
       return function serveStatic2(req, res, next) {
         if (req.method !== "GET" && req.method !== "HEAD") {
@@ -26287,7 +26287,7 @@ var require_thread_stream = __commonJS({
     var { version: version4 } = require_package2();
     var { EventEmitter } = __require("events");
     var { Worker } = __require("worker_threads");
-    var { join } = __require("path");
+    var { join: join3 } = __require("path");
     var { pathToFileURL } = __require("url");
     var { wait } = require_wait();
     var {
@@ -26323,7 +26323,7 @@ var require_thread_stream = __commonJS({
     function createWorker(stream, opts) {
       const { filename, workerData } = opts;
       const bundlerOverrides = "__bundlerPathsOverrides" in globalThis ? globalThis.__bundlerPathsOverrides : {};
-      const toExecute = bundlerOverrides["thread-stream-worker"] || join(__dirname, "lib", "worker.js");
+      const toExecute = bundlerOverrides["thread-stream-worker"] || join3(__dirname, "lib", "worker.js");
       const worker = new Worker(toExecute, {
         ...opts.workerOpts,
         trackUnmanagedFds: false,
@@ -26709,7 +26709,7 @@ var require_transport = __commonJS({
     "use strict";
     var { createRequire } = __require("module");
     var getCallers = require_caller();
-    var { join, isAbsolute, sep } = __require("node:path");
+    var { join: join3, isAbsolute, sep } = __require("node:path");
     var sleep2 = require_atomic_sleep();
     var onExit = require_on_exit_leak_free();
     var ThreadStream = require_thread_stream();
@@ -26772,7 +26772,7 @@ var require_transport = __commonJS({
         throw new Error("only one of target or targets can be specified");
       }
       if (targets) {
-        target = bundlerOverrides["pino-worker"] || join(__dirname, "worker.js");
+        target = bundlerOverrides["pino-worker"] || join3(__dirname, "worker.js");
         options.targets = targets.filter((dest) => dest.target).map((dest) => {
           return {
             ...dest,
@@ -26790,7 +26790,7 @@ var require_transport = __commonJS({
           });
         });
       } else if (pipeline) {
-        target = bundlerOverrides["pino-worker"] || join(__dirname, "worker.js");
+        target = bundlerOverrides["pino-worker"] || join3(__dirname, "worker.js");
         options.pipelines = [pipeline.map((dest) => {
           return {
             ...dest,
@@ -26812,7 +26812,7 @@ var require_transport = __commonJS({
           return origin;
         }
         if (origin === "pino/file") {
-          return join(__dirname, "..", "file.js");
+          return join3(__dirname, "..", "file.js");
         }
         let fixTarget2;
         for (const filePath of callers) {
@@ -27801,7 +27801,7 @@ var require_safe_stable_stringify = __commonJS({
               return circularValue;
             }
             let res = "";
-            let join = ",";
+            let join3 = ",";
             const originalIndentation = indentation;
             if (Array.isArray(value)) {
               if (value.length === 0) {
@@ -27815,7 +27815,7 @@ var require_safe_stable_stringify = __commonJS({
                 indentation += spacer;
                 res += `
 ${indentation}`;
-                join = `,
+                join3 = `,
 ${indentation}`;
               }
               const maximumValuesToStringify = Math.min(value.length, maximumBreadth);
@@ -27823,13 +27823,13 @@ ${indentation}`;
               for (; i < maximumValuesToStringify - 1; i++) {
                 const tmp2 = stringifyFnReplacer(String(i), value, stack, replacer, spacer, indentation);
                 res += tmp2 !== void 0 ? tmp2 : "null";
-                res += join;
+                res += join3;
               }
               const tmp = stringifyFnReplacer(String(i), value, stack, replacer, spacer, indentation);
               res += tmp !== void 0 ? tmp : "null";
               if (value.length - 1 > maximumBreadth) {
                 const removedKeys = value.length - maximumBreadth - 1;
-                res += `${join}"... ${getItemCount(removedKeys)} not stringified"`;
+                res += `${join3}"... ${getItemCount(removedKeys)} not stringified"`;
               }
               if (spacer !== "") {
                 res += `
@@ -27850,7 +27850,7 @@ ${originalIndentation}`;
             let separator = "";
             if (spacer !== "") {
               indentation += spacer;
-              join = `,
+              join3 = `,
 ${indentation}`;
               whitespace = " ";
             }
@@ -27864,13 +27864,13 @@ ${indentation}`;
               const tmp = stringifyFnReplacer(key2, value, stack, replacer, spacer, indentation);
               if (tmp !== void 0) {
                 res += `${separator}${strEscape(key2)}:${whitespace}${tmp}`;
-                separator = join;
+                separator = join3;
               }
             }
             if (keyLength > maximumBreadth) {
               const removedKeys = keyLength - maximumBreadth;
               res += `${separator}"...":${whitespace}"${getItemCount(removedKeys)} not stringified"`;
-              separator = join;
+              separator = join3;
             }
             if (spacer !== "" && separator.length > 1) {
               res = `
@@ -27911,7 +27911,7 @@ ${originalIndentation}`;
             }
             const originalIndentation = indentation;
             let res = "";
-            let join = ",";
+            let join3 = ",";
             if (Array.isArray(value)) {
               if (value.length === 0) {
                 return "[]";
@@ -27924,7 +27924,7 @@ ${originalIndentation}`;
                 indentation += spacer;
                 res += `
 ${indentation}`;
-                join = `,
+                join3 = `,
 ${indentation}`;
               }
               const maximumValuesToStringify = Math.min(value.length, maximumBreadth);
@@ -27932,13 +27932,13 @@ ${indentation}`;
               for (; i < maximumValuesToStringify - 1; i++) {
                 const tmp2 = stringifyArrayReplacer(String(i), value[i], stack, replacer, spacer, indentation);
                 res += tmp2 !== void 0 ? tmp2 : "null";
-                res += join;
+                res += join3;
               }
               const tmp = stringifyArrayReplacer(String(i), value[i], stack, replacer, spacer, indentation);
               res += tmp !== void 0 ? tmp : "null";
               if (value.length - 1 > maximumBreadth) {
                 const removedKeys = value.length - maximumBreadth - 1;
-                res += `${join}"... ${getItemCount(removedKeys)} not stringified"`;
+                res += `${join3}"... ${getItemCount(removedKeys)} not stringified"`;
               }
               if (spacer !== "") {
                 res += `
@@ -27951,7 +27951,7 @@ ${originalIndentation}`;
             let whitespace = "";
             if (spacer !== "") {
               indentation += spacer;
-              join = `,
+              join3 = `,
 ${indentation}`;
               whitespace = " ";
             }
@@ -27960,7 +27960,7 @@ ${indentation}`;
               const tmp = stringifyArrayReplacer(key2, value[key2], stack, replacer, spacer, indentation);
               if (tmp !== void 0) {
                 res += `${separator}${strEscape(key2)}:${whitespace}${tmp}`;
-                separator = join;
+                separator = join3;
               }
             }
             if (spacer !== "" && separator.length > 1) {
@@ -28018,20 +28018,20 @@ ${originalIndentation}`;
               indentation += spacer;
               let res2 = `
 ${indentation}`;
-              const join2 = `,
+              const join4 = `,
 ${indentation}`;
               const maximumValuesToStringify = Math.min(value.length, maximumBreadth);
               let i = 0;
               for (; i < maximumValuesToStringify - 1; i++) {
                 const tmp2 = stringifyIndent(String(i), value[i], stack, spacer, indentation);
                 res2 += tmp2 !== void 0 ? tmp2 : "null";
-                res2 += join2;
+                res2 += join4;
               }
               const tmp = stringifyIndent(String(i), value[i], stack, spacer, indentation);
               res2 += tmp !== void 0 ? tmp : "null";
               if (value.length - 1 > maximumBreadth) {
                 const removedKeys = value.length - maximumBreadth - 1;
-                res2 += `${join2}"... ${getItemCount(removedKeys)} not stringified"`;
+                res2 += `${join4}"... ${getItemCount(removedKeys)} not stringified"`;
               }
               res2 += `
 ${originalIndentation}`;
@@ -28047,16 +28047,16 @@ ${originalIndentation}`;
               return '"[Object]"';
             }
             indentation += spacer;
-            const join = `,
+            const join3 = `,
 ${indentation}`;
             let res = "";
             let separator = "";
             let maximumPropertiesToStringify = Math.min(keyLength, maximumBreadth);
             if (isTypedArrayWithEntries(value)) {
-              res += stringifyTypedArray(value, join, maximumBreadth);
+              res += stringifyTypedArray(value, join3, maximumBreadth);
               keys = keys.slice(value.length);
               maximumPropertiesToStringify -= value.length;
-              separator = join;
+              separator = join3;
             }
             if (deterministic) {
               keys = sort(keys, comparator);
@@ -28067,13 +28067,13 @@ ${indentation}`;
               const tmp = stringifyIndent(key2, value[key2], stack, spacer, indentation);
               if (tmp !== void 0) {
                 res += `${separator}${strEscape(key2)}: ${tmp}`;
-                separator = join;
+                separator = join3;
               }
             }
             if (keyLength > maximumBreadth) {
               const removedKeys = keyLength - maximumBreadth;
               res += `${separator}"...": "${getItemCount(removedKeys)} not stringified"`;
-              separator = join;
+              separator = join3;
             }
             if (separator !== "") {
               res = `
@@ -47534,15 +47534,18 @@ var health_default = router;
 // src/routes/storage.ts
 var import_express2 = __toESM(require_express2(), 1);
 import { Readable as Readable2 } from "stream";
-import fs2 from "fs";
-import path2 from "path";
+import * as fs2 from "fs";
+import * as path2 from "path";
+import * as crypto3 from "crypto";
+import * as sharpModule from "sharp";
 
 // src/lib/objectStorage.ts
-import fs from "node:fs";
-import fsPromises from "node:fs/promises";
-import path from "node:path";
+import * as fs from "node:fs";
+import * as fsPromises from "node:fs/promises";
+import * as path from "node:path";
 import { Readable } from "node:stream";
 import { randomUUID } from "node:crypto";
+import * as crypto2 from "node:crypto";
 var LOCAL_STORAGE_DIR = path.resolve(process.cwd(), "local-storage");
 if (!fs.existsSync(LOCAL_STORAGE_DIR)) {
   fs.mkdirSync(LOCAL_STORAGE_DIR, { recursive: true });
@@ -47554,38 +47557,54 @@ var ObjectNotFoundError = class _ObjectNotFoundError extends Error {
     Object.setPrototypeOf(this, _ObjectNotFoundError.prototype);
   }
 };
+var CONTENT_TYPES = {
+  ".webp": "image/webp",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif": "image/gif",
+  ".svg": "image/svg+xml"
+};
+async function fileExists(p) {
+  try {
+    await fsPromises.access(p);
+    return true;
+  } catch {
+    return false;
+  }
+}
+async function resolveWithWebpFallback(fullPath) {
+  if (await fileExists(fullPath)) return fullPath;
+  const webpPath = fullPath.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif)$/i, "") + ".webp";
+  if (webpPath !== fullPath && await fileExists(webpPath)) return webpPath;
+  const appended = fullPath + ".webp";
+  if (await fileExists(appended)) return appended;
+  return null;
+}
 var ObjectStorageService = class {
   constructor() {
   }
   async searchPublicObject(filePath) {
     const fullPath = path.join(LOCAL_STORAGE_DIR, filePath.replace(/^\/+/, ""));
-    try {
-      await fsPromises.access(fullPath);
-      return fullPath;
-    } catch {
-      return null;
-    }
+    return resolveWithWebpFallback(fullPath);
   }
   async downloadObject(filePath, cacheTtlSec = 3600) {
-    const stat = await fsPromises.stat(filePath);
+    const stat2 = await fsPromises.stat(filePath);
     const nodeStream = fs.createReadStream(filePath);
     const webStream = Readable.toWeb(nodeStream);
-    let ext = path.extname(filePath).toLowerCase();
-    let contentType = "application/octet-stream";
-    if (ext === ".png") contentType = "image/png";
-    else if (ext === ".jpg" || ext === ".jpeg") contentType = "image/jpeg";
-    else if (ext === ".gif") contentType = "image/gif";
-    else if (ext === ".webp") contentType = "image/webp";
-    else if (ext === ".svg") contentType = "image/svg+xml";
-    else if (!ext || ext === "") contentType = "image/jpeg";
+    const ext = path.extname(filePath).toLowerCase();
+    const contentType = CONTENT_TYPES[ext] ?? "application/octet-stream";
+    const etag = `"${crypto2.createHash("md5").update(`${stat2.mtimeMs}-${stat2.size}`).digest("hex").slice(0, 16)}"`;
     const headers = {
       "Content-Type": contentType,
-      "Cache-Control": `public, max-age=${cacheTtlSec}`,
-      "Content-Length": String(stat.size)
+      "Cache-Control": `public, max-age=${cacheTtlSec}, immutable`,
+      "Content-Length": String(stat2.size),
+      "ETag": etag,
+      "Vary": "Accept"
     };
     return new Response(webStream, { headers });
   }
-  async getObjectEntityUploadURL(originalName) {
+  async getObjectEntityUploadURL(_originalName) {
     const objectId = randomUUID();
     return `/api/upload-file/${objectId}`;
   }
@@ -47595,12 +47614,9 @@ var ObjectStorageService = class {
     }
     const objectId = objectPath.replace("/objects/", "").replace(/^\/+/, "");
     const fullPath = path.join(LOCAL_STORAGE_DIR, objectId);
-    try {
-      await fsPromises.access(fullPath);
-      return fullPath;
-    } catch {
-      throw new ObjectNotFoundError();
-    }
+    const resolved = await resolveWithWebpFallback(fullPath);
+    if (!resolved) throw new ObjectNotFoundError();
+    return resolved;
   }
   normalizeObjectEntityPath(rawPath) {
     if (rawPath.startsWith("/api/upload-file/")) {
@@ -47612,8 +47628,12 @@ var ObjectStorageService = class {
 };
 
 // src/routes/storage.ts
+var sharp = sharpModule.default ?? sharpModule;
 var router2 = (0, import_express2.Router)();
 var objectStorageService = new ObjectStorageService();
+var MAX_IMAGE_DIMENSION = 1920;
+var WEBP_QUALITY = 82;
+var CACHE_TTL_SEC = 60 * 60 * 24 * 365;
 router2.post("/storage/uploads/request-url", async (req, res) => {
   const parsed = RequestUploadUrlBody.safeParse(req.body);
   if (!parsed.success) {
@@ -47632,7 +47652,7 @@ router2.post("/storage/uploads/request-url", async (req, res) => {
       })
     );
   } catch (error40) {
-    req.log.error({ err: error40 }, "Error generating upload URL");
+    console.error("Error generating upload URL", error40);
     res.status(500).json({ error: "Failed to generate upload URL" });
   }
 });
@@ -47645,7 +47665,7 @@ router2.get("/storage/public-objects/*filePath", async (req, res) => {
       res.status(404).json({ error: "File not found" });
       return;
     }
-    const response = await objectStorageService.downloadObject(file2);
+    const response = await objectStorageService.downloadObject(file2, CACHE_TTL_SEC);
     res.status(response.status);
     response.headers.forEach((value, key) => res.setHeader(key, value));
     if (response.body) {
@@ -47655,7 +47675,7 @@ router2.get("/storage/public-objects/*filePath", async (req, res) => {
       res.end();
     }
   } catch (error40) {
-    req.log.error({ err: error40 }, "Error serving public object");
+    console.error("Error serving public object", error40);
     res.status(500).json({ error: "Failed to serve public object" });
   }
 });
@@ -47665,7 +47685,7 @@ router2.get("/storage/objects/*path", async (req, res) => {
     const wildcardPath = Array.isArray(raw) ? raw.join("/") : raw;
     const objectPath = `/objects/${wildcardPath}`;
     const objectFile = await objectStorageService.getObjectEntityFile(objectPath);
-    const response = await objectStorageService.downloadObject(objectFile);
+    const response = await objectStorageService.downloadObject(objectFile, CACHE_TTL_SEC);
     res.status(response.status);
     response.headers.forEach((value, key) => res.setHeader(key, value));
     if (response.body) {
@@ -47676,47 +47696,100 @@ router2.get("/storage/objects/*path", async (req, res) => {
     }
   } catch (error40) {
     if (error40 instanceof ObjectNotFoundError) {
-      req.log.warn({ err: error40 }, "Object not found");
+      console.warn("Object not found", error40);
       res.status(404).json({ error: "Object not found" });
       return;
     }
-    req.log.error({ err: error40 }, "Error serving object");
+    console.error("Error serving object", error40);
     res.status(500).json({ error: "Failed to serve object" });
   }
 });
-var handleLocalUpload = (req, res) => {
-  req.log.info({ method: req.method, url: req.url, headers: req.headers }, "Incoming upload request");
+function collectBody(req) {
+  return new Promise((resolve2, reject) => {
+    const chunks = [];
+    req.on("data", (chunk) => chunks.push(chunk));
+    req.on("end", () => resolve2(Buffer.concat(chunks)));
+    req.on("error", reject);
+  });
+}
+function isImageContentType(contentType) {
+  return /^image\/(jpeg|jpg|png|webp|gif|avif|tiff|bmp)/.test(contentType);
+}
+async function optimizeImage(buffer, contentType) {
+  if (!isImageContentType(contentType)) return buffer;
+  try {
+    return await sharp(buffer).rotate().resize({
+      width: MAX_IMAGE_DIMENSION,
+      height: MAX_IMAGE_DIMENSION,
+      fit: "inside",
+      withoutEnlargement: true
+    }).webp({ quality: WEBP_QUALITY, effort: 4 }).toBuffer();
+  } catch {
+    return buffer;
+  }
+}
+var handleLocalUpload = async (req, res) => {
   const objectId = req.params.objectId;
-  const fullPath = path2.join(process.cwd(), "local-storage", objectId.replace(/^\/+/, ""));
-  const writeStream = fs2.createWriteStream(fullPath);
-  req.pipe(writeStream);
-  writeStream.on("finish", () => {
-    req.log.info({ objectId }, "Upload completed successfully");
-    res.set("ETag", '"local-upload-etag"');
+  const contentType = (req.headers["content-type"] || "application/octet-stream").split(";")[0].trim();
+  try {
+    const rawBuffer = await collectBody(req);
+    const isImage = isImageContentType(contentType);
+    const finalBuffer = isImage ? await optimizeImage(rawBuffer, contentType) : rawBuffer;
+    const storageId = isImage ? objectId.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif|webp)$/i, "") + ".webp" : objectId;
+    const fullPath = path2.join(process.cwd(), "local-storage", storageId.replace(/^\/+/, ""));
+    await fs2.promises.writeFile(fullPath, finalBuffer);
+    const etag = `"${crypto3.createHash("md5").update(finalBuffer).digest("hex").slice(0, 16)}"`;
+    console.info(`Upload saved: ${objectId} \u2192 ${storageId} (${rawBuffer.length}B \u2192 ${finalBuffer.length}B)`);
+    res.set("ETag", etag);
     res.sendStatus(200);
-  });
-  writeStream.on("error", (err) => {
-    req.log.error({ err, objectId }, "Error writing file locally");
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`Upload failed for ${objectId}:`, msg);
     if (!res.headersSent) {
-      res.status(500).json({ error: `Upload failed: ${err.message}` });
+      res.status(500).json({ error: `Upload failed: ${msg}` });
     }
-  });
-  req.on("error", (err) => {
-    req.log.error({ err, objectId }, "Error receiving file upload stream");
-    if (!res.headersSent) {
-      res.status(500).json({ error: `Upload failed: ${err.message}` });
-    }
-  });
+  }
 };
 router2.put("/upload-file/:objectId", handleLocalUpload);
 router2.post("/upload-file/:objectId", handleLocalUpload);
-router2.get("/storage/local-upload/:objectId", (req, res) => {
+router2.get("/storage/local-upload/:objectId", async (req, res) => {
   const objectId = req.params.objectId;
-  const fullPath = path2.join(process.cwd(), "local-storage", objectId);
-  if (fs2.existsSync(fullPath)) {
-    res.sendFile(fullPath);
-  } else {
+  const base = path2.join(process.cwd(), "local-storage");
+  const candidates = [
+    path2.join(base, objectId),
+    path2.join(base, objectId.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif)$/i, "") + ".webp"),
+    path2.join(base, objectId + ".webp")
+  ];
+  const fullPath = candidates.find((p) => fs2.existsSync(p));
+  if (!fullPath) {
     res.status(404).json({ error: "File not found" });
+    return;
+  }
+  try {
+    const stat2 = await fs2.promises.stat(fullPath);
+    const ext = path2.extname(fullPath).toLowerCase();
+    const contentTypeMap = {
+      ".webp": "image/webp",
+      ".jpg": "image/jpeg",
+      ".jpeg": "image/jpeg",
+      ".png": "image/png",
+      ".gif": "image/gif",
+      ".svg": "image/svg+xml"
+    };
+    const contentType = contentTypeMap[ext] ?? "application/octet-stream";
+    const etag = `"${crypto3.createHash("md5").update(`${stat2.mtimeMs}-${stat2.size}`).digest("hex").slice(0, 16)}"`;
+    res.set("ETag", etag);
+    res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
+    res.set("Content-Type", contentType);
+    res.set("Content-Length", String(stat2.size));
+    if (req.headers["if-none-match"] === etag) {
+      res.sendStatus(304);
+      return;
+    }
+    res.sendFile(fullPath);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    res.status(500).json({ error: `Failed to serve file: ${msg}` });
   }
 });
 var storage_default = router2;
@@ -48714,7 +48787,7 @@ function sql(strings, ...params) {
     return new SQL([new StringChunk(str)]);
   }
   sql22.raw = raw;
-  function join(chunks, separator) {
+  function join3(chunks, separator) {
     const result = [];
     for (const [i, chunk] of chunks.entries()) {
       if (i > 0 && separator !== void 0) {
@@ -48724,7 +48797,7 @@ function sql(strings, ...params) {
     }
     return new SQL(result);
   }
-  sql22.join = join;
+  sql22.join = join3;
   function identifier(value) {
     return new Name(value);
   }
@@ -49906,7 +49979,7 @@ function sql2(strings, ...params) {
     return new SQL2([new StringChunk2(str)]);
   }
   sql22.raw = raw;
-  function join(chunks, separator) {
+  function join3(chunks, separator) {
     const result = [];
     for (const [i, chunk] of chunks.entries()) {
       if (i > 0 && separator !== void 0) {
@@ -49916,7 +49989,7 @@ function sql2(strings, ...params) {
     }
     return new SQL2(result);
   }
-  sql22.join = join;
+  sql22.join = join3;
   function identifier(value) {
     return new Name2(value);
   }
@@ -53325,7 +53398,7 @@ var MySqlSelectQueryBuilderBase = class extends TypedQueryBuilder {
       const baseTableName = this.tableName;
       const tableName = getTableLikeName(table);
       for (const item of extractUsedTable(table)) this.usedTables.add(item);
-      if (typeof tableName === "string" && this.config.joins?.some((join) => join.alias === tableName)) {
+      if (typeof tableName === "string" && this.config.joins?.some((join3) => join3.alias === tableName)) {
         throw new Error(`Alias "${tableName}" is already used in this query`);
       }
       if (!this.isPartialSelect) {
@@ -54945,7 +55018,7 @@ var MySql2PreparedQuery = class extends MySqlPreparedQuery {
       const onError = once(stream, "error");
       while (true) {
         stream.resume();
-        const row = await Promise.race([onEnd, onError, new Promise((resolve) => stream.once("data", resolve))]);
+        const row = await Promise.race([onEnd, onError, new Promise((resolve2) => stream.once("data", resolve2))]);
         if (row === void 0 || Array.isArray(row) && row.length === 0) {
           break;
         } else if (row instanceof Error) {
@@ -55855,8 +55928,8 @@ function getElementAtPath(obj, path4) {
 }
 function promiseAllObject(promisesObj) {
   const keys = Object.keys(promisesObj);
-  const promises = keys.map((key) => promisesObj[key]);
-  return Promise.all(promises).then((results) => {
+  const promises2 = keys.map((key) => promisesObj[key]);
+  return Promise.all(promises2).then((results) => {
     const resolvedObj = {};
     for (let i = 0; i < keys.length; i++) {
       resolvedObj[keys[i]] = results[i];

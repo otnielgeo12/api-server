@@ -1,8 +1,9 @@
-import fs from "node:fs";
-import fsPromises from "node:fs/promises";
-import path from "node:path";
+import * as fs from "node:fs";
+import * as fsPromises from "node:fs/promises";
+import * as path from "node:path";
 import { Readable } from "node:stream";
 import { randomUUID } from "node:crypto";
+import * as crypto from "node:crypto";
 
 const LOCAL_STORAGE_DIR = path.resolve(process.cwd(), "local-storage");
 
@@ -18,44 +19,72 @@ export class ObjectNotFoundError extends Error {
   }
 }
 
+const CONTENT_TYPES: Record<string, string> = {
+  ".webp": "image/webp",
+  ".png":  "image/png",
+  ".jpg":  "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif":  "image/gif",
+  ".svg":  "image/svg+xml",
+};
+
+/** Return true if path exists on disk. */
+async function fileExists(p: string): Promise<boolean> {
+  try {
+    await fsPromises.access(p);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Given an original path, try that path first then a .webp variant,
+ * since uploads are now compressed to WebP.
+ */
+async function resolveWithWebpFallback(fullPath: string): Promise<string | null> {
+  if (await fileExists(fullPath)) return fullPath;
+
+  const webpPath = fullPath.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif)$/i, "") + ".webp";
+  if (webpPath !== fullPath && await fileExists(webpPath)) return webpPath;
+
+  const appended = fullPath + ".webp";
+  if (await fileExists(appended)) return appended;
+
+  return null;
+}
+
 export class ObjectStorageService {
   constructor() {}
 
   async searchPublicObject(filePath: string): Promise<string | null> {
     const fullPath = path.join(LOCAL_STORAGE_DIR, filePath.replace(/^\/+/, ""));
-    try {
-      await fsPromises.access(fullPath);
-      return fullPath;
-    } catch {
-      return null;
-    }
+    return resolveWithWebpFallback(fullPath);
   }
 
   async downloadObject(filePath: string, cacheTtlSec: number = 3600): Promise<Response> {
     const stat = await fsPromises.stat(filePath);
-    
+
     const nodeStream = fs.createReadStream(filePath);
     const webStream = Readable.toWeb(nodeStream) as ReadableStream;
 
-    let ext = path.extname(filePath).toLowerCase();
-    let contentType = "application/octet-stream";
-    if (ext === ".png") contentType = "image/png";
-    else if (ext === ".jpg" || ext === ".jpeg") contentType = "image/jpeg";
-    else if (ext === ".gif") contentType = "image/gif";
-    else if (ext === ".webp") contentType = "image/webp";
-    else if (ext === ".svg") contentType = "image/svg+xml";
-    else if (!ext || ext === "") contentType = "image/jpeg"; // Fallback for existing extensionless objects
+    const ext = path.extname(filePath).toLowerCase();
+    const contentType = CONTENT_TYPES[ext] ?? "application/octet-stream";
+
+    const etag = `"${crypto.createHash("md5").update(`${stat.mtimeMs}-${stat.size}`).digest("hex").slice(0, 16)}"`;
 
     const headers: Record<string, string> = {
       "Content-Type": contentType,
-      "Cache-Control": `public, max-age=${cacheTtlSec}`,
+      "Cache-Control": `public, max-age=${cacheTtlSec}, immutable`,
       "Content-Length": String(stat.size),
+      "ETag": etag,
+      "Vary": "Accept",
     };
 
     return new Response(webStream, { headers });
   }
 
-  async getObjectEntityUploadURL(originalName?: string): Promise<string> {
+  async getObjectEntityUploadURL(_originalName?: string): Promise<string> {
     const objectId = randomUUID();
     return `/api/upload-file/${objectId}`;
   }
@@ -66,12 +95,9 @@ export class ObjectStorageService {
     }
     const objectId = objectPath.replace("/objects/", "").replace(/^\/+/, "");
     const fullPath = path.join(LOCAL_STORAGE_DIR, objectId);
-    try {
-      await fsPromises.access(fullPath);
-      return fullPath;
-    } catch {
-      throw new ObjectNotFoundError();
-    }
+    const resolved = await resolveWithWebpFallback(fullPath);
+    if (!resolved) throw new ObjectNotFoundError();
+    return resolved;
   }
 
   normalizeObjectEntityPath(rawPath: string): string {

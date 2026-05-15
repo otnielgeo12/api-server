@@ -44,10 +44,6 @@ async function serveProcessedObject(req: Request, res: Response, filePath: strin
     const quality = parseInt(req.query.q as string) || WEBP_QUALITY;
 
     const sendOriginal = () => {
-      // If the file has no extension (old objects), treat as webp/image
-      if (!path.extname(filePath)) {
-        res.setHeader("Content-Type", "image/webp");
-      }
       res.sendFile(filePath, {
         maxAge: CACHE_TTL_SEC * 1000,
         immutable: true,

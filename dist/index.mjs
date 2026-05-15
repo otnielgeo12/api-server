@@ -47647,9 +47647,6 @@ async function serveProcessedObject(req, res, filePath) {
     const width = parseInt(req.query.w);
     const quality = parseInt(req.query.q) || WEBP_QUALITY;
     const sendOriginal = () => {
-      if (!path2.extname(filePath)) {
-        res.setHeader("Content-Type", "image/webp");
-      }
       res.sendFile(filePath, {
         maxAge: CACHE_TTL_SEC * 1e3,
         immutable: true

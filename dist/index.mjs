@@ -34392,7 +34392,7 @@ var init_underscore = __esm({
 });
 
 // node_modules/.pnpm/@clerk+express@2.1.15_express@5.2.1/node_modules/@clerk/express/dist/chunk-NSSCXFJG.mjs
-import { Readable as Readable3 } from "stream";
+import { Readable as Readable2 } from "stream";
 var requestHasAuthObject, loadClientEnv, loadApiEnv, incomingMessageToRequest, requestToProxyRequest;
 var init_chunk_NSSCXFJG = __esm({
   "node_modules/.pnpm/@clerk+express@2.1.15_express@5.2.1/node_modules/@clerk/express/dist/chunk-NSSCXFJG.mjs"() {
@@ -34455,7 +34455,7 @@ var init_chunk_NSSCXFJG = __esm({
       return new Request(url2.toString(), {
         method: req.method,
         headers,
-        body: hasBody ? Readable3.toWeb(req) : void 0,
+        body: hasBody ? Readable2.toWeb(req) : void 0,
         // @ts-expect-error - duplex required for streaming bodies but not in all TS definitions
         duplex: hasBody ? "half" : void 0
       });
@@ -42802,7 +42802,7 @@ __export(dist_exports, {
   requireAuth: () => requireAuth,
   verifyToken: () => verifyToken2
 });
-import { Readable as Readable4 } from "stream";
+import { Readable as Readable3 } from "stream";
 var clerkClientSingleton, clerkClient, createErrorMessage, middlewareRequired, satelliteAndMissingProxyUrlAndDomain, satelliteAndMissingSignInUrl, authenticateRequest2, setResponseHeaders, setResponseForHandshake, absoluteProxyUrl, resolveDefaultClerkClient, authenticateAndDecorateRequest, clerkMiddleware, getAuth, requireAuth;
 var init_dist2 = __esm({
   "node_modules/.pnpm/@clerk+express@2.1.15_express@5.2.1/node_modules/@clerk/express/dist/index.mjs"() {
@@ -42960,7 +42960,7 @@ Check if signInUrl is missing from your configuration or if it is not an absolut
             });
             if (proxyResponse.body) {
               const reader = proxyResponse.body.getReader();
-              const stream = new Readable4({
+              const stream = new Readable3({
                 async read() {
                   try {
                     const { done, value } = await reader.read();
@@ -47533,7 +47533,6 @@ var health_default = router;
 
 // src/routes/storage.ts
 var import_express2 = __toESM(require_express2(), 1);
-import { Readable as Readable2 } from "stream";
 import * as fs2 from "fs";
 import * as path2 from "path";
 import * as crypto3 from "crypto";
@@ -47634,6 +47633,73 @@ var objectStorageService = new ObjectStorageService();
 var MAX_IMAGE_DIMENSION = 1920;
 var WEBP_QUALITY = 82;
 var CACHE_TTL_SEC = 60 * 60 * 24 * 365;
+async function serveProcessedObject(req, res, filePath) {
+  try {
+    const ext = path2.extname(filePath).toLowerCase();
+    const isWebP = ext === ".webp";
+    const isImage = [".webp", ".jpg", ".jpeg", ".png", ".gif", ".avif", ".svg"].includes(ext);
+    const width = parseInt(req.query.w);
+    const quality = parseInt(req.query.q) || WEBP_QUALITY;
+    if (!isImage || isNaN(width) || ext === ".svg") {
+      const stat3 = await fs2.promises.stat(filePath);
+      const etag2 = `"${crypto3.createHash("md5").update(`${stat3.mtimeMs}-${stat3.size}`).digest("hex").slice(0, 16)}"`;
+      const contentTypeMap = {
+        ".webp": "image/webp",
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".png": "image/png",
+        ".gif": "image/gif",
+        ".svg": "image/svg+xml"
+      };
+      let contentType = contentTypeMap[ext];
+      if (!contentType) {
+        if (filePath.includes("local-storage")) {
+          contentType = "image/webp";
+        } else {
+          contentType = "application/octet-stream";
+        }
+      }
+      res.set("ETag", etag2);
+      res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
+      res.set("Content-Type", contentType);
+      res.set("Content-Length", String(stat3.size));
+      if (req.headers["if-none-match"] === etag2) {
+        res.sendStatus(304);
+        return;
+      }
+      res.sendFile(filePath);
+      return;
+    }
+    const stat2 = await fs2.promises.stat(filePath);
+    const etag = `"${crypto3.createHash("md5").update(`${stat2.mtimeMs}-${stat2.size}-${width}-${quality}`).digest("hex").slice(0, 16)}"`;
+    res.set("ETag", etag);
+    res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
+    res.set("Vary", "Accept");
+    if (req.headers["if-none-match"] === etag) {
+      res.sendStatus(304);
+      return;
+    }
+    const buffer = await fs2.promises.readFile(filePath);
+    try {
+      const processed = await sharp(buffer).resize({
+        width: Math.min(width, MAX_IMAGE_DIMENSION),
+        withoutEnlargement: true,
+        fit: "inside"
+      }).webp({ quality }).toBuffer();
+      res.set("Content-Type", "image/webp");
+      res.set("Content-Length", String(processed.length));
+      res.send(processed);
+    } catch (sharpError) {
+      console.error(`Sharp processing failed for ${filePath}, falling back to original:`, sharpError);
+      res.sendFile(filePath);
+    }
+  } catch (error40) {
+    console.error(`Error serving processed object ${filePath}:`, error40);
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Failed to serve object" });
+    }
+  }
+}
 router2.post("/storage/uploads/request-url", async (req, res) => {
   const parsed = RequestUploadUrlBody.safeParse(req.body);
   if (!parsed.success) {
@@ -47656,47 +47722,6 @@ router2.post("/storage/uploads/request-url", async (req, res) => {
     res.status(500).json({ error: "Failed to generate upload URL" });
   }
 });
-async function serveProcessedObject(req, res, filePath) {
-  try {
-    const ext = path2.extname(filePath).toLowerCase();
-    const isImage = [".webp", ".jpg", ".jpeg", ".png", ".gif", ".avif"].includes(ext);
-    const width = parseInt(req.query.w);
-    const quality = parseInt(req.query.q) || WEBP_QUALITY;
-    if (!isImage || isNaN(width)) {
-      const response = await objectStorageService.downloadObject(filePath, CACHE_TTL_SEC);
-      res.status(response.status);
-      response.headers.forEach((value, key) => res.setHeader(key, value));
-      if (response.body) {
-        const nodeStream = Readable2.fromWeb(response.body);
-        nodeStream.pipe(res);
-      } else {
-        res.end();
-      }
-      return;
-    }
-    const stat2 = await fs2.promises.stat(filePath);
-    const etag = `"${crypto3.createHash("md5").update(`${stat2.mtimeMs}-${stat2.size}-${width}-${quality}`).digest("hex").slice(0, 16)}"`;
-    res.set("ETag", etag);
-    res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
-    res.set("Vary", "Accept");
-    if (req.headers["if-none-match"] === etag) {
-      res.sendStatus(304);
-      return;
-    }
-    const buffer = await fs2.promises.readFile(filePath);
-    const processed = await sharp(buffer).resize({
-      width: Math.min(width, MAX_IMAGE_DIMENSION),
-      withoutEnlargement: true,
-      fit: "inside"
-    }).webp({ quality }).toBuffer();
-    res.set("Content-Type", "image/webp");
-    res.set("Content-Length", String(processed.length));
-    res.send(processed);
-  } catch (error40) {
-    console.error("Error serving object", error40);
-    res.status(500).json({ error: "Failed to serve object" });
-  }
-}
 router2.get("/storage/public-objects/*filePath", async (req, res) => {
   const raw = req.params.filePath;
   const filePath = Array.isArray(raw) ? raw.join("/") : raw;

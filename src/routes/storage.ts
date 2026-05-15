@@ -24,6 +24,97 @@ const WEBP_QUALITY = 82;
 const CACHE_TTL_SEC = 60 * 60 * 24 * 365;
 
 /**
+ * Common handler for serving images with optional resizing.
+ */
+async function serveProcessedObject(req: Request, res: Response, filePath: string) {
+  try {
+    const ext = path.extname(filePath).toLowerCase();
+    const isWebP = ext === ".webp";
+    const isImage = [".webp", ".jpg", ".jpeg", ".png", ".gif", ".avif", ".svg"].includes(ext);
+    
+    // Parse resize parameters
+    const width = parseInt(req.query.w as string);
+    const quality = parseInt(req.query.q as string) || WEBP_QUALITY;
+
+    // If it's not an image or no resize requested, serve normally using express sendFile
+    if (!isImage || isNaN(width) || ext === ".svg") {
+      const stat = await fs.promises.stat(filePath);
+      const etag = `"${crypto.createHash("md5").update(`${stat.mtimeMs}-${stat.size}`).digest("hex").slice(0, 16)}"`;
+      
+      const contentTypeMap: Record<string, string> = {
+        ".webp": "image/webp",
+        ".jpg":  "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".png":  "image/png",
+        ".gif":  "image/gif",
+        ".svg":  "image/svg+xml",
+      };
+      let contentType = contentTypeMap[ext];
+      if (!contentType) {
+        // Fallback for files without extensions in local-storage (likely uploaded images)
+        if (filePath.includes("local-storage")) {
+          contentType = "image/webp";
+        } else {
+          contentType = "application/octet-stream";
+        }
+      }
+
+      res.set("ETag", etag);
+      res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
+      res.set("Content-Type", contentType);
+      res.set("Content-Length", String(stat.size));
+
+      if (req.headers["if-none-match"] === etag) {
+        res.sendStatus(304);
+        return;
+      }
+
+      res.sendFile(filePath);
+      return;
+    }
+
+    // Process image with sharp
+    const stat = await fs.promises.stat(filePath);
+    // ETag includes width and quality to ensure different sizes are cached separately
+    const etag = `"${crypto.createHash("md5").update(`${stat.mtimeMs}-${stat.size}-${width}-${quality}`).digest("hex").slice(0, 16)}"`;
+
+    res.set("ETag", etag);
+    res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
+    res.set("Vary", "Accept");
+
+    if (req.headers["if-none-match"] === etag) {
+      res.sendStatus(304);
+      return;
+    }
+
+    const buffer = await fs.promises.readFile(filePath);
+    try {
+      const processed = await sharp(buffer)
+        .resize({ 
+          width: Math.min(width, MAX_IMAGE_DIMENSION), 
+          withoutEnlargement: true,
+          fit: "inside"
+        })
+        .webp({ quality })
+        .toBuffer();
+
+      res.set("Content-Type", "image/webp");
+      res.set("Content-Length", String(processed.length));
+      res.send(processed);
+    } catch (sharpError) {
+      console.error(`Sharp processing failed for ${filePath}, falling back to original:`, sharpError);
+      res.sendFile(filePath);
+    }
+
+  } catch (error) {
+    console.error(`Error serving processed object ${filePath}:`, error);
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Failed to serve object" });
+    }
+  }
+}
+
+/**
  * POST /storage/uploads/request-url
  */
 router.post("/storage/uploads/request-url", async (req: Request, res: Response) => {
@@ -50,65 +141,6 @@ router.post("/storage/uploads/request-url", async (req: Request, res: Response) 
     res.status(500).json({ error: "Failed to generate upload URL" });
   }
 });
-
-/**
- * Common handler for serving images with optional resizing.
- */
-async function serveProcessedObject(req: Request, res: Response, filePath: string) {
-  try {
-    const ext = path.extname(filePath).toLowerCase();
-    const isImage = [".webp", ".jpg", ".jpeg", ".png", ".gif", ".avif"].includes(ext);
-    
-    // Parse resize parameters
-    const width = parseInt(req.query.w as string);
-    const quality = parseInt(req.query.q as string) || WEBP_QUALITY;
-
-    // If it's not an image or no resize requested, serve normally
-    if (!isImage || isNaN(width)) {
-      const response = await objectStorageService.downloadObject(filePath, CACHE_TTL_SEC);
-      res.status(response.status);
-      response.headers.forEach((value, key) => res.setHeader(key, value));
-      if (response.body) {
-        const nodeStream = Readable.fromWeb(response.body as any);
-        nodeStream.pipe(res);
-      } else {
-        res.end();
-      }
-      return;
-    }
-
-    // Process image with sharp
-    const stat = await fs.promises.stat(filePath);
-    const etag = `"${crypto.createHash("md5").update(`${stat.mtimeMs}-${stat.size}-${width}-${quality}`).digest("hex").slice(0, 16)}"`;
-
-    res.set("ETag", etag);
-    res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
-    res.set("Vary", "Accept");
-
-    if (req.headers["if-none-match"] === etag) {
-      res.sendStatus(304);
-      return;
-    }
-
-    const buffer = await fs.promises.readFile(filePath);
-    const processed = await sharp(buffer)
-      .resize({ 
-        width: Math.min(width, MAX_IMAGE_DIMENSION), 
-        withoutEnlargement: true,
-        fit: "inside"
-      })
-      .webp({ quality })
-      .toBuffer();
-
-    res.set("Content-Type", "image/webp");
-    res.set("Content-Length", String(processed.length));
-    res.send(processed);
-
-  } catch (error) {
-    console.error("Error serving object", error);
-    res.status(500).json({ error: "Failed to serve object" });
-  }
-}
 
 /**
  * GET /storage/public-objects/*
@@ -189,6 +221,7 @@ const handleLocalUpload = async (req: Request, res: Response): Promise<void> => 
     const isImage = isImageContentType(contentType);
     const finalBuffer = isImage ? await optimizeImage(rawBuffer, contentType) : rawBuffer;
 
+    // Store images as .webp; strip any existing image extension first.
     const storageId = isImage
       ? objectId.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif|webp)$/i, "") + ".webp"
       : objectId;

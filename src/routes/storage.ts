@@ -25,10 +25,6 @@ const CACHE_TTL_SEC = 60 * 60 * 24 * 365;
 
 /**
  * POST /storage/uploads/request-url
- *
- * Request a presigned URL for file upload.
- * The client sends JSON metadata (name, size, contentType) — NOT the file.
- * Then uploads the file directly to the returned presigned URL.
  */
 router.post("/storage/uploads/request-url", async (req: Request, res: Response) => {
   const parsed = RequestUploadUrlBody.safeParse(req.body);
@@ -39,7 +35,6 @@ router.post("/storage/uploads/request-url", async (req: Request, res: Response) 
 
   try {
     const { name, size, contentType } = parsed.data;
-
     const uploadURL = await objectStorageService.getObjectEntityUploadURL(name);
     const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
 
@@ -57,41 +52,80 @@ router.post("/storage/uploads/request-url", async (req: Request, res: Response) 
 });
 
 /**
- * GET /storage/public-objects/*
- *
- * Serve public assets from PUBLIC_OBJECT_SEARCH_PATHS.
+ * Common handler for serving images with optional resizing.
  */
-router.get("/storage/public-objects/*filePath", async (req: Request, res: Response) => {
+async function serveProcessedObject(req: Request, res: Response, filePath: string) {
   try {
-    const raw = req.params.filePath;
-    const filePath = Array.isArray(raw) ? raw.join("/") : raw;
-    const file = await objectStorageService.searchPublicObject(filePath);
-    if (!file) {
-      res.status(404).json({ error: "File not found" });
+    const ext = path.extname(filePath).toLowerCase();
+    const isImage = [".webp", ".jpg", ".jpeg", ".png", ".gif", ".avif"].includes(ext);
+    
+    // Parse resize parameters
+    const width = parseInt(req.query.w as string);
+    const quality = parseInt(req.query.q as string) || WEBP_QUALITY;
+
+    // If it's not an image or no resize requested, serve normally
+    if (!isImage || isNaN(width)) {
+      const response = await objectStorageService.downloadObject(filePath, CACHE_TTL_SEC);
+      res.status(response.status);
+      response.headers.forEach((value, key) => res.setHeader(key, value));
+      if (response.body) {
+        const nodeStream = Readable.fromWeb(response.body as any);
+        nodeStream.pipe(res);
+      } else {
+        res.end();
+      }
       return;
     }
 
-    const response = await objectStorageService.downloadObject(file, CACHE_TTL_SEC);
+    // Process image with sharp
+    const stat = await fs.promises.stat(filePath);
+    const etag = `"${crypto.createHash("md5").update(`${stat.mtimeMs}-${stat.size}-${width}-${quality}`).digest("hex").slice(0, 16)}"`;
 
-    res.status(response.status);
-    response.headers.forEach((value, key) => res.setHeader(key, value));
+    res.set("ETag", etag);
+    res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
+    res.set("Vary", "Accept");
 
-    if (response.body) {
-      const nodeStream = Readable.fromWeb(response.body as any);
-      nodeStream.pipe(res);
-    } else {
-      res.end();
+    if (req.headers["if-none-match"] === etag) {
+      res.sendStatus(304);
+      return;
     }
+
+    const buffer = await fs.promises.readFile(filePath);
+    const processed = await sharp(buffer)
+      .resize({ 
+        width: Math.min(width, MAX_IMAGE_DIMENSION), 
+        withoutEnlargement: true,
+        fit: "inside"
+      })
+      .webp({ quality })
+      .toBuffer();
+
+    res.set("Content-Type", "image/webp");
+    res.set("Content-Length", String(processed.length));
+    res.send(processed);
+
   } catch (error) {
-    console.error("Error serving public object", error);
-    res.status(500).json({ error: "Failed to serve public object" });
+    console.error("Error serving object", error);
+    res.status(500).json({ error: "Failed to serve object" });
   }
+}
+
+/**
+ * GET /storage/public-objects/*
+ */
+router.get("/storage/public-objects/*filePath", async (req: Request, res: Response) => {
+  const raw = req.params.filePath;
+  const filePath = Array.isArray(raw) ? raw.join("/") : raw;
+  const file = await objectStorageService.searchPublicObject(filePath);
+  if (!file) {
+    res.status(404).json({ error: "File not found" });
+    return;
+  }
+  await serveProcessedObject(req, res, file);
 });
 
 /**
  * GET /storage/objects/*
- *
- * Serve object entities from PRIVATE_OBJECT_DIR.
  */
 router.get("/storage/objects/*path", async (req: Request, res: Response) => {
   try {
@@ -99,21 +133,9 @@ router.get("/storage/objects/*path", async (req: Request, res: Response) => {
     const wildcardPath = Array.isArray(raw) ? raw.join("/") : raw;
     const objectPath = `/objects/${wildcardPath}`;
     const objectFile = await objectStorageService.getObjectEntityFile(objectPath);
-
-    const response = await objectStorageService.downloadObject(objectFile, CACHE_TTL_SEC);
-
-    res.status(response.status);
-    response.headers.forEach((value, key) => res.setHeader(key, value));
-
-    if (response.body) {
-      const nodeStream = Readable.fromWeb(response.body as any);
-      nodeStream.pipe(res);
-    } else {
-      res.end();
-    }
+    await serveProcessedObject(req, res, objectFile);
   } catch (error) {
     if (error instanceof ObjectNotFoundError) {
-      console.warn("Object not found", error);
       res.status(404).json({ error: "Object not found" });
       return;
     }
@@ -134,22 +156,15 @@ function collectBody(req: Request): Promise<Buffer> {
   });
 }
 
-/**
- * Returns true if the content-type indicates an image sharp can process.
- */
 function isImageContentType(contentType: string): boolean {
   return /^image\/(jpeg|jpg|png|webp|gif|avif|tiff|bmp)/.test(contentType);
 }
 
-/**
- * Compress and convert an image buffer to WebP using sharp.
- * Resizes so neither dimension exceeds MAX_IMAGE_DIMENSION.
- */
 async function optimizeImage(buffer: Buffer, contentType: string): Promise<Buffer> {
   if (!isImageContentType(contentType)) return buffer;
   try {
     return await sharp(buffer)
-      .rotate()                              // auto-orient via EXIF
+      .rotate()
       .resize({
         width: MAX_IMAGE_DIMENSION,
         height: MAX_IMAGE_DIMENSION,
@@ -159,7 +174,6 @@ async function optimizeImage(buffer: Buffer, contentType: string): Promise<Buffe
       .webp({ quality: WEBP_QUALITY, effort: 4 })
       .toBuffer();
   } catch {
-    // Fall back to original if sharp fails.
     return buffer;
   }
 }
@@ -175,7 +189,6 @@ const handleLocalUpload = async (req: Request, res: Response): Promise<void> => 
     const isImage = isImageContentType(contentType);
     const finalBuffer = isImage ? await optimizeImage(rawBuffer, contentType) : rawBuffer;
 
-    // Store images as .webp; strip any existing image extension first.
     const storageId = isImage
       ? objectId.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif|webp)$/i, "") + ".webp"
       : objectId;
@@ -184,34 +197,26 @@ const handleLocalUpload = async (req: Request, res: Response): Promise<void> => 
     await fs.promises.writeFile(fullPath, finalBuffer);
 
     const etag = `"${crypto.createHash("md5").update(finalBuffer).digest("hex").slice(0, 16)}"`;
-    console.info(`Upload saved: ${objectId} → ${storageId} (${rawBuffer.length}B → ${finalBuffer.length}B)`);
-
     res.set("ETag", etag);
     res.sendStatus(200);
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error(`Upload failed for ${objectId}:`, msg);
     if (!res.headersSent) {
       res.status(500).json({ error: `Upload failed: ${msg}` });
     }
   }
 };
 
-/**
- * PUT & POST /upload-file/:objectId
- */
 router.put("/upload-file/:objectId", handleLocalUpload);
 router.post("/upload-file/:objectId", handleLocalUpload);
 
 /**
  * GET /storage/local-upload/:objectId
- * Serve locally uploaded files with caching + ETag support.
  */
 router.get("/storage/local-upload/:objectId", async (req: Request, res: Response) => {
   const objectId = req.params.objectId as string;
   const base = path.join(process.cwd(), "local-storage");
 
-  // Try the exact path, then the .webp variant.
   const candidates = [
     path.join(base, objectId),
     path.join(base, objectId.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif)$/i, "") + ".webp"),
@@ -223,36 +228,7 @@ router.get("/storage/local-upload/:objectId", async (req: Request, res: Response
     res.status(404).json({ error: "File not found" });
     return;
   }
-
-  try {
-    const stat = await fs.promises.stat(fullPath);
-    const ext = path.extname(fullPath).toLowerCase();
-    const contentTypeMap: Record<string, string> = {
-      ".webp": "image/webp",
-      ".jpg":  "image/jpeg",
-      ".jpeg": "image/jpeg",
-      ".png":  "image/png",
-      ".gif":  "image/gif",
-      ".svg":  "image/svg+xml",
-    };
-    const contentType = contentTypeMap[ext] ?? "application/octet-stream";
-    const etag = `"${crypto.createHash("md5").update(`${stat.mtimeMs}-${stat.size}`).digest("hex").slice(0, 16)}"`;
-
-    res.set("ETag", etag);
-    res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
-    res.set("Content-Type", contentType);
-    res.set("Content-Length", String(stat.size));
-
-    if (req.headers["if-none-match"] === etag) {
-      res.sendStatus(304);
-      return;
-    }
-
-    res.sendFile(fullPath);
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
-    res.status(500).json({ error: `Failed to serve file: ${msg}` });
-  }
+  await serveProcessedObject(req, res, fullPath);
 });
 
 export default router;

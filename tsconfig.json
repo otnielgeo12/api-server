@@ -3,7 +3,11 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
-    "types": ["node"]
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@workspace/*": ["./lib/*/src/index.ts"]
+    }
   },
   "include": ["src"],
   "references": [

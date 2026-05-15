@@ -1,5 +1,4 @@
 import { Router, type IRouter, type Request, type Response } from "express";
-import { Readable } from "stream";
 import * as fs from "fs";
 import * as path from "path";
 import * as crypto from "crypto";
@@ -20,7 +19,7 @@ const objectStorageService = new ObjectStorageService();
 const MAX_IMAGE_DIMENSION = 1920;
 // WebP quality (0–100). 82 gives great quality at ~40–60% smaller than JPEG.
 const WEBP_QUALITY = 82;
-// Long cache TTL for images (1 year, since filenames include a UUID).
+// Long cache TTL for images (1 year).
 const CACHE_TTL_SEC = 60 * 60 * 24 * 365;
 
 /**
@@ -29,62 +28,33 @@ const CACHE_TTL_SEC = 60 * 60 * 24 * 365;
 async function serveProcessedObject(req: Request, res: Response, filePath: string) {
   try {
     const ext = path.extname(filePath).toLowerCase();
-    const isWebP = ext === ".webp";
-    const isImage = [".webp", ".jpg", ".jpeg", ".png", ".gif", ".avif", ".svg"].includes(ext);
+    const isImage = [".webp", ".jpg", ".jpeg", ".png", ".gif", ".avif"].includes(ext);
     
     // Parse resize parameters
     const width = parseInt(req.query.w as string);
     const quality = parseInt(req.query.q as string) || WEBP_QUALITY;
 
-    // If it's not an image or no resize requested, serve normally using express sendFile
+    // Standard serving: Let Express handle everything (headers, ETag, MIME types, etc.)
     if (!isImage || isNaN(width) || ext === ".svg") {
-      const stat = await fs.promises.stat(filePath);
-      const etag = `"${crypto.createHash("md5").update(`${stat.mtimeMs}-${stat.size}`).digest("hex").slice(0, 16)}"`;
-      
-      const contentTypeMap: Record<string, string> = {
-        ".webp": "image/webp",
-        ".jpg":  "image/jpeg",
-        ".jpeg": "image/jpeg",
-        ".png":  "image/png",
-        ".gif":  "image/gif",
-        ".svg":  "image/svg+xml",
-      };
-      let contentType = contentTypeMap[ext];
-      if (!contentType) {
-        // Fallback for files without extensions in local-storage (likely uploaded images)
-        if (filePath.includes("local-storage")) {
-          contentType = "image/webp";
-        } else {
-          contentType = "application/octet-stream";
+      return res.sendFile(filePath, {
+        maxAge: CACHE_TTL_SEC * 1000,
+        immutable: true,
+        setHeaders: (res, filePath) => {
+          // If the file has no extension, it's likely an older uploaded image
+          if (!path.extname(filePath)) {
+            res.setHeader("Content-Type", "image/webp");
+          }
         }
-      }
-
-      res.set("ETag", etag);
-      res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
-      res.set("Content-Type", contentType);
-      res.set("Content-Length", String(stat.size));
-
-      if (req.headers["if-none-match"] === etag) {
-        res.sendStatus(304);
-        return;
-      }
-
-      res.sendFile(filePath);
-      return;
+      });
     }
 
-    // Process image with sharp
+    // Dynamic Resizing Path
     const stat = await fs.promises.stat(filePath);
-    // ETag includes width and quality to ensure different sizes are cached separately
+    // ETag must include width/quality to distinguish between different versions of the same file
     const etag = `"${crypto.createHash("md5").update(`${stat.mtimeMs}-${stat.size}-${width}-${quality}`).digest("hex").slice(0, 16)}"`;
 
-    res.set("ETag", etag);
-    res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
-    res.set("Vary", "Accept");
-
     if (req.headers["if-none-match"] === etag) {
-      res.sendStatus(304);
-      return;
+      return res.sendStatus(304);
     }
 
     const buffer = await fs.promises.readFile(filePath);
@@ -98,16 +68,19 @@ async function serveProcessedObject(req: Request, res: Response, filePath: strin
         .webp({ quality })
         .toBuffer();
 
+      res.set("ETag", etag);
+      res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
       res.set("Content-Type", "image/webp");
       res.set("Content-Length", String(processed.length));
       res.send(processed);
     } catch (sharpError) {
-      console.error(`Sharp processing failed for ${filePath}, falling back to original:`, sharpError);
-      res.sendFile(filePath);
+      console.error(`Sharp error for ${filePath}:`, sharpError);
+      // Fallback to original if processing fails
+      res.sendFile(filePath, { maxAge: CACHE_TTL_SEC * 1000, immutable: true });
     }
 
   } catch (error) {
-    console.error(`Error serving processed object ${filePath}:`, error);
+    console.error(`Error serving ${filePath}:`, error);
     if (!res.headersSent) {
       res.status(500).json({ error: "Failed to serve object" });
     }
@@ -118,13 +91,12 @@ async function serveProcessedObject(req: Request, res: Response, filePath: strin
  * POST /storage/uploads/request-url
  */
 router.post("/storage/uploads/request-url", async (req: Request, res: Response) => {
-  const parsed = RequestUploadUrlBody.safeParse(req.body);
-  if (!parsed.success) {
-    res.status(400).json({ error: "Missing or invalid required fields" });
-    return;
-  }
-
   try {
+    const parsed = RequestUploadUrlBody.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Invalid upload request metadata" });
+    }
+
     const { name, size, contentType } = parsed.data;
     const uploadURL = await objectStorageService.getObjectEntityUploadURL(name);
     const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
@@ -137,7 +109,7 @@ router.post("/storage/uploads/request-url", async (req: Request, res: Response) 
       }),
     );
   } catch (error) {
-    console.error("Error generating upload URL", error);
+    console.error("Upload URL generation failed:", error);
     res.status(500).json({ error: "Failed to generate upload URL" });
   }
 });
@@ -149,10 +121,8 @@ router.get("/storage/public-objects/*filePath", async (req: Request, res: Respon
   const raw = req.params.filePath;
   const filePath = Array.isArray(raw) ? raw.join("/") : raw;
   const file = await objectStorageService.searchPublicObject(filePath);
-  if (!file) {
-    res.status(404).json({ error: "File not found" });
-    return;
-  }
+  if (!file) return res.status(404).json({ error: "Public asset not found" });
+  
   await serveProcessedObject(req, res, file);
 });
 
@@ -168,17 +138,13 @@ router.get("/storage/objects/*path", async (req: Request, res: Response) => {
     await serveProcessedObject(req, res, objectFile);
   } catch (error) {
     if (error instanceof ObjectNotFoundError) {
-      res.status(404).json({ error: "Object not found" });
-      return;
+      return res.status(404).json({ error: "Object not found" });
     }
-    console.error("Error serving object", error);
-    res.status(500).json({ error: "Failed to serve object" });
+    console.error("Object serving failed:", error);
+    res.status(500).json({ error: "Internal server error serving object" });
   }
 });
 
-/**
- * Collect the request body as a Buffer.
- */
 function collectBody(req: Request): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
@@ -221,7 +187,6 @@ const handleLocalUpload = async (req: Request, res: Response): Promise<void> => 
     const isImage = isImageContentType(contentType);
     const finalBuffer = isImage ? await optimizeImage(rawBuffer, contentType) : rawBuffer;
 
-    // Store images as .webp; strip any existing image extension first.
     const storageId = isImage
       ? objectId.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif|webp)$/i, "") + ".webp"
       : objectId;
@@ -233,9 +198,9 @@ const handleLocalUpload = async (req: Request, res: Response): Promise<void> => 
     res.set("ETag", etag);
     res.sendStatus(200);
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`Upload save failed for ${objectId}:`, err);
     if (!res.headersSent) {
-      res.status(500).json({ error: `Upload failed: ${msg}` });
+      res.status(500).json({ error: "Failed to save uploaded file" });
     }
   }
 };
@@ -257,10 +222,8 @@ router.get("/storage/local-upload/:objectId", async (req: Request, res: Response
   ];
 
   const fullPath = candidates.find(p => fs.existsSync(p));
-  if (!fullPath) {
-    res.status(404).json({ error: "File not found" });
-    return;
-  }
+  if (!fullPath) return res.status(404).json({ error: "Upload not found" });
+  
   await serveProcessedObject(req, res, fullPath);
 });
 

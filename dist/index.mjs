@@ -47636,48 +47636,24 @@ var CACHE_TTL_SEC = 60 * 60 * 24 * 365;
 async function serveProcessedObject(req, res, filePath) {
   try {
     const ext = path2.extname(filePath).toLowerCase();
-    const isWebP = ext === ".webp";
-    const isImage = [".webp", ".jpg", ".jpeg", ".png", ".gif", ".avif", ".svg"].includes(ext);
+    const isImage = [".webp", ".jpg", ".jpeg", ".png", ".gif", ".avif"].includes(ext);
     const width = parseInt(req.query.w);
     const quality = parseInt(req.query.q) || WEBP_QUALITY;
     if (!isImage || isNaN(width) || ext === ".svg") {
-      const stat3 = await fs2.promises.stat(filePath);
-      const etag2 = `"${crypto3.createHash("md5").update(`${stat3.mtimeMs}-${stat3.size}`).digest("hex").slice(0, 16)}"`;
-      const contentTypeMap = {
-        ".webp": "image/webp",
-        ".jpg": "image/jpeg",
-        ".jpeg": "image/jpeg",
-        ".png": "image/png",
-        ".gif": "image/gif",
-        ".svg": "image/svg+xml"
-      };
-      let contentType = contentTypeMap[ext];
-      if (!contentType) {
-        if (filePath.includes("local-storage")) {
-          contentType = "image/webp";
-        } else {
-          contentType = "application/octet-stream";
+      return res.sendFile(filePath, {
+        maxAge: CACHE_TTL_SEC * 1e3,
+        immutable: true,
+        setHeaders: (res2, filePath2) => {
+          if (!path2.extname(filePath2)) {
+            res2.setHeader("Content-Type", "image/webp");
+          }
         }
-      }
-      res.set("ETag", etag2);
-      res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
-      res.set("Content-Type", contentType);
-      res.set("Content-Length", String(stat3.size));
-      if (req.headers["if-none-match"] === etag2) {
-        res.sendStatus(304);
-        return;
-      }
-      res.sendFile(filePath);
-      return;
+      });
     }
     const stat2 = await fs2.promises.stat(filePath);
     const etag = `"${crypto3.createHash("md5").update(`${stat2.mtimeMs}-${stat2.size}-${width}-${quality}`).digest("hex").slice(0, 16)}"`;
-    res.set("ETag", etag);
-    res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
-    res.set("Vary", "Accept");
     if (req.headers["if-none-match"] === etag) {
-      res.sendStatus(304);
-      return;
+      return res.sendStatus(304);
     }
     const buffer = await fs2.promises.readFile(filePath);
     try {
@@ -47686,27 +47662,28 @@ async function serveProcessedObject(req, res, filePath) {
         withoutEnlargement: true,
         fit: "inside"
       }).webp({ quality }).toBuffer();
+      res.set("ETag", etag);
+      res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
       res.set("Content-Type", "image/webp");
       res.set("Content-Length", String(processed.length));
       res.send(processed);
     } catch (sharpError) {
-      console.error(`Sharp processing failed for ${filePath}, falling back to original:`, sharpError);
-      res.sendFile(filePath);
+      console.error(`Sharp error for ${filePath}:`, sharpError);
+      res.sendFile(filePath, { maxAge: CACHE_TTL_SEC * 1e3, immutable: true });
     }
   } catch (error40) {
-    console.error(`Error serving processed object ${filePath}:`, error40);
+    console.error(`Error serving ${filePath}:`, error40);
     if (!res.headersSent) {
       res.status(500).json({ error: "Failed to serve object" });
     }
   }
 }
 router2.post("/storage/uploads/request-url", async (req, res) => {
-  const parsed = RequestUploadUrlBody.safeParse(req.body);
-  if (!parsed.success) {
-    res.status(400).json({ error: "Missing or invalid required fields" });
-    return;
-  }
   try {
+    const parsed = RequestUploadUrlBody.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Invalid upload request metadata" });
+    }
     const { name, size, contentType } = parsed.data;
     const uploadURL = await objectStorageService.getObjectEntityUploadURL(name);
     const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
@@ -47718,7 +47695,7 @@ router2.post("/storage/uploads/request-url", async (req, res) => {
       })
     );
   } catch (error40) {
-    console.error("Error generating upload URL", error40);
+    console.error("Upload URL generation failed:", error40);
     res.status(500).json({ error: "Failed to generate upload URL" });
   }
 });
@@ -47726,10 +47703,7 @@ router2.get("/storage/public-objects/*filePath", async (req, res) => {
   const raw = req.params.filePath;
   const filePath = Array.isArray(raw) ? raw.join("/") : raw;
   const file2 = await objectStorageService.searchPublicObject(filePath);
-  if (!file2) {
-    res.status(404).json({ error: "File not found" });
-    return;
-  }
+  if (!file2) return res.status(404).json({ error: "Public asset not found" });
   await serveProcessedObject(req, res, file2);
 });
 router2.get("/storage/objects/*path", async (req, res) => {
@@ -47741,11 +47715,10 @@ router2.get("/storage/objects/*path", async (req, res) => {
     await serveProcessedObject(req, res, objectFile);
   } catch (error40) {
     if (error40 instanceof ObjectNotFoundError) {
-      res.status(404).json({ error: "Object not found" });
-      return;
+      return res.status(404).json({ error: "Object not found" });
     }
-    console.error("Error serving object", error40);
-    res.status(500).json({ error: "Failed to serve object" });
+    console.error("Object serving failed:", error40);
+    res.status(500).json({ error: "Internal server error serving object" });
   }
 });
 function collectBody(req) {
@@ -47786,9 +47759,9 @@ var handleLocalUpload = async (req, res) => {
     res.set("ETag", etag);
     res.sendStatus(200);
   } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`Upload save failed for ${objectId}:`, err);
     if (!res.headersSent) {
-      res.status(500).json({ error: `Upload failed: ${msg}` });
+      res.status(500).json({ error: "Failed to save uploaded file" });
     }
   }
 };
@@ -47803,10 +47776,7 @@ router2.get("/storage/local-upload/:objectId", async (req, res) => {
     path2.join(base, objectId + ".webp")
   ];
   const fullPath = candidates.find((p) => fs2.existsSync(p));
-  if (!fullPath) {
-    res.status(404).json({ error: "File not found" });
-    return;
-  }
+  if (!fullPath) return res.status(404).json({ error: "Upload not found" });
   await serveProcessedObject(req, res, fullPath);
 });
 var storage_default = router2;

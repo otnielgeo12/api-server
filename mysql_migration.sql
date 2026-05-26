@@ -105,3 +105,16 @@ CREATE TABLE IF NOT EXISTS `beverages` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT `beverages_outlet_id_outlets_id_fk` FOREIGN KEY (`outlet_id`) REFERENCES `outlets` (`id`) ON DELETE CASCADE
 );
+
+-- 8. Admin Users
+CREATE TABLE IF NOT EXISTS `admin_users` (
+  `id` int AUTO_INCREMENT PRIMARY KEY,
+  `username` varchar(100) NOT NULL UNIQUE,
+  `email` varchar(255),
+  `password` varchar(255) NOT NULL,
+  `role` varchar(50) NOT NULL DEFAULT 'admin',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+

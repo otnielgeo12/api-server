@@ -5,9 +5,11 @@ import {
   menuItemsTable,
   galleryImagesTable,
   siteInfoTable,
+  adminUsersTable,
 } from "@workspace/db";
 import { sql } from "drizzle-orm";
 import { logger } from "./lib/logger";
+import bcrypt from "bcryptjs";
 
 const OUTLETS = [
   {
@@ -220,6 +222,20 @@ const GALLERY = [
 
 async function main() {
   logger.info("Seeding restaurant data");
+
+  const [adminUserExisting] = await db.select().from(adminUsersTable).limit(1);
+  if (!adminUserExisting) {
+    const hashedPassword = await bcrypt.hash("admin123", 10);
+    await db.insert(adminUsersTable).values({
+      username: "admin",
+      email: "admin@atozgroup.com",
+      password: hashedPassword,
+      role: "super_admin",
+    });
+    logger.info("Inserted initial super_admin user (username: admin, password: admin123)");
+  } else {
+    logger.info("admin_users already present, skipping");
+  }
 
   const [siteInfoExisting] = await db.select().from(siteInfoTable).limit(1);
   if (!siteInfoExisting) {

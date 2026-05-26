@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 // Cari file .env di root (naik 2 tingkat dari lib/db)
-dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
+dotenv.config({ path: path.resolve(import.meta.dirname, "../../../.env") });
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL must be set. Did you forget to provision a database?");

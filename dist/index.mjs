@@ -39144,6 +39144,20 @@ var objectStorageService = new ObjectStorageService();
 var MAX_IMAGE_DIMENSION = 1920;
 var WEBP_QUALITY = 82;
 var CACHE_TTL_SEC = 60 * 60 * 24 * 365;
+function detectMimeTypeSync(filePath) {
+  try {
+    const buffer = Buffer.alloc(12);
+    const fd = fs2.openSync(filePath, "r");
+    fs2.readSync(fd, buffer, 0, 12, 0);
+    fs2.closeSync(fd);
+    if (buffer[0] === 255 && buffer[1] === 216 && buffer[2] === 255) return "image/jpeg";
+    if (buffer[0] === 137 && buffer[1] === 80 && buffer[2] === 78 && buffer[3] === 71) return "image/png";
+    if (buffer[0] === 82 && buffer[1] === 73 && buffer[2] === 70 && buffer[3] === 70 && buffer[8] === 87 && buffer[9] === 69 && buffer[10] === 66 && buffer[11] === 80) return "image/webp";
+    if (buffer[0] === 71 && buffer[1] === 73 && buffer[2] === 70) return "image/gif";
+  } catch (e) {
+  }
+  return "application/octet-stream";
+}
 async function getSharp() {
   try {
     const sharpModule = await import("sharp");
@@ -39156,14 +39170,21 @@ async function getSharp() {
 async function serveProcessedObject(req, res, filePath) {
   try {
     const ext = path2.extname(filePath).toLowerCase();
-    const isImage = [".webp", ".jpg", ".jpeg", ".png", ".gif", ".avif"].includes(ext);
+    const hasExtension = ext !== "";
+    const isImage = hasExtension ? [".webp", ".jpg", ".jpeg", ".png", ".gif", ".avif"].includes(ext) : true;
     const width = parseInt(req.query.w);
     const quality = parseInt(req.query.q) || WEBP_QUALITY;
     const sendOriginal = () => {
-      res.sendFile(filePath, {
+      const options = {
         maxAge: CACHE_TTL_SEC * 1e3,
         immutable: true
-      });
+      };
+      if (!hasExtension) {
+        options.headers = {
+          "Content-Type": detectMimeTypeSync(filePath)
+        };
+      }
+      res.sendFile(filePath, options);
     };
     if (!isImage || isNaN(width) || ext === ".svg") {
       sendOriginal();
@@ -39256,22 +39277,96 @@ function collectBody(req) {
     req.on("error", reject);
   });
 }
+function extractFromMultipart(rawBuffer, rawContentType) {
+  const isMultipart = rawContentType.includes("multipart/form-data") || rawBuffer.subarray(0, 6).toString("ascii").startsWith("------");
+  if (!isMultipart) {
+    return { buffer: rawBuffer, detectedMime: rawContentType.split(";")[0].trim() };
+  }
+  const firstLineEnd = rawBuffer.indexOf(13);
+  if (firstLineEnd === -1) {
+    return { buffer: rawBuffer, detectedMime: "application/octet-stream" };
+  }
+  const boundary = rawBuffer.subarray(0, firstLineEnd).toString("ascii").trim();
+  const filePartMarker = Buffer.from('name="file"');
+  const filePartPos = rawBuffer.indexOf(filePartMarker);
+  if (filePartPos !== -1) {
+    const headerEnd2 = rawBuffer.indexOf("\r\n\r\n", filePartPos);
+    if (headerEnd2 !== -1) {
+      const partHeaders = rawBuffer.subarray(filePartPos, headerEnd2).toString("ascii");
+      const ctMatch = partHeaders.match(/Content-Type:\s*([^\r\n]+)/i);
+      const detectedMime = ctMatch ? ctMatch[1].trim() : "application/octet-stream";
+      const contentStart = headerEnd2 + 4;
+      const closingBoundary = Buffer.from("\r\n" + boundary);
+      const contentEnd = rawBuffer.indexOf(closingBoundary, contentStart);
+      const fileContent = contentEnd !== -1 ? rawBuffer.subarray(contentStart, contentEnd) : rawBuffer.subarray(contentStart);
+      return { buffer: fileContent, detectedMime };
+    }
+  }
+  let searchPos = 0;
+  while (searchPos < rawBuffer.length - 4) {
+    const idx = rawBuffer.indexOf("\r\n\r\n", searchPos);
+    if (idx === -1) break;
+    const contentStart = idx + 4;
+    if (contentStart + 4 > rawBuffer.length) break;
+    const b0 = rawBuffer[contentStart];
+    const b1 = rawBuffer[contentStart + 1];
+    const b2 = rawBuffer[contentStart + 2];
+    const b3 = rawBuffer[contentStart + 3];
+    if (b0 === 255 && b1 === 216 || // JPEG
+    b0 === 137 && b1 === 80 || // PNG
+    b0 === 82 && b1 === 73 && b2 === 70 && b3 === 70 || // WebP (RIFF)
+    b0 === 71 && b1 === 73 && b2 === 70) {
+      const closingBoundary = Buffer.from("\r\n" + boundary);
+      const contentEnd = rawBuffer.indexOf(closingBoundary, contentStart);
+      const fileContent = contentEnd !== -1 ? rawBuffer.subarray(contentStart, contentEnd) : rawBuffer.subarray(contentStart);
+      const mimeMap = { 255: "image/jpeg", 137: "image/png", 82: "image/webp", 71: "image/gif" };
+      return { buffer: fileContent, detectedMime: mimeMap[b0] || "application/octet-stream" };
+    }
+    searchPos = idx + 4;
+  }
+  const headerEnd = rawBuffer.indexOf("\r\n\r\n");
+  if (headerEnd !== -1) {
+    const contentStart = headerEnd + 4;
+    const closingBoundary = Buffer.from("\r\n" + boundary);
+    const contentEnd = rawBuffer.indexOf(closingBoundary, contentStart);
+    const fileContent = contentEnd !== -1 ? rawBuffer.subarray(contentStart, contentEnd) : rawBuffer.subarray(contentStart);
+    return { buffer: fileContent, detectedMime: "application/octet-stream" };
+  }
+  return { buffer: rawBuffer, detectedMime: "application/octet-stream" };
+}
 var handleLocalUpload = async (req, res) => {
   const objectId = req.params.objectId;
-  const contentType = (req.headers["content-type"] || "application/octet-stream").split(";")[0].trim();
+  const rawContentType = req.headers["content-type"] || "application/octet-stream";
+  const contentType = rawContentType.split(";")[0].trim();
   try {
     const rawBuffer = await collectBody(req);
-    const isImage = /^image\/(jpe?g|jpg|png|webp|gif|avif|tiff|bmp)/.test(contentType);
-    let finalBuffer = rawBuffer;
+    const extracted = extractFromMultipart(rawBuffer, rawContentType);
+    const fileBuffer = extracted.buffer;
+    const effectiveMime = contentType.startsWith("image/") ? contentType : extracted.detectedMime;
+    const isImage = /^image\/(jpe?g|jpg|png|webp|gif|avif|tiff|bmp)/.test(effectiveMime);
+    let finalBuffer = fileBuffer;
     let finalId = objectId;
     if (isImage) {
       const sharp = await getSharp();
       if (sharp) {
         try {
-          finalBuffer = await sharp(rawBuffer).rotate().resize({ width: MAX_IMAGE_DIMENSION, height: MAX_IMAGE_DIMENSION, fit: "inside", withoutEnlargement: true }).webp({ quality: WEBP_QUALITY }).toBuffer();
+          finalBuffer = await sharp(fileBuffer).rotate().resize({ width: MAX_IMAGE_DIMENSION, height: MAX_IMAGE_DIMENSION, fit: "inside", withoutEnlargement: true }).webp({ quality: WEBP_QUALITY }).toBuffer();
           finalId = objectId.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif|webp)$/i, "") + ".webp";
         } catch (e) {
           console.warn("Sharp optimization failed, using raw buffer:", e);
+        }
+      } else {
+        const extMap = {
+          "image/jpeg": ".jpg",
+          "image/jpg": ".jpg",
+          "image/png": ".png",
+          "image/webp": ".webp",
+          "image/gif": ".gif",
+          "image/avif": ".avif"
+        };
+        const defaultExt = extMap[effectiveMime] || "";
+        if (defaultExt) {
+          finalId = objectId.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif|webp)$/i, "") + defaultExt;
         }
       }
     }

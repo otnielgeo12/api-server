@@ -254,7 +254,7 @@ async function main() {
   }
 
   const [{ count: outletCount }] = await db
-    .select({ count: sql<number>`cast(count(*) as int)` })
+    .select({ count: sql<number>`cast(count(*) as signed)` })
     .from(outletsTable);
   if (outletCount === 0) {
     await db.insert(outletsTable).values(OUTLETS);
@@ -288,7 +288,7 @@ async function main() {
   }
 
   const [{ count: bannerCount }] = await db
-    .select({ count: sql<number>`cast(count(*) as int)` })
+    .select({ count: sql<number>`cast(count(*) as signed)` })
     .from(bannersTable);
   if (bannerCount === 0) {
     await db.insert(bannersTable).values(BANNERS);
@@ -298,7 +298,7 @@ async function main() {
   }
 
   const [{ count: galleryCount }] = await db
-    .select({ count: sql<number>`cast(count(*) as int)` })
+    .select({ count: sql<number>`cast(count(*) as signed)` })
     .from(galleryImagesTable);
   if (galleryCount === 0) {
     await db.insert(galleryImagesTable).values(GALLERY);

@@ -11,14 +11,14 @@ const CreateUserBody = z.object({
   username: z.string().min(1, "Username is required").max(100),
   email: z.string().email("Invalid email address").optional().or(z.literal("")),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  role: z.enum(["super_admin", "admin"]),
+  role: z.enum(["super_admin", "admin", "admin_fnb", "admin_entertainment"]),
 });
 
 const UpdateUserBody = z.object({
   username: z.string().min(1, "Username is required").max(100).optional(),
   email: z.string().email("Invalid email address").optional().or(z.literal("")),
   password: z.string().min(6, "Password must be at least 6 characters").optional().or(z.literal("")),
-  role: z.enum(["super_admin", "admin"]).optional(),
+  role: z.enum(["super_admin", "admin", "admin_fnb", "admin_entertainment"]).optional(),
 });
 
 // All user management routes require Super Admin privileges

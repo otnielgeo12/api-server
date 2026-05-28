@@ -59072,13 +59072,13 @@ var CreateUserBody = external_exports.object({
   username: external_exports.string().min(1, "Username is required").max(100),
   email: external_exports.string().email("Invalid email address").optional().or(external_exports.literal("")),
   password: external_exports.string().min(6, "Password must be at least 6 characters"),
-  role: external_exports.enum(["super_admin", "admin"])
+  role: external_exports.enum(["super_admin", "admin", "admin_fnb", "admin_entertainment"])
 });
 var UpdateUserBody = external_exports.object({
   username: external_exports.string().min(1, "Username is required").max(100).optional(),
   email: external_exports.string().email("Invalid email address").optional().or(external_exports.literal("")),
   password: external_exports.string().min(6, "Password must be at least 6 characters").optional().or(external_exports.literal("")),
-  role: external_exports.enum(["super_admin", "admin"]).optional()
+  role: external_exports.enum(["super_admin", "admin", "admin_fnb", "admin_entertainment"]).optional()
 });
 router11.use("/users", requireSuperAdmin);
 router11.get("/users", async (req, res) => {

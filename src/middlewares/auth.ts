@@ -3,11 +3,13 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "default-secret-key-change-in-prod";
 
+export type AdminRole = "super_admin" | "admin" | "admin_fnb" | "admin_entertainment";
+
 export interface AuthenticatedRequest extends Request {
   user?: {
     id: number;
     username: string;
-    role: "super_admin" | "admin";
+    role: AdminRole;
   };
 }
 
@@ -23,7 +25,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction): vo
     const decoded = jwt.verify(token, JWT_SECRET) as {
       id: number;
       username: string;
-      role: "super_admin" | "admin";
+      role: AdminRole;
     };
     (req as AuthenticatedRequest).user = decoded;
     next();

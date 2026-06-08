@@ -19083,7 +19083,7 @@ var require_view = __commonJS({
     var dirname = path4.dirname;
     var basename = path4.basename;
     var extname3 = path4.extname;
-    var join3 = path4.join;
+    var join2 = path4.join;
     var resolve2 = path4.resolve;
     module.exports = View3;
     function View3(name, options) {
@@ -19145,12 +19145,12 @@ var require_view = __commonJS({
     };
     View3.prototype.resolve = function resolve3(dir, file2) {
       var ext = this.ext;
-      var path5 = join3(dir, file2);
+      var path5 = join2(dir, file2);
       var stat2 = tryStat(path5);
       if (stat2 && stat2.isFile()) {
         return path5;
       }
-      path5 = join3(dir, basename(file2, ext), "index" + ext);
+      path5 = join2(dir, basename(file2, ext), "index" + ext);
       stat2 = tryStat(path5);
       if (stat2 && stat2.isFile()) {
         return path5;
@@ -22855,7 +22855,7 @@ var require_send = __commonJS({
     var Stream = __require("stream");
     var util2 = __require("util");
     var extname3 = path4.extname;
-    var join3 = path4.join;
+    var join2 = path4.join;
     var normalize = path4.normalize;
     var resolve2 = path4.resolve;
     var sep = path4.sep;
@@ -23027,7 +23027,7 @@ var require_send = __commonJS({
           return res;
         }
         parts = path5.split(sep);
-        path5 = normalize(join3(root, path5));
+        path5 = normalize(join2(root, path5));
       } else {
         if (UP_PATH_REGEXP.test(path5)) {
           debug('malicious path "%s"', path5);
@@ -23160,7 +23160,7 @@ var require_send = __commonJS({
           if (err) return self2.onStatError(err);
           return self2.error(404);
         }
-        var p = join3(path5, self2._index[i]);
+        var p = join2(path5, self2._index[i]);
         debug('stat "%s"', p);
         fs3.stat(p, function(err2, stat2) {
           if (err2) return next(err2);
@@ -26284,7 +26284,7 @@ var require_thread_stream = __commonJS({
     var { version: version4 } = require_package2();
     var { EventEmitter } = __require("events");
     var { Worker } = __require("worker_threads");
-    var { join: join3 } = __require("path");
+    var { join: join2 } = __require("path");
     var { pathToFileURL } = __require("url");
     var { wait } = require_wait();
     var {
@@ -26320,7 +26320,7 @@ var require_thread_stream = __commonJS({
     function createWorker(stream, opts) {
       const { filename, workerData } = opts;
       const bundlerOverrides = "__bundlerPathsOverrides" in globalThis ? globalThis.__bundlerPathsOverrides : {};
-      const toExecute = bundlerOverrides["thread-stream-worker"] || join3(__dirname, "lib", "worker.js");
+      const toExecute = bundlerOverrides["thread-stream-worker"] || join2(__dirname, "lib", "worker.js");
       const worker = new Worker(toExecute, {
         ...opts.workerOpts,
         trackUnmanagedFds: false,
@@ -26706,7 +26706,7 @@ var require_transport = __commonJS({
     "use strict";
     var { createRequire } = __require("module");
     var getCallers = require_caller();
-    var { join: join3, isAbsolute, sep } = __require("node:path");
+    var { join: join2, isAbsolute, sep } = __require("node:path");
     var sleep = require_atomic_sleep();
     var onExit = require_on_exit_leak_free();
     var ThreadStream = require_thread_stream();
@@ -26769,7 +26769,7 @@ var require_transport = __commonJS({
         throw new Error("only one of target or targets can be specified");
       }
       if (targets) {
-        target = bundlerOverrides["pino-worker"] || join3(__dirname, "worker.js");
+        target = bundlerOverrides["pino-worker"] || join2(__dirname, "worker.js");
         options.targets = targets.filter((dest) => dest.target).map((dest) => {
           return {
             ...dest,
@@ -26787,7 +26787,7 @@ var require_transport = __commonJS({
           });
         });
       } else if (pipeline) {
-        target = bundlerOverrides["pino-worker"] || join3(__dirname, "worker.js");
+        target = bundlerOverrides["pino-worker"] || join2(__dirname, "worker.js");
         options.pipelines = [pipeline.map((dest) => {
           return {
             ...dest,
@@ -26809,7 +26809,7 @@ var require_transport = __commonJS({
           return origin;
         }
         if (origin === "pino/file") {
-          return join3(__dirname, "..", "file.js");
+          return join2(__dirname, "..", "file.js");
         }
         let fixTarget2;
         for (const filePath of callers) {
@@ -27798,7 +27798,7 @@ var require_safe_stable_stringify = __commonJS({
               return circularValue;
             }
             let res = "";
-            let join3 = ",";
+            let join2 = ",";
             const originalIndentation = indentation;
             if (Array.isArray(value)) {
               if (value.length === 0) {
@@ -27812,7 +27812,7 @@ var require_safe_stable_stringify = __commonJS({
                 indentation += spacer;
                 res += `
 ${indentation}`;
-                join3 = `,
+                join2 = `,
 ${indentation}`;
               }
               const maximumValuesToStringify = Math.min(value.length, maximumBreadth);
@@ -27820,13 +27820,13 @@ ${indentation}`;
               for (; i < maximumValuesToStringify - 1; i++) {
                 const tmp2 = stringifyFnReplacer(String(i), value, stack, replacer, spacer, indentation);
                 res += tmp2 !== void 0 ? tmp2 : "null";
-                res += join3;
+                res += join2;
               }
               const tmp = stringifyFnReplacer(String(i), value, stack, replacer, spacer, indentation);
               res += tmp !== void 0 ? tmp : "null";
               if (value.length - 1 > maximumBreadth) {
                 const removedKeys = value.length - maximumBreadth - 1;
-                res += `${join3}"... ${getItemCount(removedKeys)} not stringified"`;
+                res += `${join2}"... ${getItemCount(removedKeys)} not stringified"`;
               }
               if (spacer !== "") {
                 res += `
@@ -27847,7 +27847,7 @@ ${originalIndentation}`;
             let separator = "";
             if (spacer !== "") {
               indentation += spacer;
-              join3 = `,
+              join2 = `,
 ${indentation}`;
               whitespace = " ";
             }
@@ -27861,13 +27861,13 @@ ${indentation}`;
               const tmp = stringifyFnReplacer(key2, value, stack, replacer, spacer, indentation);
               if (tmp !== void 0) {
                 res += `${separator}${strEscape(key2)}:${whitespace}${tmp}`;
-                separator = join3;
+                separator = join2;
               }
             }
             if (keyLength > maximumBreadth) {
               const removedKeys = keyLength - maximumBreadth;
               res += `${separator}"...":${whitespace}"${getItemCount(removedKeys)} not stringified"`;
-              separator = join3;
+              separator = join2;
             }
             if (spacer !== "" && separator.length > 1) {
               res = `
@@ -27908,7 +27908,7 @@ ${originalIndentation}`;
             }
             const originalIndentation = indentation;
             let res = "";
-            let join3 = ",";
+            let join2 = ",";
             if (Array.isArray(value)) {
               if (value.length === 0) {
                 return "[]";
@@ -27921,7 +27921,7 @@ ${originalIndentation}`;
                 indentation += spacer;
                 res += `
 ${indentation}`;
-                join3 = `,
+                join2 = `,
 ${indentation}`;
               }
               const maximumValuesToStringify = Math.min(value.length, maximumBreadth);
@@ -27929,13 +27929,13 @@ ${indentation}`;
               for (; i < maximumValuesToStringify - 1; i++) {
                 const tmp2 = stringifyArrayReplacer(String(i), value[i], stack, replacer, spacer, indentation);
                 res += tmp2 !== void 0 ? tmp2 : "null";
-                res += join3;
+                res += join2;
               }
               const tmp = stringifyArrayReplacer(String(i), value[i], stack, replacer, spacer, indentation);
               res += tmp !== void 0 ? tmp : "null";
               if (value.length - 1 > maximumBreadth) {
                 const removedKeys = value.length - maximumBreadth - 1;
-                res += `${join3}"... ${getItemCount(removedKeys)} not stringified"`;
+                res += `${join2}"... ${getItemCount(removedKeys)} not stringified"`;
               }
               if (spacer !== "") {
                 res += `
@@ -27948,7 +27948,7 @@ ${originalIndentation}`;
             let whitespace = "";
             if (spacer !== "") {
               indentation += spacer;
-              join3 = `,
+              join2 = `,
 ${indentation}`;
               whitespace = " ";
             }
@@ -27957,7 +27957,7 @@ ${indentation}`;
               const tmp = stringifyArrayReplacer(key2, value[key2], stack, replacer, spacer, indentation);
               if (tmp !== void 0) {
                 res += `${separator}${strEscape(key2)}:${whitespace}${tmp}`;
-                separator = join3;
+                separator = join2;
               }
             }
             if (spacer !== "" && separator.length > 1) {
@@ -28015,20 +28015,20 @@ ${originalIndentation}`;
               indentation += spacer;
               let res2 = `
 ${indentation}`;
-              const join4 = `,
+              const join3 = `,
 ${indentation}`;
               const maximumValuesToStringify = Math.min(value.length, maximumBreadth);
               let i = 0;
               for (; i < maximumValuesToStringify - 1; i++) {
                 const tmp2 = stringifyIndent(String(i), value[i], stack, spacer, indentation);
                 res2 += tmp2 !== void 0 ? tmp2 : "null";
-                res2 += join4;
+                res2 += join3;
               }
               const tmp = stringifyIndent(String(i), value[i], stack, spacer, indentation);
               res2 += tmp !== void 0 ? tmp : "null";
               if (value.length - 1 > maximumBreadth) {
                 const removedKeys = value.length - maximumBreadth - 1;
-                res2 += `${join4}"... ${getItemCount(removedKeys)} not stringified"`;
+                res2 += `${join3}"... ${getItemCount(removedKeys)} not stringified"`;
               }
               res2 += `
 ${originalIndentation}`;
@@ -28044,16 +28044,16 @@ ${originalIndentation}`;
               return '"[Object]"';
             }
             indentation += spacer;
-            const join3 = `,
+            const join2 = `,
 ${indentation}`;
             let res = "";
             let separator = "";
             let maximumPropertiesToStringify = Math.min(keyLength, maximumBreadth);
             if (isTypedArrayWithEntries(value)) {
-              res += stringifyTypedArray(value, join3, maximumBreadth);
+              res += stringifyTypedArray(value, join2, maximumBreadth);
               keys = keys.slice(value.length);
               maximumPropertiesToStringify -= value.length;
-              separator = join3;
+              separator = join2;
             }
             if (deterministic) {
               keys = sort(keys, comparator);
@@ -28064,13 +28064,13 @@ ${indentation}`;
               const tmp = stringifyIndent(key2, value[key2], stack, spacer, indentation);
               if (tmp !== void 0) {
                 res += `${separator}${strEscape(key2)}: ${tmp}`;
-                separator = join3;
+                separator = join2;
               }
             }
             if (keyLength > maximumBreadth) {
               const removedKeys = keyLength - maximumBreadth;
               res += `${separator}"...": "${getItemCount(removedKeys)} not stringified"`;
-              separator = join3;
+              separator = join2;
             }
             if (separator !== "") {
               res = `
@@ -39047,363 +39047,21 @@ var health_default = router;
 // src/routes/storage.ts
 var import_express2 = __toESM(require_express2(), 1);
 import * as fs2 from "fs";
-import * as path2 from "path";
+import * as path3 from "path";
 import * as crypto3 from "crypto";
 
 // src/lib/objectStorage.ts
 import * as fs from "node:fs";
 import * as fsPromises from "node:fs/promises";
-import * as path from "node:path";
+import * as path2 from "node:path";
 import { Readable } from "node:stream";
 import { randomUUID } from "node:crypto";
 import * as crypto2 from "node:crypto";
-var LOCAL_STORAGE_DIR = path.resolve(process.cwd(), "local-storage");
-if (!fs.existsSync(LOCAL_STORAGE_DIR)) {
-  fs.mkdirSync(LOCAL_STORAGE_DIR, { recursive: true });
-}
-var ObjectNotFoundError = class _ObjectNotFoundError extends Error {
-  constructor() {
-    super("Object not found");
-    this.name = "ObjectNotFoundError";
-    Object.setPrototypeOf(this, _ObjectNotFoundError.prototype);
-  }
-};
-var CONTENT_TYPES = {
-  ".webp": "image/webp",
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".gif": "image/gif",
-  ".svg": "image/svg+xml"
-};
-async function fileExists(p) {
-  try {
-    await fsPromises.access(p);
-    return true;
-  } catch {
-    return false;
-  }
-}
-async function resolveWithWebpFallback(fullPath) {
-  if (await fileExists(fullPath)) return fullPath;
-  const webpPath = fullPath.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif)$/i, "") + ".webp";
-  if (webpPath !== fullPath && await fileExists(webpPath)) return webpPath;
-  const appended = fullPath + ".webp";
-  if (await fileExists(appended)) return appended;
-  return null;
-}
-var ObjectStorageService = class {
-  constructor() {
-  }
-  async searchPublicObject(filePath) {
-    const fullPath = path.join(LOCAL_STORAGE_DIR, filePath.replace(/^\/+/, ""));
-    return resolveWithWebpFallback(fullPath);
-  }
-  async downloadObject(filePath, cacheTtlSec = 3600) {
-    const stat2 = await fsPromises.stat(filePath);
-    const nodeStream = fs.createReadStream(filePath);
-    const webStream = Readable.toWeb(nodeStream);
-    const ext = path.extname(filePath).toLowerCase();
-    const contentType = CONTENT_TYPES[ext] ?? "application/octet-stream";
-    const etag = `"${crypto2.createHash("md5").update(`${stat2.mtimeMs}-${stat2.size}`).digest("hex").slice(0, 16)}"`;
-    const headers = {
-      "Content-Type": contentType,
-      "Cache-Control": `public, max-age=${cacheTtlSec}, immutable`,
-      "Content-Length": String(stat2.size),
-      "ETag": etag,
-      "Vary": "Accept"
-    };
-    return new Response(webStream, { headers });
-  }
-  async getObjectEntityUploadURL(_originalName) {
-    const objectId = randomUUID();
-    return `/api/upload-file/${objectId}`;
-  }
-  async getObjectEntityFile(objectPath) {
-    if (!objectPath.startsWith("/objects/")) {
-      throw new ObjectNotFoundError();
-    }
-    const objectId = objectPath.replace("/objects/", "").replace(/^\/+/, "");
-    const fullPath = path.join(LOCAL_STORAGE_DIR, objectId);
-    const resolved = await resolveWithWebpFallback(fullPath);
-    if (!resolved) throw new ObjectNotFoundError();
-    return resolved;
-  }
-  normalizeObjectEntityPath(rawPath) {
-    if (rawPath.startsWith("/api/upload-file/")) {
-      const id = rawPath.replace("/api/upload-file/", "");
-      return `/objects/${id}`;
-    }
-    return rawPath;
-  }
-};
 
-// src/routes/storage.ts
-var router2 = (0, import_express2.Router)();
-var objectStorageService = new ObjectStorageService();
-var MAX_IMAGE_DIMENSION = 1920;
-var WEBP_QUALITY = 82;
-var CACHE_TTL_SEC = 60 * 60 * 24 * 365;
-function detectMimeTypeSync(filePath) {
-  try {
-    const buffer = Buffer.alloc(12);
-    const fd = fs2.openSync(filePath, "r");
-    fs2.readSync(fd, buffer, 0, 12, 0);
-    fs2.closeSync(fd);
-    if (buffer[0] === 255 && buffer[1] === 216 && buffer[2] === 255) return "image/jpeg";
-    if (buffer[0] === 137 && buffer[1] === 80 && buffer[2] === 78 && buffer[3] === 71) return "image/png";
-    if (buffer[0] === 82 && buffer[1] === 73 && buffer[2] === 70 && buffer[3] === 70 && buffer[8] === 87 && buffer[9] === 69 && buffer[10] === 66 && buffer[11] === 80) return "image/webp";
-    if (buffer[0] === 71 && buffer[1] === 73 && buffer[2] === 70) return "image/gif";
-  } catch (e) {
-  }
-  return "application/octet-stream";
-}
-async function getSharp() {
-  try {
-    const sharpModule = await import("sharp");
-    return sharpModule.default ?? sharpModule;
-  } catch (err) {
-    console.error("Failed to load sharp:", err);
-    return null;
-  }
-}
-async function serveProcessedObject(req, res, filePath) {
-  try {
-    const ext = path2.extname(filePath).toLowerCase();
-    const hasExtension = ext !== "";
-    const isImage = hasExtension ? [".webp", ".jpg", ".jpeg", ".png", ".gif", ".avif"].includes(ext) : true;
-    const width = parseInt(req.query.w);
-    const quality = parseInt(req.query.q) || WEBP_QUALITY;
-    const sendOriginal = () => {
-      const options = {
-        maxAge: CACHE_TTL_SEC * 1e3,
-        immutable: true
-      };
-      if (!hasExtension) {
-        options.headers = {
-          "Content-Type": detectMimeTypeSync(filePath)
-        };
-      }
-      res.sendFile(filePath, options);
-    };
-    if (!isImage || isNaN(width) || ext === ".svg") {
-      sendOriginal();
-      return;
-    }
-    const sharp = await getSharp();
-    if (!sharp) {
-      return sendOriginal();
-    }
-    const stat2 = await fs2.promises.stat(filePath);
-    const etag = `"${crypto3.createHash("md5").update(`${stat2.mtimeMs}-${stat2.size}-${width}-${quality}`).digest("hex").slice(0, 16)}"`;
-    if (req.headers["if-none-match"] === etag) {
-      return res.sendStatus(304);
-    }
-    try {
-      const buffer = await fs2.promises.readFile(filePath);
-      const processed = await sharp(buffer).resize({
-        width: Math.min(width, MAX_IMAGE_DIMENSION),
-        withoutEnlargement: true,
-        fit: "inside"
-      }).webp({ quality }).toBuffer();
-      res.set("ETag", etag);
-      res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
-      res.set("Content-Type", "image/webp");
-      res.set("Content-Length", String(processed.length));
-      res.send(processed);
-    } catch (sharpError) {
-      console.error(`Sharp processing error for ${filePath}:`, sharpError);
-      sendOriginal();
-    }
-  } catch (error40) {
-    console.error(`Error serving processed object ${filePath}:`, error40);
-    if (!res.headersSent) {
-      res.status(500).json({ error: "Failed to serve object" });
-    }
-  }
-}
-router2.post("/storage/uploads/request-url", async (req, res) => {
-  try {
-    const parsed = RequestUploadUrlBody.safeParse(req.body);
-    if (!parsed.success) {
-      console.warn("Invalid upload request body:", parsed.error.format());
-      return res.status(400).json({ error: "Invalid metadata provided" });
-    }
-    const { name } = parsed.data;
-    const uploadURL = await objectStorageService.getObjectEntityUploadURL(name);
-    const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
-    return res.json(
-      RequestUploadUrlResponse.parse({
-        uploadURL,
-        objectPath
-      })
-    );
-  } catch (error40) {
-    console.error("Upload URL generation failed:", error40);
-    return res.status(500).json({ error: "Could not generate upload URL" });
-  }
-});
-router2.get("/storage/public-objects/*filePath", async (req, res) => {
-  try {
-    const raw = req.params.filePath;
-    const filePath = Array.isArray(raw) ? raw.join("/") : raw;
-    const file2 = await objectStorageService.searchPublicObject(filePath);
-    if (!file2) return res.status(404).json({ error: "Asset not found" });
-    return await serveProcessedObject(req, res, file2);
-  } catch (error40) {
-    return res.status(500).json({ error: "Error searching asset" });
-  }
-});
-router2.get("/storage/objects/*path", async (req, res) => {
-  try {
-    const raw = req.params.path;
-    const wildcardPath = Array.isArray(raw) ? raw.join("/") : raw;
-    const objectPath = `/objects/${wildcardPath}`;
-    const objectFile = await objectStorageService.getObjectEntityFile(objectPath);
-    return await serveProcessedObject(req, res, objectFile);
-  } catch (error40) {
-    if (error40 instanceof ObjectNotFoundError) {
-      return res.status(404).json({ error: "Object not found" });
-    }
-    console.error("Object serving failed:", error40);
-    return res.status(500).json({ error: "Internal server error" });
-  }
-});
-function collectBody(req) {
-  return new Promise((resolve2, reject) => {
-    const chunks = [];
-    req.on("data", (chunk) => chunks.push(chunk));
-    req.on("end", () => resolve2(Buffer.concat(chunks)));
-    req.on("error", reject);
-  });
-}
-function extractFromMultipart(rawBuffer, rawContentType) {
-  const isMultipart = rawContentType.includes("multipart/form-data") || rawBuffer.subarray(0, 6).toString("ascii").startsWith("------");
-  if (!isMultipart) {
-    return { buffer: rawBuffer, detectedMime: rawContentType.split(";")[0].trim() };
-  }
-  const firstLineEnd = rawBuffer.indexOf(13);
-  if (firstLineEnd === -1) {
-    return { buffer: rawBuffer, detectedMime: "application/octet-stream" };
-  }
-  const boundary = rawBuffer.subarray(0, firstLineEnd).toString("ascii").trim();
-  const filePartMarker = Buffer.from('name="file"');
-  const filePartPos = rawBuffer.indexOf(filePartMarker);
-  if (filePartPos !== -1) {
-    const headerEnd2 = rawBuffer.indexOf("\r\n\r\n", filePartPos);
-    if (headerEnd2 !== -1) {
-      const partHeaders = rawBuffer.subarray(filePartPos, headerEnd2).toString("ascii");
-      const ctMatch = partHeaders.match(/Content-Type:\s*([^\r\n]+)/i);
-      const detectedMime = ctMatch ? ctMatch[1].trim() : "application/octet-stream";
-      const contentStart = headerEnd2 + 4;
-      const closingBoundary = Buffer.from("\r\n" + boundary);
-      const contentEnd = rawBuffer.indexOf(closingBoundary, contentStart);
-      const fileContent = contentEnd !== -1 ? rawBuffer.subarray(contentStart, contentEnd) : rawBuffer.subarray(contentStart);
-      return { buffer: fileContent, detectedMime };
-    }
-  }
-  let searchPos = 0;
-  while (searchPos < rawBuffer.length - 4) {
-    const idx = rawBuffer.indexOf("\r\n\r\n", searchPos);
-    if (idx === -1) break;
-    const contentStart = idx + 4;
-    if (contentStart + 4 > rawBuffer.length) break;
-    const b0 = rawBuffer[contentStart];
-    const b1 = rawBuffer[contentStart + 1];
-    const b2 = rawBuffer[contentStart + 2];
-    const b3 = rawBuffer[contentStart + 3];
-    if (b0 === 255 && b1 === 216 || // JPEG
-    b0 === 137 && b1 === 80 || // PNG
-    b0 === 82 && b1 === 73 && b2 === 70 && b3 === 70 || // WebP (RIFF)
-    b0 === 71 && b1 === 73 && b2 === 70) {
-      const closingBoundary = Buffer.from("\r\n" + boundary);
-      const contentEnd = rawBuffer.indexOf(closingBoundary, contentStart);
-      const fileContent = contentEnd !== -1 ? rawBuffer.subarray(contentStart, contentEnd) : rawBuffer.subarray(contentStart);
-      const mimeMap = { 255: "image/jpeg", 137: "image/png", 82: "image/webp", 71: "image/gif" };
-      return { buffer: fileContent, detectedMime: mimeMap[b0] || "application/octet-stream" };
-    }
-    searchPos = idx + 4;
-  }
-  const headerEnd = rawBuffer.indexOf("\r\n\r\n");
-  if (headerEnd !== -1) {
-    const contentStart = headerEnd + 4;
-    const closingBoundary = Buffer.from("\r\n" + boundary);
-    const contentEnd = rawBuffer.indexOf(closingBoundary, contentStart);
-    const fileContent = contentEnd !== -1 ? rawBuffer.subarray(contentStart, contentEnd) : rawBuffer.subarray(contentStart);
-    return { buffer: fileContent, detectedMime: "application/octet-stream" };
-  }
-  return { buffer: rawBuffer, detectedMime: "application/octet-stream" };
-}
-var handleLocalUpload = async (req, res) => {
-  const objectId = req.params.objectId;
-  const rawContentType = req.headers["content-type"] || "application/octet-stream";
-  const contentType = rawContentType.split(";")[0].trim();
-  try {
-    const rawBuffer = await collectBody(req);
-    const extracted = extractFromMultipart(rawBuffer, rawContentType);
-    const fileBuffer = extracted.buffer;
-    const effectiveMime = contentType.startsWith("image/") ? contentType : extracted.detectedMime;
-    const isImage = /^image\/(jpe?g|jpg|png|webp|gif|avif|tiff|bmp)/.test(effectiveMime);
-    let finalBuffer = fileBuffer;
-    let finalId = objectId;
-    if (isImage) {
-      const sharp = await getSharp();
-      if (sharp) {
-        try {
-          finalBuffer = await sharp(fileBuffer).rotate().resize({ width: MAX_IMAGE_DIMENSION, height: MAX_IMAGE_DIMENSION, fit: "inside", withoutEnlargement: true }).webp({ quality: WEBP_QUALITY }).toBuffer();
-          finalId = objectId.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif|webp)$/i, "") + ".webp";
-        } catch (e) {
-          console.warn("Sharp optimization failed, using raw buffer:", e);
-        }
-      } else {
-        const extMap = {
-          "image/jpeg": ".jpg",
-          "image/jpg": ".jpg",
-          "image/png": ".png",
-          "image/webp": ".webp",
-          "image/gif": ".gif",
-          "image/avif": ".avif"
-        };
-        const defaultExt = extMap[effectiveMime] || "";
-        if (defaultExt) {
-          finalId = objectId.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif|webp)$/i, "") + defaultExt;
-        }
-      }
-    }
-    const fullPath = path2.join(process.cwd(), "local-storage", finalId.replace(/^\/+/, ""));
-    await fs2.promises.writeFile(fullPath, finalBuffer);
-    const etag = `"${crypto3.createHash("md5").update(finalBuffer).digest("hex").slice(0, 16)}"`;
-    res.set("ETag", etag);
-    res.sendStatus(200);
-    return;
-  } catch (err) {
-    console.error(`Upload save failed for ${objectId}:`, err);
-    if (!res.headersSent) {
-      res.status(500).json({ error: "Failed to save file" });
-      return;
-    }
-  }
-};
-router2.put("/upload-file/:objectId", handleLocalUpload);
-router2.post("/upload-file/:objectId", handleLocalUpload);
-router2.get("/storage/local-upload/:objectId", async (req, res) => {
-  const objectId = req.params.objectId;
-  const base = path2.join(process.cwd(), "local-storage");
-  const candidates = [
-    path2.join(base, objectId),
-    path2.join(base, objectId.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif)$/i, "") + ".webp"),
-    path2.join(base, objectId + ".webp")
-  ];
-  const fullPath = candidates.find((p) => fs2.existsSync(p));
-  if (!fullPath) return res.status(404).json({ error: "File not found" });
-  return await serveProcessedObject(req, res, fullPath);
-});
-var storage_default = router2;
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql2/driver.js
+import { createPool } from "mysql2";
 
-// src/routes/banners.ts
-var import_express3 = __toESM(require_express2(), 1);
-
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/entity.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/entity.js
 var entityKind = Symbol.for("drizzle:entityKind");
 var hasOwnEntityKind = Symbol.for("drizzle:hasOwnEntityKind");
 function is(value, type) {
@@ -39430,7 +39088,38 @@ function is(value, type) {
   return false;
 }
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/column.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/logger.js
+var ConsoleLogWriter = class {
+  static [entityKind] = "ConsoleLogWriter";
+  write(message) {
+    console.log(message);
+  }
+};
+var DefaultLogger = class {
+  static [entityKind] = "DefaultLogger";
+  writer;
+  constructor(config2) {
+    this.writer = config2?.writer ?? new ConsoleLogWriter();
+  }
+  logQuery(query, params) {
+    const stringifiedParams = params.map((p) => {
+      try {
+        return JSON.stringify(p);
+      } catch {
+        return String(p);
+      }
+    });
+    const paramsStr = stringifiedParams.length ? ` -- params: [${stringifiedParams.join(", ")}]` : "";
+    this.writer.write(`Query: ${query}${paramsStr}`);
+  }
+};
+var NoopLogger = class {
+  static [entityKind] = "NoopLogger";
+  logQuery() {
+  }
+};
+
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/column.js
 var Column = class {
   constructor(table, config2) {
     this.table = table;
@@ -39481,7 +39170,7 @@ var Column = class {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/column-builder.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/column-builder.js
 var ColumnBuilder = class {
   static [entityKind] = "ColumnBuilder";
   config;
@@ -39579,16 +39268,15 @@ var ColumnBuilder = class {
   }
   /** @internal Sets the name of the column to the key within the table definition if a name was not given. */
   setName(name) {
-    if (this.config.name !== "")
-      return;
+    if (this.config.name !== "") return;
     this.config.name = name;
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/table.utils.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/table.utils.js
 var TableName = Symbol.for("drizzle:Name");
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/pg-core/foreign-keys.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/foreign-keys.js
 var ForeignKeyBuilder = class {
   static [entityKind] = "PgForeignKeyBuilder";
   /** @internal */
@@ -39645,12 +39333,12 @@ var ForeignKey = class {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/tracing-utils.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/tracing-utils.js
 function iife(fn, ...args) {
   return fn(...args);
 }
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/pg-core/unique-constraint.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/unique-constraint.js
 function uniqueKeyName(table, columns) {
   return `${table[TableName]}_${columns.join("_")}_unique`;
 }
@@ -39700,7 +39388,7 @@ var UniqueConstraint = class {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/pg-core/utils/array.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/utils/array.js
 function parsePgArrayValue(arrayString, startFrom, inQuotes) {
   for (let i = startFrom; i < arrayString.length; i++) {
     const char2 = arrayString[i];
@@ -39776,7 +39464,7 @@ function makePgArray(array2) {
   }).join(",")}}`;
 }
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/pg-core/columns/common.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/common.js
 var PgColumnBuilder = class extends ColumnBuilder {
   foreignKeyConfigs = [];
   static [entityKind] = "PgColumnBuilder";
@@ -39955,13 +39643,38 @@ var PgArray = class _PgArray extends PgColumn {
     const a = value.map(
       (v) => v === null ? null : is(this.baseColumn, _PgArray) ? this.baseColumn.mapToDriverValue(v, true) : this.baseColumn.mapToDriverValue(v)
     );
-    if (isNestedArray)
-      return a;
+    if (isNestedArray) return a;
     return makePgArray(a);
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/pg-core/columns/enum.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/enum.js
+var PgEnumObjectColumnBuilder = class extends PgColumnBuilder {
+  static [entityKind] = "PgEnumObjectColumnBuilder";
+  constructor(name, enumInstance) {
+    super(name, "string", "PgEnumObjectColumn");
+    this.config.enum = enumInstance;
+  }
+  /** @internal */
+  build(table) {
+    return new PgEnumObjectColumn(
+      table,
+      this.config
+    );
+  }
+};
+var PgEnumObjectColumn = class extends PgColumn {
+  static [entityKind] = "PgEnumObjectColumn";
+  enum;
+  enumValues = this.config.enum.enumValues;
+  constructor(table, config2) {
+    super(table, config2);
+    this.enum = config2.enum;
+  }
+  getSQLType() {
+    return this.enum.enumName;
+  }
+};
 var isPgEnumSym = Symbol.for("drizzle:isPgEnum");
 function isPgEnum(obj) {
   return !!obj && typeof obj === "function" && isPgEnumSym in obj && obj[isPgEnumSym] === true;
@@ -39993,16 +39706,17 @@ var PgEnumColumn = class extends PgColumn {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/subquery.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/subquery.js
 var Subquery = class {
   static [entityKind] = "Subquery";
-  constructor(sql4, selection, alias, isWith = false) {
+  constructor(sql4, fields, alias, isWith = false, usedTables = []) {
     this._ = {
       brand: "Subquery",
       sql: sql4,
-      selectedFields: selection,
+      selectedFields: fields,
       alias,
-      isWith
+      isWith,
+      usedTables
     };
   }
   // getSQL(): SQL<unknown> {
@@ -40013,10 +39727,10 @@ var WithSubquery = class extends Subquery {
   static [entityKind] = "WithSubquery";
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/version.js
-var version = "0.40.1";
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/version.js
+var version = "0.45.2";
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/tracing.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/tracing.js
 var otel;
 var rawTracer;
 var tracer = {
@@ -40051,10 +39765,10 @@ var tracer = {
   }
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/view-common.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/view-common.js
 var ViewBaseConfig = Symbol.for("drizzle:ViewBaseConfig");
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/table.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/table.js
 var Schema = Symbol.for("drizzle:Schema");
 var Columns = Symbol.for("drizzle:Columns");
 var ExtraConfigColumns = Symbol.for("drizzle:ExtraConfigColumns");
@@ -40109,8 +39823,17 @@ var Table = class {
     this[BaseName] = baseName;
   }
 };
+function isTable(table) {
+  return typeof table === "object" && table !== null && IsDrizzleTable in table;
+}
+function getTableName(table) {
+  return table[TableName];
+}
+function getTableUniqueName(table) {
+  return `${table[Schema] ?? "public"}.${table[TableName]}`;
+}
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/sql/sql.js
+// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/sql/sql.js
 var FakePrimitiveParam = class {
   static [entityKind] = "FakePrimitiveParam";
 };
@@ -40144,11 +39867,21 @@ var StringChunk = class {
 var SQL = class _SQL {
   constructor(queryChunks) {
     this.queryChunks = queryChunks;
+    for (const chunk of queryChunks) {
+      if (is(chunk, Table)) {
+        const schemaName = chunk[Table.Symbol.Schema];
+        this.usedTables.push(
+          schemaName === void 0 ? chunk[Table.Symbol.Name] : schemaName + "." + chunk[Table.Symbol.Name]
+        );
+      }
+    }
   }
   static [entityKind] = "SQL";
   /** @internal */
   decoder = noopDecoder;
   shouldInlineParams = false;
+  /** @internal */
+  usedTables = [];
   append(query) {
     this.queryChunks.push(...query.queryChunks);
     return this;
@@ -40393,7 +40126,7 @@ function sql(strings, ...params) {
     return new SQL([new StringChunk(str)]);
   }
   sql22.raw = raw;
-  function join3(chunks, separator) {
+  function join2(chunks, separator) {
     const result = [];
     for (const [i, chunk] of chunks.entries()) {
       if (i > 0 && separator !== void 0) {
@@ -40403,7 +40136,7 @@ function sql(strings, ...params) {
     }
     return new SQL(result);
   }
-  sql22.join = join3;
+  sql22.join = join2;
   function identifier(value) {
     return new Name(value);
   }
@@ -40445,6 +40178,23 @@ var Placeholder = class {
     return new SQL([this]);
   }
 };
+function fillPlaceholders(params, values) {
+  return params.map((p) => {
+    if (is(p, Placeholder)) {
+      if (!(p.name in values)) {
+        throw new Error(`No value for placeholder "${p.name}" was provided`);
+      }
+      return values[p.name];
+    }
+    if (is(p, Param) && is(p.value, Placeholder)) {
+      if (!(p.value.name in values)) {
+        throw new Error(`No value for placeholder "${p.value.name}" was provided`);
+      }
+      return p.encoder.mapToDriverValue(values[p.value.name]);
+    }
+    return p;
+  });
+}
 var IsDrizzleView = Symbol.for("drizzle:IsDrizzleView");
 var View = class {
   static [entityKind] = "View";
@@ -40467,6 +40217,9 @@ var View = class {
     return new SQL([this]);
   }
 };
+function isView(view) {
+  return typeof view === "object" && view !== null && IsDrizzleView in view;
+}
 Column.prototype.getSQL = function() {
   return new SQL([this]);
 };
@@ -40477,1224 +40230,12 @@ Subquery.prototype.getSQL = function() {
   return new SQL([this]);
 };
 
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/sql/expressions/conditions.js
-function bindIfParam(value, column) {
-  if (isDriverValueEncoder(column) && !isSQLWrapper(value) && !is(value, Param) && !is(value, Placeholder) && !is(value, Column) && !is(value, Table) && !is(value, View)) {
-    return new Param(value, column);
-  }
-  return value;
-}
-var eq = (left, right) => {
-  return sql`${left} = ${bindIfParam(right, left)}`;
-};
-function and(...unfilteredConditions) {
-  const conditions = unfilteredConditions.filter(
-    (c) => c !== void 0
-  );
-  if (conditions.length === 0) {
-    return void 0;
-  }
-  if (conditions.length === 1) {
-    return new SQL(conditions);
-  }
-  return new SQL([
-    new StringChunk("("),
-    sql.join(conditions, new StringChunk(" and ")),
-    new StringChunk(")")
-  ]);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/sql/expressions/select.js
-function asc(column) {
-  return sql`${column} asc`;
-}
-function desc(column) {
-  return sql`${column} desc`;
-}
-
-// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/sql/functions/aggregate.js
-function count(expression) {
-  return sql`count(${expression || sql.raw("*")})`.mapWith(Number);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql2/driver.js
-import { createPool } from "mysql2";
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/entity.js
-var entityKind2 = Symbol.for("drizzle:entityKind");
-var hasOwnEntityKind2 = Symbol.for("drizzle:hasOwnEntityKind");
-function is2(value, type) {
-  if (!value || typeof value !== "object") {
-    return false;
-  }
-  if (value instanceof type) {
-    return true;
-  }
-  if (!Object.prototype.hasOwnProperty.call(type, entityKind2)) {
-    throw new Error(
-      `Class "${type.name ?? "<unknown>"}" doesn't look like a Drizzle entity. If this is incorrect and the class is provided by Drizzle, please report this as a bug.`
-    );
-  }
-  let cls = Object.getPrototypeOf(value).constructor;
-  if (cls) {
-    while (cls) {
-      if (entityKind2 in cls && cls[entityKind2] === type[entityKind2]) {
-        return true;
-      }
-      cls = Object.getPrototypeOf(cls);
-    }
-  }
-  return false;
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/logger.js
-var ConsoleLogWriter = class {
-  static [entityKind2] = "ConsoleLogWriter";
-  write(message) {
-    console.log(message);
-  }
-};
-var DefaultLogger = class {
-  static [entityKind2] = "DefaultLogger";
-  writer;
-  constructor(config2) {
-    this.writer = config2?.writer ?? new ConsoleLogWriter();
-  }
-  logQuery(query, params) {
-    const stringifiedParams = params.map((p) => {
-      try {
-        return JSON.stringify(p);
-      } catch {
-        return String(p);
-      }
-    });
-    const paramsStr = stringifiedParams.length ? ` -- params: [${stringifiedParams.join(", ")}]` : "";
-    this.writer.write(`Query: ${query}${paramsStr}`);
-  }
-};
-var NoopLogger = class {
-  static [entityKind2] = "NoopLogger";
-  logQuery() {
-  }
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/column.js
-var Column2 = class {
-  constructor(table, config2) {
-    this.table = table;
-    this.config = config2;
-    this.name = config2.name;
-    this.keyAsName = config2.keyAsName;
-    this.notNull = config2.notNull;
-    this.default = config2.default;
-    this.defaultFn = config2.defaultFn;
-    this.onUpdateFn = config2.onUpdateFn;
-    this.hasDefault = config2.hasDefault;
-    this.primary = config2.primaryKey;
-    this.isUnique = config2.isUnique;
-    this.uniqueName = config2.uniqueName;
-    this.uniqueType = config2.uniqueType;
-    this.dataType = config2.dataType;
-    this.columnType = config2.columnType;
-    this.generated = config2.generated;
-    this.generatedIdentity = config2.generatedIdentity;
-  }
-  static [entityKind2] = "Column";
-  name;
-  keyAsName;
-  primary;
-  notNull;
-  default;
-  defaultFn;
-  onUpdateFn;
-  hasDefault;
-  isUnique;
-  uniqueName;
-  uniqueType;
-  dataType;
-  columnType;
-  enumValues = void 0;
-  generated = void 0;
-  generatedIdentity = void 0;
-  config;
-  mapFromDriverValue(value) {
-    return value;
-  }
-  mapToDriverValue(value) {
-    return value;
-  }
-  // ** @internal */
-  shouldDisableInsert() {
-    return this.config.generated !== void 0 && this.config.generated.type !== "byDefault";
-  }
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/column-builder.js
-var ColumnBuilder2 = class {
-  static [entityKind2] = "ColumnBuilder";
-  config;
-  constructor(name, dataType, columnType) {
-    this.config = {
-      name,
-      keyAsName: name === "",
-      notNull: false,
-      default: void 0,
-      hasDefault: false,
-      primaryKey: false,
-      isUnique: false,
-      uniqueName: void 0,
-      uniqueType: void 0,
-      dataType,
-      columnType,
-      generated: void 0
-    };
-  }
-  /**
-   * Changes the data type of the column. Commonly used with `json` columns. Also, useful for branded types.
-   *
-   * @example
-   * ```ts
-   * const users = pgTable('users', {
-   * 	id: integer('id').$type<UserId>().primaryKey(),
-   * 	details: json('details').$type<UserDetails>().notNull(),
-   * });
-   * ```
-   */
-  $type() {
-    return this;
-  }
-  /**
-   * Adds a `not null` clause to the column definition.
-   *
-   * Affects the `select` model of the table - columns *without* `not null` will be nullable on select.
-   */
-  notNull() {
-    this.config.notNull = true;
-    return this;
-  }
-  /**
-   * Adds a `default <value>` clause to the column definition.
-   *
-   * Affects the `insert` model of the table - columns *with* `default` are optional on insert.
-   *
-   * If you need to set a dynamic default value, use {@link $defaultFn} instead.
-   */
-  default(value) {
-    this.config.default = value;
-    this.config.hasDefault = true;
-    return this;
-  }
-  /**
-   * Adds a dynamic default value to the column.
-   * The function will be called when the row is inserted, and the returned value will be used as the column value.
-   *
-   * **Note:** This value does not affect the `drizzle-kit` behavior, it is only used at runtime in `drizzle-orm`.
-   */
-  $defaultFn(fn) {
-    this.config.defaultFn = fn;
-    this.config.hasDefault = true;
-    return this;
-  }
-  /**
-   * Alias for {@link $defaultFn}.
-   */
-  $default = this.$defaultFn;
-  /**
-   * Adds a dynamic update value to the column.
-   * The function will be called when the row is updated, and the returned value will be used as the column value if none is provided.
-   * If no `default` (or `$defaultFn`) value is provided, the function will be called when the row is inserted as well, and the returned value will be used as the column value.
-   *
-   * **Note:** This value does not affect the `drizzle-kit` behavior, it is only used at runtime in `drizzle-orm`.
-   */
-  $onUpdateFn(fn) {
-    this.config.onUpdateFn = fn;
-    this.config.hasDefault = true;
-    return this;
-  }
-  /**
-   * Alias for {@link $onUpdateFn}.
-   */
-  $onUpdate = this.$onUpdateFn;
-  /**
-   * Adds a `primary key` clause to the column definition. This implicitly makes the column `not null`.
-   *
-   * In SQLite, `integer primary key` implicitly makes the column auto-incrementing.
-   */
-  primaryKey() {
-    this.config.primaryKey = true;
-    this.config.notNull = true;
-    return this;
-  }
-  /** @internal Sets the name of the column to the key within the table definition if a name was not given. */
-  setName(name) {
-    if (this.config.name !== "") return;
-    this.config.name = name;
-  }
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/table.utils.js
-var TableName2 = Symbol.for("drizzle:Name");
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/foreign-keys.js
-var ForeignKeyBuilder2 = class {
-  static [entityKind2] = "PgForeignKeyBuilder";
-  /** @internal */
-  reference;
-  /** @internal */
-  _onUpdate = "no action";
-  /** @internal */
-  _onDelete = "no action";
-  constructor(config2, actions) {
-    this.reference = () => {
-      const { name, columns, foreignColumns } = config2();
-      return { name, columns, foreignTable: foreignColumns[0].table, foreignColumns };
-    };
-    if (actions) {
-      this._onUpdate = actions.onUpdate;
-      this._onDelete = actions.onDelete;
-    }
-  }
-  onUpdate(action) {
-    this._onUpdate = action === void 0 ? "no action" : action;
-    return this;
-  }
-  onDelete(action) {
-    this._onDelete = action === void 0 ? "no action" : action;
-    return this;
-  }
-  /** @internal */
-  build(table) {
-    return new ForeignKey2(table, this);
-  }
-};
-var ForeignKey2 = class {
-  constructor(table, builder) {
-    this.table = table;
-    this.reference = builder.reference;
-    this.onUpdate = builder._onUpdate;
-    this.onDelete = builder._onDelete;
-  }
-  static [entityKind2] = "PgForeignKey";
-  reference;
-  onUpdate;
-  onDelete;
-  getName() {
-    const { name, columns, foreignColumns } = this.reference();
-    const columnNames = columns.map((column) => column.name);
-    const foreignColumnNames = foreignColumns.map((column) => column.name);
-    const chunks = [
-      this.table[TableName2],
-      ...columnNames,
-      foreignColumns[0].table[TableName2],
-      ...foreignColumnNames
-    ];
-    return name ?? `${chunks.join("_")}_fk`;
-  }
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/tracing-utils.js
-function iife2(fn, ...args) {
-  return fn(...args);
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/unique-constraint.js
-function uniqueKeyName2(table, columns) {
-  return `${table[TableName2]}_${columns.join("_")}_unique`;
-}
-var UniqueConstraintBuilder2 = class {
-  constructor(columns, name) {
-    this.name = name;
-    this.columns = columns;
-  }
-  static [entityKind2] = "PgUniqueConstraintBuilder";
-  /** @internal */
-  columns;
-  /** @internal */
-  nullsNotDistinctConfig = false;
-  nullsNotDistinct() {
-    this.nullsNotDistinctConfig = true;
-    return this;
-  }
-  /** @internal */
-  build(table) {
-    return new UniqueConstraint2(table, this.columns, this.nullsNotDistinctConfig, this.name);
-  }
-};
-var UniqueOnConstraintBuilder2 = class {
-  static [entityKind2] = "PgUniqueOnConstraintBuilder";
-  /** @internal */
-  name;
-  constructor(name) {
-    this.name = name;
-  }
-  on(...columns) {
-    return new UniqueConstraintBuilder2(columns, this.name);
-  }
-};
-var UniqueConstraint2 = class {
-  constructor(table, columns, nullsNotDistinct, name) {
-    this.table = table;
-    this.columns = columns;
-    this.name = name ?? uniqueKeyName2(this.table, this.columns.map((column) => column.name));
-    this.nullsNotDistinct = nullsNotDistinct;
-  }
-  static [entityKind2] = "PgUniqueConstraint";
-  columns;
-  name;
-  nullsNotDistinct = false;
-  getName() {
-    return this.name;
-  }
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/utils/array.js
-function parsePgArrayValue2(arrayString, startFrom, inQuotes) {
-  for (let i = startFrom; i < arrayString.length; i++) {
-    const char2 = arrayString[i];
-    if (char2 === "\\") {
-      i++;
-      continue;
-    }
-    if (char2 === '"') {
-      return [arrayString.slice(startFrom, i).replace(/\\/g, ""), i + 1];
-    }
-    if (inQuotes) {
-      continue;
-    }
-    if (char2 === "," || char2 === "}") {
-      return [arrayString.slice(startFrom, i).replace(/\\/g, ""), i];
-    }
-  }
-  return [arrayString.slice(startFrom).replace(/\\/g, ""), arrayString.length];
-}
-function parsePgNestedArray2(arrayString, startFrom = 0) {
-  const result = [];
-  let i = startFrom;
-  let lastCharIsComma = false;
-  while (i < arrayString.length) {
-    const char2 = arrayString[i];
-    if (char2 === ",") {
-      if (lastCharIsComma || i === startFrom) {
-        result.push("");
-      }
-      lastCharIsComma = true;
-      i++;
-      continue;
-    }
-    lastCharIsComma = false;
-    if (char2 === "\\") {
-      i += 2;
-      continue;
-    }
-    if (char2 === '"') {
-      const [value2, startFrom2] = parsePgArrayValue2(arrayString, i + 1, true);
-      result.push(value2);
-      i = startFrom2;
-      continue;
-    }
-    if (char2 === "}") {
-      return [result, i + 1];
-    }
-    if (char2 === "{") {
-      const [value2, startFrom2] = parsePgNestedArray2(arrayString, i + 1);
-      result.push(value2);
-      i = startFrom2;
-      continue;
-    }
-    const [value, newStartFrom] = parsePgArrayValue2(arrayString, i, false);
-    result.push(value);
-    i = newStartFrom;
-  }
-  return [result, i];
-}
-function parsePgArray2(arrayString) {
-  const [result] = parsePgNestedArray2(arrayString, 1);
-  return result;
-}
-function makePgArray2(array2) {
-  return `{${array2.map((item) => {
-    if (Array.isArray(item)) {
-      return makePgArray2(item);
-    }
-    if (typeof item === "string") {
-      return `"${item.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
-    }
-    return `${item}`;
-  }).join(",")}}`;
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/common.js
-var PgColumnBuilder2 = class extends ColumnBuilder2 {
-  foreignKeyConfigs = [];
-  static [entityKind2] = "PgColumnBuilder";
-  array(size) {
-    return new PgArrayBuilder2(this.config.name, this, size);
-  }
-  references(ref, actions = {}) {
-    this.foreignKeyConfigs.push({ ref, actions });
-    return this;
-  }
-  unique(name, config2) {
-    this.config.isUnique = true;
-    this.config.uniqueName = name;
-    this.config.uniqueType = config2?.nulls;
-    return this;
-  }
-  generatedAlwaysAs(as) {
-    this.config.generated = {
-      as,
-      type: "always",
-      mode: "stored"
-    };
-    return this;
-  }
-  /** @internal */
-  buildForeignKeys(column, table) {
-    return this.foreignKeyConfigs.map(({ ref, actions }) => {
-      return iife2(
-        (ref2, actions2) => {
-          const builder = new ForeignKeyBuilder2(() => {
-            const foreignColumn = ref2();
-            return { columns: [column], foreignColumns: [foreignColumn] };
-          });
-          if (actions2.onUpdate) {
-            builder.onUpdate(actions2.onUpdate);
-          }
-          if (actions2.onDelete) {
-            builder.onDelete(actions2.onDelete);
-          }
-          return builder.build(table);
-        },
-        ref,
-        actions
-      );
-    });
-  }
-  /** @internal */
-  buildExtraConfigColumn(table) {
-    return new ExtraConfigColumn2(table, this.config);
-  }
-};
-var PgColumn2 = class extends Column2 {
-  constructor(table, config2) {
-    if (!config2.uniqueName) {
-      config2.uniqueName = uniqueKeyName2(table, [config2.name]);
-    }
-    super(table, config2);
-    this.table = table;
-  }
-  static [entityKind2] = "PgColumn";
-};
-var ExtraConfigColumn2 = class extends PgColumn2 {
-  static [entityKind2] = "ExtraConfigColumn";
-  getSQLType() {
-    return this.getSQLType();
-  }
-  indexConfig = {
-    order: this.config.order ?? "asc",
-    nulls: this.config.nulls ?? "last",
-    opClass: this.config.opClass
-  };
-  defaultConfig = {
-    order: "asc",
-    nulls: "last",
-    opClass: void 0
-  };
-  asc() {
-    this.indexConfig.order = "asc";
-    return this;
-  }
-  desc() {
-    this.indexConfig.order = "desc";
-    return this;
-  }
-  nullsFirst() {
-    this.indexConfig.nulls = "first";
-    return this;
-  }
-  nullsLast() {
-    this.indexConfig.nulls = "last";
-    return this;
-  }
-  /**
-   * ### PostgreSQL documentation quote
-   *
-   * > An operator class with optional parameters can be specified for each column of an index.
-   * The operator class identifies the operators to be used by the index for that column.
-   * For example, a B-tree index on four-byte integers would use the int4_ops class;
-   * this operator class includes comparison functions for four-byte integers.
-   * In practice the default operator class for the column's data type is usually sufficient.
-   * The main point of having operator classes is that for some data types, there could be more than one meaningful ordering.
-   * For example, we might want to sort a complex-number data type either by absolute value or by real part.
-   * We could do this by defining two operator classes for the data type and then selecting the proper class when creating an index.
-   * More information about operator classes check:
-   *
-   * ### Useful links
-   * https://www.postgresql.org/docs/current/sql-createindex.html
-   *
-   * https://www.postgresql.org/docs/current/indexes-opclass.html
-   *
-   * https://www.postgresql.org/docs/current/xindex.html
-   *
-   * ### Additional types
-   * If you have the `pg_vector` extension installed in your database, you can use the
-   * `vector_l2_ops`, `vector_ip_ops`, `vector_cosine_ops`, `vector_l1_ops`, `bit_hamming_ops`, `bit_jaccard_ops`, `halfvec_l2_ops`, `sparsevec_l2_ops` options, which are predefined types.
-   *
-   * **You can always specify any string you want in the operator class, in case Drizzle doesn't have it natively in its types**
-   *
-   * @param opClass
-   * @returns
-   */
-  op(opClass) {
-    this.indexConfig.opClass = opClass;
-    return this;
-  }
-};
-var IndexedColumn2 = class {
-  static [entityKind2] = "IndexedColumn";
-  constructor(name, keyAsName, type, indexConfig) {
-    this.name = name;
-    this.keyAsName = keyAsName;
-    this.type = type;
-    this.indexConfig = indexConfig;
-  }
-  name;
-  keyAsName;
-  type;
-  indexConfig;
-};
-var PgArrayBuilder2 = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgArrayBuilder";
-  constructor(name, baseBuilder, size) {
-    super(name, "array", "PgArray");
-    this.config.baseBuilder = baseBuilder;
-    this.config.size = size;
-  }
-  /** @internal */
-  build(table) {
-    const baseColumn = this.config.baseBuilder.build(table);
-    return new PgArray2(
-      table,
-      this.config,
-      baseColumn
-    );
-  }
-};
-var PgArray2 = class _PgArray extends PgColumn2 {
-  constructor(table, config2, baseColumn, range) {
-    super(table, config2);
-    this.baseColumn = baseColumn;
-    this.range = range;
-    this.size = config2.size;
-  }
-  size;
-  static [entityKind2] = "PgArray";
-  getSQLType() {
-    return `${this.baseColumn.getSQLType()}[${typeof this.size === "number" ? this.size : ""}]`;
-  }
-  mapFromDriverValue(value) {
-    if (typeof value === "string") {
-      value = parsePgArray2(value);
-    }
-    return value.map((v) => this.baseColumn.mapFromDriverValue(v));
-  }
-  mapToDriverValue(value, isNestedArray = false) {
-    const a = value.map(
-      (v) => v === null ? null : is2(this.baseColumn, _PgArray) ? this.baseColumn.mapToDriverValue(v, true) : this.baseColumn.mapToDriverValue(v)
-    );
-    if (isNestedArray) return a;
-    return makePgArray2(a);
-  }
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/columns/enum.js
-var PgEnumObjectColumnBuilder = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgEnumObjectColumnBuilder";
-  constructor(name, enumInstance) {
-    super(name, "string", "PgEnumObjectColumn");
-    this.config.enum = enumInstance;
-  }
-  /** @internal */
-  build(table) {
-    return new PgEnumObjectColumn(
-      table,
-      this.config
-    );
-  }
-};
-var PgEnumObjectColumn = class extends PgColumn2 {
-  static [entityKind2] = "PgEnumObjectColumn";
-  enum;
-  enumValues = this.config.enum.enumValues;
-  constructor(table, config2) {
-    super(table, config2);
-    this.enum = config2.enum;
-  }
-  getSQLType() {
-    return this.enum.enumName;
-  }
-};
-var isPgEnumSym2 = Symbol.for("drizzle:isPgEnum");
-function isPgEnum2(obj) {
-  return !!obj && typeof obj === "function" && isPgEnumSym2 in obj && obj[isPgEnumSym2] === true;
-}
-var PgEnumColumnBuilder2 = class extends PgColumnBuilder2 {
-  static [entityKind2] = "PgEnumColumnBuilder";
-  constructor(name, enumInstance) {
-    super(name, "string", "PgEnumColumn");
-    this.config.enum = enumInstance;
-  }
-  /** @internal */
-  build(table) {
-    return new PgEnumColumn2(
-      table,
-      this.config
-    );
-  }
-};
-var PgEnumColumn2 = class extends PgColumn2 {
-  static [entityKind2] = "PgEnumColumn";
-  enum = this.config.enum;
-  enumValues = this.config.enum.enumValues;
-  constructor(table, config2) {
-    super(table, config2);
-    this.enum = config2.enum;
-  }
-  getSQLType() {
-    return this.enum.enumName;
-  }
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/subquery.js
-var Subquery2 = class {
-  static [entityKind2] = "Subquery";
-  constructor(sql4, fields, alias, isWith = false, usedTables = []) {
-    this._ = {
-      brand: "Subquery",
-      sql: sql4,
-      selectedFields: fields,
-      alias,
-      isWith,
-      usedTables
-    };
-  }
-  // getSQL(): SQL<unknown> {
-  // 	return new SQL([this]);
-  // }
-};
-var WithSubquery2 = class extends Subquery2 {
-  static [entityKind2] = "WithSubquery";
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/version.js
-var version2 = "0.45.2";
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/tracing.js
-var otel2;
-var rawTracer2;
-var tracer2 = {
-  startActiveSpan(name, fn) {
-    if (!otel2) {
-      return fn();
-    }
-    if (!rawTracer2) {
-      rawTracer2 = otel2.trace.getTracer("drizzle-orm", version2);
-    }
-    return iife2(
-      (otel22, rawTracer22) => rawTracer22.startActiveSpan(
-        name,
-        (span) => {
-          try {
-            return fn(span);
-          } catch (e) {
-            span.setStatus({
-              code: otel22.SpanStatusCode.ERROR,
-              message: e instanceof Error ? e.message : "Unknown error"
-              // eslint-disable-line no-instanceof/no-instanceof
-            });
-            throw e;
-          } finally {
-            span.end();
-          }
-        }
-      ),
-      otel2,
-      rawTracer2
-    );
-  }
-};
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/view-common.js
-var ViewBaseConfig2 = Symbol.for("drizzle:ViewBaseConfig");
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/table.js
-var Schema2 = Symbol.for("drizzle:Schema");
-var Columns2 = Symbol.for("drizzle:Columns");
-var ExtraConfigColumns2 = Symbol.for("drizzle:ExtraConfigColumns");
-var OriginalName2 = Symbol.for("drizzle:OriginalName");
-var BaseName2 = Symbol.for("drizzle:BaseName");
-var IsAlias2 = Symbol.for("drizzle:IsAlias");
-var ExtraConfigBuilder2 = Symbol.for("drizzle:ExtraConfigBuilder");
-var IsDrizzleTable2 = Symbol.for("drizzle:IsDrizzleTable");
-var Table2 = class {
-  static [entityKind2] = "Table";
-  /** @internal */
-  static Symbol = {
-    Name: TableName2,
-    Schema: Schema2,
-    OriginalName: OriginalName2,
-    Columns: Columns2,
-    ExtraConfigColumns: ExtraConfigColumns2,
-    BaseName: BaseName2,
-    IsAlias: IsAlias2,
-    ExtraConfigBuilder: ExtraConfigBuilder2
-  };
-  /**
-   * @internal
-   * Can be changed if the table is aliased.
-   */
-  [TableName2];
-  /**
-   * @internal
-   * Used to store the original name of the table, before any aliasing.
-   */
-  [OriginalName2];
-  /** @internal */
-  [Schema2];
-  /** @internal */
-  [Columns2];
-  /** @internal */
-  [ExtraConfigColumns2];
-  /**
-   *  @internal
-   * Used to store the table name before the transformation via the `tableCreator` functions.
-   */
-  [BaseName2];
-  /** @internal */
-  [IsAlias2] = false;
-  /** @internal */
-  [IsDrizzleTable2] = true;
-  /** @internal */
-  [ExtraConfigBuilder2] = void 0;
-  constructor(name, schema, baseName) {
-    this[TableName2] = this[OriginalName2] = name;
-    this[Schema2] = schema;
-    this[BaseName2] = baseName;
-  }
-};
-function isTable(table) {
-  return typeof table === "object" && table !== null && IsDrizzleTable2 in table;
-}
-function getTableName(table) {
-  return table[TableName2];
-}
-function getTableUniqueName(table) {
-  return `${table[Schema2] ?? "public"}.${table[TableName2]}`;
-}
-
-// node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/sql/sql.js
-var FakePrimitiveParam2 = class {
-  static [entityKind2] = "FakePrimitiveParam";
-};
-function isSQLWrapper2(value) {
-  return value !== null && value !== void 0 && typeof value.getSQL === "function";
-}
-function mergeQueries2(queries) {
-  const result = { sql: "", params: [] };
-  for (const query of queries) {
-    result.sql += query.sql;
-    result.params.push(...query.params);
-    if (query.typings?.length) {
-      if (!result.typings) {
-        result.typings = [];
-      }
-      result.typings.push(...query.typings);
-    }
-  }
-  return result;
-}
-var StringChunk2 = class {
-  static [entityKind2] = "StringChunk";
-  value;
-  constructor(value) {
-    this.value = Array.isArray(value) ? value : [value];
-  }
-  getSQL() {
-    return new SQL2([this]);
-  }
-};
-var SQL2 = class _SQL {
-  constructor(queryChunks) {
-    this.queryChunks = queryChunks;
-    for (const chunk of queryChunks) {
-      if (is2(chunk, Table2)) {
-        const schemaName = chunk[Table2.Symbol.Schema];
-        this.usedTables.push(
-          schemaName === void 0 ? chunk[Table2.Symbol.Name] : schemaName + "." + chunk[Table2.Symbol.Name]
-        );
-      }
-    }
-  }
-  static [entityKind2] = "SQL";
-  /** @internal */
-  decoder = noopDecoder2;
-  shouldInlineParams = false;
-  /** @internal */
-  usedTables = [];
-  append(query) {
-    this.queryChunks.push(...query.queryChunks);
-    return this;
-  }
-  toQuery(config2) {
-    return tracer2.startActiveSpan("drizzle.buildSQL", (span) => {
-      const query = this.buildQueryFromSourceParams(this.queryChunks, config2);
-      span?.setAttributes({
-        "drizzle.query.text": query.sql,
-        "drizzle.query.params": JSON.stringify(query.params)
-      });
-      return query;
-    });
-  }
-  buildQueryFromSourceParams(chunks, _config) {
-    const config2 = Object.assign({}, _config, {
-      inlineParams: _config.inlineParams || this.shouldInlineParams,
-      paramStartIndex: _config.paramStartIndex || { value: 0 }
-    });
-    const {
-      casing,
-      escapeName,
-      escapeParam,
-      prepareTyping,
-      inlineParams,
-      paramStartIndex
-    } = config2;
-    return mergeQueries2(chunks.map((chunk) => {
-      if (is2(chunk, StringChunk2)) {
-        return { sql: chunk.value.join(""), params: [] };
-      }
-      if (is2(chunk, Name2)) {
-        return { sql: escapeName(chunk.value), params: [] };
-      }
-      if (chunk === void 0) {
-        return { sql: "", params: [] };
-      }
-      if (Array.isArray(chunk)) {
-        const result = [new StringChunk2("(")];
-        for (const [i, p] of chunk.entries()) {
-          result.push(p);
-          if (i < chunk.length - 1) {
-            result.push(new StringChunk2(", "));
-          }
-        }
-        result.push(new StringChunk2(")"));
-        return this.buildQueryFromSourceParams(result, config2);
-      }
-      if (is2(chunk, _SQL)) {
-        return this.buildQueryFromSourceParams(chunk.queryChunks, {
-          ...config2,
-          inlineParams: inlineParams || chunk.shouldInlineParams
-        });
-      }
-      if (is2(chunk, Table2)) {
-        const schemaName = chunk[Table2.Symbol.Schema];
-        const tableName = chunk[Table2.Symbol.Name];
-        return {
-          sql: schemaName === void 0 || chunk[IsAlias2] ? escapeName(tableName) : escapeName(schemaName) + "." + escapeName(tableName),
-          params: []
-        };
-      }
-      if (is2(chunk, Column2)) {
-        const columnName = casing.getColumnCasing(chunk);
-        if (_config.invokeSource === "indexes") {
-          return { sql: escapeName(columnName), params: [] };
-        }
-        const schemaName = chunk.table[Table2.Symbol.Schema];
-        return {
-          sql: chunk.table[IsAlias2] || schemaName === void 0 ? escapeName(chunk.table[Table2.Symbol.Name]) + "." + escapeName(columnName) : escapeName(schemaName) + "." + escapeName(chunk.table[Table2.Symbol.Name]) + "." + escapeName(columnName),
-          params: []
-        };
-      }
-      if (is2(chunk, View2)) {
-        const schemaName = chunk[ViewBaseConfig2].schema;
-        const viewName = chunk[ViewBaseConfig2].name;
-        return {
-          sql: schemaName === void 0 || chunk[ViewBaseConfig2].isAlias ? escapeName(viewName) : escapeName(schemaName) + "." + escapeName(viewName),
-          params: []
-        };
-      }
-      if (is2(chunk, Param2)) {
-        if (is2(chunk.value, Placeholder2)) {
-          return { sql: escapeParam(paramStartIndex.value++, chunk), params: [chunk], typings: ["none"] };
-        }
-        const mappedValue = chunk.value === null ? null : chunk.encoder.mapToDriverValue(chunk.value);
-        if (is2(mappedValue, _SQL)) {
-          return this.buildQueryFromSourceParams([mappedValue], config2);
-        }
-        if (inlineParams) {
-          return { sql: this.mapInlineParam(mappedValue, config2), params: [] };
-        }
-        let typings = ["none"];
-        if (prepareTyping) {
-          typings = [prepareTyping(chunk.encoder)];
-        }
-        return { sql: escapeParam(paramStartIndex.value++, mappedValue), params: [mappedValue], typings };
-      }
-      if (is2(chunk, Placeholder2)) {
-        return { sql: escapeParam(paramStartIndex.value++, chunk), params: [chunk], typings: ["none"] };
-      }
-      if (is2(chunk, _SQL.Aliased) && chunk.fieldAlias !== void 0) {
-        return { sql: escapeName(chunk.fieldAlias), params: [] };
-      }
-      if (is2(chunk, Subquery2)) {
-        if (chunk._.isWith) {
-          return { sql: escapeName(chunk._.alias), params: [] };
-        }
-        return this.buildQueryFromSourceParams([
-          new StringChunk2("("),
-          chunk._.sql,
-          new StringChunk2(") "),
-          new Name2(chunk._.alias)
-        ], config2);
-      }
-      if (isPgEnum2(chunk)) {
-        if (chunk.schema) {
-          return { sql: escapeName(chunk.schema) + "." + escapeName(chunk.enumName), params: [] };
-        }
-        return { sql: escapeName(chunk.enumName), params: [] };
-      }
-      if (isSQLWrapper2(chunk)) {
-        if (chunk.shouldOmitSQLParens?.()) {
-          return this.buildQueryFromSourceParams([chunk.getSQL()], config2);
-        }
-        return this.buildQueryFromSourceParams([
-          new StringChunk2("("),
-          chunk.getSQL(),
-          new StringChunk2(")")
-        ], config2);
-      }
-      if (inlineParams) {
-        return { sql: this.mapInlineParam(chunk, config2), params: [] };
-      }
-      return { sql: escapeParam(paramStartIndex.value++, chunk), params: [chunk], typings: ["none"] };
-    }));
-  }
-  mapInlineParam(chunk, { escapeString }) {
-    if (chunk === null) {
-      return "null";
-    }
-    if (typeof chunk === "number" || typeof chunk === "boolean") {
-      return chunk.toString();
-    }
-    if (typeof chunk === "string") {
-      return escapeString(chunk);
-    }
-    if (typeof chunk === "object") {
-      const mappedValueAsString = chunk.toString();
-      if (mappedValueAsString === "[object Object]") {
-        return escapeString(JSON.stringify(chunk));
-      }
-      return escapeString(mappedValueAsString);
-    }
-    throw new Error("Unexpected param value: " + chunk);
-  }
-  getSQL() {
-    return this;
-  }
-  as(alias) {
-    if (alias === void 0) {
-      return this;
-    }
-    return new _SQL.Aliased(this, alias);
-  }
-  mapWith(decoder) {
-    this.decoder = typeof decoder === "function" ? { mapFromDriverValue: decoder } : decoder;
-    return this;
-  }
-  inlineParams() {
-    this.shouldInlineParams = true;
-    return this;
-  }
-  /**
-   * This method is used to conditionally include a part of the query.
-   *
-   * @param condition - Condition to check
-   * @returns itself if the condition is `true`, otherwise `undefined`
-   */
-  if(condition) {
-    return condition ? this : void 0;
-  }
-};
-var Name2 = class {
-  constructor(value) {
-    this.value = value;
-  }
-  static [entityKind2] = "Name";
-  brand;
-  getSQL() {
-    return new SQL2([this]);
-  }
-};
-function isDriverValueEncoder2(value) {
-  return typeof value === "object" && value !== null && "mapToDriverValue" in value && typeof value.mapToDriverValue === "function";
-}
-var noopDecoder2 = {
-  mapFromDriverValue: (value) => value
-};
-var noopEncoder2 = {
-  mapToDriverValue: (value) => value
-};
-var noopMapper2 = {
-  ...noopDecoder2,
-  ...noopEncoder2
-};
-var Param2 = class {
-  /**
-   * @param value - Parameter value
-   * @param encoder - Encoder to convert the value to a driver parameter
-   */
-  constructor(value, encoder = noopEncoder2) {
-    this.value = value;
-    this.encoder = encoder;
-  }
-  static [entityKind2] = "Param";
-  brand;
-  getSQL() {
-    return new SQL2([this]);
-  }
-};
-function sql2(strings, ...params) {
-  const queryChunks = [];
-  if (params.length > 0 || strings.length > 0 && strings[0] !== "") {
-    queryChunks.push(new StringChunk2(strings[0]));
-  }
-  for (const [paramIndex, param2] of params.entries()) {
-    queryChunks.push(param2, new StringChunk2(strings[paramIndex + 1]));
-  }
-  return new SQL2(queryChunks);
-}
-((sql22) => {
-  function empty() {
-    return new SQL2([]);
-  }
-  sql22.empty = empty;
-  function fromList(list) {
-    return new SQL2(list);
-  }
-  sql22.fromList = fromList;
-  function raw(str) {
-    return new SQL2([new StringChunk2(str)]);
-  }
-  sql22.raw = raw;
-  function join3(chunks, separator) {
-    const result = [];
-    for (const [i, chunk] of chunks.entries()) {
-      if (i > 0 && separator !== void 0) {
-        result.push(separator);
-      }
-      result.push(chunk);
-    }
-    return new SQL2(result);
-  }
-  sql22.join = join3;
-  function identifier(value) {
-    return new Name2(value);
-  }
-  sql22.identifier = identifier;
-  function placeholder2(name2) {
-    return new Placeholder2(name2);
-  }
-  sql22.placeholder = placeholder2;
-  function param2(value, encoder) {
-    return new Param2(value, encoder);
-  }
-  sql22.param = param2;
-})(sql2 || (sql2 = {}));
-((SQL22) => {
-  class Aliased {
-    constructor(sql22, fieldAlias) {
-      this.sql = sql22;
-      this.fieldAlias = fieldAlias;
-    }
-    static [entityKind2] = "SQL.Aliased";
-    /** @internal */
-    isSelectionField = false;
-    getSQL() {
-      return this.sql;
-    }
-    /** @internal */
-    clone() {
-      return new Aliased(this.sql, this.fieldAlias);
-    }
-  }
-  SQL22.Aliased = Aliased;
-})(SQL2 || (SQL2 = {}));
-var Placeholder2 = class {
-  constructor(name2) {
-    this.name = name2;
-  }
-  static [entityKind2] = "Placeholder";
-  getSQL() {
-    return new SQL2([this]);
-  }
-};
-function fillPlaceholders(params, values) {
-  return params.map((p) => {
-    if (is2(p, Placeholder2)) {
-      if (!(p.name in values)) {
-        throw new Error(`No value for placeholder "${p.name}" was provided`);
-      }
-      return values[p.name];
-    }
-    if (is2(p, Param2) && is2(p.value, Placeholder2)) {
-      if (!(p.value.name in values)) {
-        throw new Error(`No value for placeholder "${p.value.name}" was provided`);
-      }
-      return p.encoder.mapToDriverValue(values[p.value.name]);
-    }
-    return p;
-  });
-}
-var IsDrizzleView2 = Symbol.for("drizzle:IsDrizzleView");
-var View2 = class {
-  static [entityKind2] = "View";
-  /** @internal */
-  [ViewBaseConfig2];
-  /** @internal */
-  [IsDrizzleView2] = true;
-  constructor({ name: name2, schema, selectedFields, query }) {
-    this[ViewBaseConfig2] = {
-      name: name2,
-      originalName: name2,
-      schema,
-      selectedFields,
-      query,
-      isExisting: !query,
-      isAlias: false
-    };
-  }
-  getSQL() {
-    return new SQL2([this]);
-  }
-};
-function isView(view) {
-  return typeof view === "object" && view !== null && IsDrizzleView2 in view;
-}
-Column2.prototype.getSQL = function() {
-  return new SQL2([this]);
-};
-Table2.prototype.getSQL = function() {
-  return new SQL2([this]);
-};
-Subquery2.prototype.getSQL = function() {
-  return new SQL2([this]);
-};
-
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/alias.js
 var ColumnAliasProxyHandler = class {
   constructor(table) {
     this.table = table;
   }
-  static [entityKind2] = "ColumnAliasProxyHandler";
+  static [entityKind] = "ColumnAliasProxyHandler";
   get(columnObj, prop) {
     if (prop === "table") {
       return this.table;
@@ -41707,26 +40248,26 @@ var TableAliasProxyHandler = class {
     this.alias = alias;
     this.replaceOriginalName = replaceOriginalName;
   }
-  static [entityKind2] = "TableAliasProxyHandler";
+  static [entityKind] = "TableAliasProxyHandler";
   get(target, prop) {
-    if (prop === Table2.Symbol.IsAlias) {
+    if (prop === Table.Symbol.IsAlias) {
       return true;
     }
-    if (prop === Table2.Symbol.Name) {
+    if (prop === Table.Symbol.Name) {
       return this.alias;
     }
-    if (this.replaceOriginalName && prop === Table2.Symbol.OriginalName) {
+    if (this.replaceOriginalName && prop === Table.Symbol.OriginalName) {
       return this.alias;
     }
-    if (prop === ViewBaseConfig2) {
+    if (prop === ViewBaseConfig) {
       return {
-        ...target[ViewBaseConfig2],
+        ...target[ViewBaseConfig],
         name: this.alias,
         isAlias: true
       };
     }
-    if (prop === Table2.Symbol.Columns) {
-      const columns = target[Table2.Symbol.Columns];
+    if (prop === Table.Symbol.Columns) {
+      const columns = target[Table.Symbol.Columns];
       if (!columns) {
         return columns;
       }
@@ -41740,7 +40281,7 @@ var TableAliasProxyHandler = class {
       return proxiedColumns;
     }
     const value = target[prop];
-    if (is2(value, Column2)) {
+    if (is(value, Column)) {
       return new Proxy(value, new ColumnAliasProxyHandler(new Proxy(target, this)));
     }
     return value;
@@ -41750,7 +40291,7 @@ var RelationTableAliasProxyHandler = class {
   constructor(alias) {
     this.alias = alias;
   }
-  static [entityKind2] = "RelationTableAliasProxyHandler";
+  static [entityKind] = "RelationTableAliasProxyHandler";
   get(target, prop) {
     if (prop === "sourceTable") {
       return aliasedTable(target.sourceTable, this.alias);
@@ -41768,17 +40309,17 @@ function aliasedTableColumn(column, tableAlias) {
   );
 }
 function mapColumnsInAliasedSQLToAlias(query, alias) {
-  return new SQL2.Aliased(mapColumnsInSQLToAlias(query.sql, alias), query.fieldAlias);
+  return new SQL.Aliased(mapColumnsInSQLToAlias(query.sql, alias), query.fieldAlias);
 }
 function mapColumnsInSQLToAlias(query, alias) {
-  return sql2.join(query.queryChunks.map((c) => {
-    if (is2(c, Column2)) {
+  return sql.join(query.queryChunks.map((c) => {
+    if (is(c, Column)) {
       return aliasedTableColumn(c, alias);
     }
-    if (is2(c, SQL2)) {
+    if (is(c, SQL)) {
       return mapColumnsInSQLToAlias(c, alias);
     }
-    if (is2(c, SQL2.Aliased)) {
+    if (is(c, SQL.Aliased)) {
       return mapColumnsInAliasedSQLToAlias(c, alias);
     }
     return c;
@@ -41787,7 +40328,7 @@ function mapColumnsInSQLToAlias(query, alias) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/selection-proxy.js
 var SelectionProxyHandler = class _SelectionProxyHandler {
-  static [entityKind2] = "SelectionProxyHandler";
+  static [entityKind] = "SelectionProxyHandler";
   config;
   constructor(config2) {
     this.config = { ...config2 };
@@ -41802,11 +40343,11 @@ var SelectionProxyHandler = class _SelectionProxyHandler {
         )
       };
     }
-    if (prop === ViewBaseConfig2) {
+    if (prop === ViewBaseConfig) {
       return {
-        ...subquery[ViewBaseConfig2],
+        ...subquery[ViewBaseConfig],
         selectedFields: new Proxy(
-          subquery[ViewBaseConfig2].selectedFields,
+          subquery[ViewBaseConfig].selectedFields,
           this
         )
       };
@@ -41814,9 +40355,9 @@ var SelectionProxyHandler = class _SelectionProxyHandler {
     if (typeof prop === "symbol") {
       return subquery[prop];
     }
-    const columns = is2(subquery, Subquery2) ? subquery._.selectedFields : is2(subquery, View2) ? subquery[ViewBaseConfig2].selectedFields : subquery;
+    const columns = is(subquery, Subquery) ? subquery._.selectedFields : is(subquery, View) ? subquery[ViewBaseConfig].selectedFields : subquery;
     const value = columns[prop];
-    if (is2(value, SQL2.Aliased)) {
+    if (is(value, SQL.Aliased)) {
       if (this.config.sqlAliasedBehavior === "sql" && !value.isSelectionField) {
         return value.sql;
       }
@@ -41824,7 +40365,7 @@ var SelectionProxyHandler = class _SelectionProxyHandler {
       newValue.isSelectionField = true;
       return newValue;
     }
-    if (is2(value, SQL2)) {
+    if (is(value, SQL)) {
       if (this.config.sqlBehavior === "sql") {
         return value;
       }
@@ -41832,7 +40373,7 @@ var SelectionProxyHandler = class _SelectionProxyHandler {
         `You tried to reference "${prop}" field from a subquery, which is a raw SQL field, but it doesn't have an alias declared. Please add an alias to the field using ".as('alias')" method.`
       );
     }
-    if (is2(value, Column2)) {
+    if (is(value, Column)) {
       if (this.config.alias) {
         return new Proxy(
           value,
@@ -41854,7 +40395,7 @@ var SelectionProxyHandler = class _SelectionProxyHandler {
 };
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/query-builders/count.js
-var MySqlCountBuilder = class _MySqlCountBuilder extends SQL2 {
+var MySqlCountBuilder = class _MySqlCountBuilder extends SQL {
   constructor(params) {
     super(_MySqlCountBuilder.buildEmbeddedCount(params.source, params.filters).queryChunks);
     this.params = params;
@@ -41866,14 +40407,14 @@ var MySqlCountBuilder = class _MySqlCountBuilder extends SQL2 {
     );
   }
   sql;
-  static [entityKind2] = "MySqlCountBuilder";
+  static [entityKind] = "MySqlCountBuilder";
   [Symbol.toStringTag] = "MySqlCountBuilder";
   session;
   static buildEmbeddedCount(source, filters) {
-    return sql2`(select count(*) from ${source}${sql2.raw(" where ").if(filters)}${filters})`;
+    return sql`(select count(*) from ${source}${sql.raw(" where ").if(filters)}${filters})`;
   }
   static buildCount(source, filters) {
-    return sql2`select count(*) as count from ${source}${sql2.raw(" where ").if(filters)}${filters}`;
+    return sql`select count(*) as count from ${source}${sql.raw(" where ").if(filters)}${filters}`;
   }
   then(onfulfilled, onrejected) {
     return Promise.resolve(this.session.count(this.sql)).then(
@@ -41900,7 +40441,7 @@ var MySqlCountBuilder = class _MySqlCountBuilder extends SQL2 {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/query-promise.js
 var QueryPromise = class {
-  static [entityKind2] = "QueryPromise";
+  static [entityKind] = "QueryPromise";
   [Symbol.toStringTag] = "QueryPromise";
   catch(onRejected) {
     return this.then(void 0, onRejected);
@@ -41924,7 +40465,7 @@ var QueryPromise = class {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/errors.js
 var DrizzleError = class extends Error {
-  static [entityKind2] = "DrizzleError";
+  static [entityKind] = "DrizzleError";
   constructor({ message, cause }) {
     super(message);
     this.name = "DrizzleError";
@@ -41943,7 +40484,7 @@ params: ${params}`);
   }
 };
 var TransactionRollbackError = class extends DrizzleError {
-  static [entityKind2] = "TransactionRollbackError";
+  static [entityKind] = "TransactionRollbackError";
   constructor() {
     super({ message: "Rollback" });
   }
@@ -41955,11 +40496,11 @@ function mapResultRow(columns, row, joinsNotNullableMap) {
   const result = columns.reduce(
     (result2, { path: path4, field }, columnIndex) => {
       let decoder;
-      if (is2(field, Column2)) {
+      if (is(field, Column)) {
         decoder = field;
-      } else if (is2(field, SQL2)) {
+      } else if (is(field, SQL)) {
         decoder = field.decoder;
-      } else if (is2(field, Subquery2)) {
+      } else if (is(field, Subquery)) {
         decoder = field._.sql.decoder;
       } else {
         decoder = field.sql.decoder;
@@ -41974,7 +40515,7 @@ function mapResultRow(columns, row, joinsNotNullableMap) {
         } else {
           const rawValue = row[columnIndex];
           const value = node[pathChunk] = rawValue === null ? null : decoder.mapFromDriverValue(rawValue);
-          if (joinsNotNullableMap && is2(field, Column2) && path4.length === 2) {
+          if (joinsNotNullableMap && is(field, Column) && path4.length === 2) {
             const objectName = path4[0];
             if (!(objectName in nullifyMap)) {
               nullifyMap[objectName] = value === null ? getTableName(field.table) : false;
@@ -42003,10 +40544,10 @@ function orderSelectedFields(fields, pathPrefix) {
       return result;
     }
     const newPath = pathPrefix ? [...pathPrefix, name] : [name];
-    if (is2(field, Column2) || is2(field, SQL2) || is2(field, SQL2.Aliased) || is2(field, Subquery2)) {
+    if (is(field, Column) || is(field, SQL) || is(field, SQL.Aliased) || is(field, Subquery)) {
       result.push({ path: newPath, field });
-    } else if (is2(field, Table2)) {
-      result.push(...orderSelectedFields(field[Table2.Symbol.Columns], newPath));
+    } else if (is(field, Table)) {
+      result.push(...orderSelectedFields(field[Table.Symbol.Columns], newPath));
     } else {
       result.push(...orderSelectedFields(field, newPath));
     }
@@ -42028,10 +40569,10 @@ function haveSameKeys(left, right) {
 }
 function mapUpdateSet(table, values) {
   const entries = Object.entries(values).filter(([, value]) => value !== void 0).map(([key, value]) => {
-    if (is2(value, SQL2) || is2(value, Column2)) {
+    if (is(value, SQL) || is(value, Column)) {
       return [key, value];
     } else {
-      return [key, new Param2(value, table[Table2.Symbol.Columns][key])];
+      return [key, new Param(value, table[Table.Symbol.Columns][key])];
     }
   });
   if (entries.length === 0) {
@@ -42052,13 +40593,13 @@ function applyMixins(baseClass, extendedClasses) {
   }
 }
 function getTableColumns(table) {
-  return table[Table2.Symbol.Columns];
+  return table[Table.Symbol.Columns];
 }
 function getViewSelectedFields(view) {
-  return view[ViewBaseConfig2].selectedFields;
+  return view[ViewBaseConfig].selectedFields;
 }
 function getTableLikeName(table) {
-  return is2(table, Subquery2) ? table._.alias : is2(table, View2) ? table[ViewBaseConfig2].name : is2(table, SQL2) ? void 0 : table[Table2.Symbol.IsAlias] ? table[Table2.Symbol.Name] : table[Table2.Symbol.BaseName];
+  return is(table, Subquery) ? table._.alias : is(table, View) ? table[ViewBaseConfig].name : is(table, SQL) ? void 0 : table[Table.Symbol.IsAlias] ? table[Table.Symbol.Name] : table[Table.Symbol.BaseName];
 }
 function getColumnNameAndConfig(a, b) {
   return {
@@ -42106,10 +40647,10 @@ var textDecoder = typeof TextDecoder === "undefined" ? null : new TextDecoder();
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/table.js
 var InlineForeignKeys = Symbol.for("drizzle:PgInlineForeignKeys");
 var EnableRLS = Symbol.for("drizzle:EnableRLS");
-var PgTable = class extends Table2 {
-  static [entityKind2] = "PgTable";
+var PgTable = class extends Table {
+  static [entityKind] = "PgTable";
   /** @internal */
-  static Symbol = Object.assign({}, Table2.Symbol, {
+  static Symbol = Object.assign({}, Table.Symbol, {
     InlineForeignKeys,
     EnableRLS
   });
@@ -42118,14 +40659,14 @@ var PgTable = class extends Table2 {
   /** @internal */
   [EnableRLS] = false;
   /** @internal */
-  [Table2.Symbol.ExtraConfigBuilder] = void 0;
+  [Table.Symbol.ExtraConfigBuilder] = void 0;
   /** @internal */
-  [Table2.Symbol.ExtraConfigColumns] = {};
+  [Table.Symbol.ExtraConfigColumns] = {};
 };
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/pg-core/primary-keys.js
 var PrimaryKeyBuilder = class {
-  static [entityKind2] = "PgPrimaryKeyBuilder";
+  static [entityKind] = "PgPrimaryKeyBuilder";
   /** @internal */
   columns;
   /** @internal */
@@ -42145,7 +40686,7 @@ var PrimaryKey = class {
     this.columns = columns;
     this.name = name;
   }
-  static [entityKind2] = "PgPrimaryKey";
+  static [entityKind] = "PgPrimaryKey";
   columns;
   name;
   getName() {
@@ -42154,19 +40695,19 @@ var PrimaryKey = class {
 };
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/sql/expressions/conditions.js
-function bindIfParam2(value, column) {
-  if (isDriverValueEncoder2(column) && !isSQLWrapper2(value) && !is2(value, Param2) && !is2(value, Placeholder2) && !is2(value, Column2) && !is2(value, Table2) && !is2(value, View2)) {
-    return new Param2(value, column);
+function bindIfParam(value, column) {
+  if (isDriverValueEncoder(column) && !isSQLWrapper(value) && !is(value, Param) && !is(value, Placeholder) && !is(value, Column) && !is(value, Table) && !is(value, View)) {
+    return new Param(value, column);
   }
   return value;
 }
-var eq2 = (left, right) => {
-  return sql2`${left} = ${bindIfParam2(right, left)}`;
+var eq = (left, right) => {
+  return sql`${left} = ${bindIfParam(right, left)}`;
 };
 var ne = (left, right) => {
-  return sql2`${left} <> ${bindIfParam2(right, left)}`;
+  return sql`${left} <> ${bindIfParam(right, left)}`;
 };
-function and2(...unfilteredConditions) {
+function and(...unfilteredConditions) {
   const conditions = unfilteredConditions.filter(
     (c) => c !== void 0
   );
@@ -42174,12 +40715,12 @@ function and2(...unfilteredConditions) {
     return void 0;
   }
   if (conditions.length === 1) {
-    return new SQL2(conditions);
+    return new SQL(conditions);
   }
-  return new SQL2([
-    new StringChunk2("("),
-    sql2.join(conditions, new StringChunk2(" and ")),
-    new StringChunk2(")")
+  return new SQL([
+    new StringChunk("("),
+    sql.join(conditions, new StringChunk(" and ")),
+    new StringChunk(")")
   ]);
 }
 function or(...unfilteredConditions) {
@@ -42190,90 +40731,90 @@ function or(...unfilteredConditions) {
     return void 0;
   }
   if (conditions.length === 1) {
-    return new SQL2(conditions);
+    return new SQL(conditions);
   }
-  return new SQL2([
-    new StringChunk2("("),
-    sql2.join(conditions, new StringChunk2(" or ")),
-    new StringChunk2(")")
+  return new SQL([
+    new StringChunk("("),
+    sql.join(conditions, new StringChunk(" or ")),
+    new StringChunk(")")
   ]);
 }
 function not(condition) {
-  return sql2`not ${condition}`;
+  return sql`not ${condition}`;
 }
 var gt = (left, right) => {
-  return sql2`${left} > ${bindIfParam2(right, left)}`;
+  return sql`${left} > ${bindIfParam(right, left)}`;
 };
 var gte = (left, right) => {
-  return sql2`${left} >= ${bindIfParam2(right, left)}`;
+  return sql`${left} >= ${bindIfParam(right, left)}`;
 };
 var lt = (left, right) => {
-  return sql2`${left} < ${bindIfParam2(right, left)}`;
+  return sql`${left} < ${bindIfParam(right, left)}`;
 };
 var lte = (left, right) => {
-  return sql2`${left} <= ${bindIfParam2(right, left)}`;
+  return sql`${left} <= ${bindIfParam(right, left)}`;
 };
 function inArray(column, values) {
   if (Array.isArray(values)) {
     if (values.length === 0) {
-      return sql2`false`;
+      return sql`false`;
     }
-    return sql2`${column} in ${values.map((v) => bindIfParam2(v, column))}`;
+    return sql`${column} in ${values.map((v) => bindIfParam(v, column))}`;
   }
-  return sql2`${column} in ${bindIfParam2(values, column)}`;
+  return sql`${column} in ${bindIfParam(values, column)}`;
 }
 function notInArray(column, values) {
   if (Array.isArray(values)) {
     if (values.length === 0) {
-      return sql2`true`;
+      return sql`true`;
     }
-    return sql2`${column} not in ${values.map((v) => bindIfParam2(v, column))}`;
+    return sql`${column} not in ${values.map((v) => bindIfParam(v, column))}`;
   }
-  return sql2`${column} not in ${bindIfParam2(values, column)}`;
+  return sql`${column} not in ${bindIfParam(values, column)}`;
 }
 function isNull(value) {
-  return sql2`${value} is null`;
+  return sql`${value} is null`;
 }
 function isNotNull(value) {
-  return sql2`${value} is not null`;
+  return sql`${value} is not null`;
 }
 function exists(subquery) {
-  return sql2`exists ${subquery}`;
+  return sql`exists ${subquery}`;
 }
 function notExists(subquery) {
-  return sql2`not exists ${subquery}`;
+  return sql`not exists ${subquery}`;
 }
 function between(column, min, max) {
-  return sql2`${column} between ${bindIfParam2(min, column)} and ${bindIfParam2(
+  return sql`${column} between ${bindIfParam(min, column)} and ${bindIfParam(
     max,
     column
   )}`;
 }
 function notBetween(column, min, max) {
-  return sql2`${column} not between ${bindIfParam2(
+  return sql`${column} not between ${bindIfParam(
     min,
     column
-  )} and ${bindIfParam2(max, column)}`;
+  )} and ${bindIfParam(max, column)}`;
 }
 function like(column, value) {
-  return sql2`${column} like ${value}`;
+  return sql`${column} like ${value}`;
 }
 function notLike(column, value) {
-  return sql2`${column} not like ${value}`;
+  return sql`${column} not like ${value}`;
 }
 function ilike(column, value) {
-  return sql2`${column} ilike ${value}`;
+  return sql`${column} ilike ${value}`;
 }
 function notIlike(column, value) {
-  return sql2`${column} not ilike ${value}`;
+  return sql`${column} not ilike ${value}`;
 }
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/sql/expressions/select.js
-function asc2(column) {
-  return sql2`${column} asc`;
+function asc(column) {
+  return sql`${column} asc`;
 }
-function desc2(column) {
-  return sql2`${column} desc`;
+function desc(column) {
+  return sql`${column} desc`;
 }
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/relations.js
@@ -42282,9 +40823,9 @@ var Relation = class {
     this.sourceTable = sourceTable;
     this.referencedTable = referencedTable;
     this.relationName = relationName;
-    this.referencedTableName = referencedTable[Table2.Symbol.Name];
+    this.referencedTableName = referencedTable[Table.Symbol.Name];
   }
-  static [entityKind2] = "Relation";
+  static [entityKind] = "Relation";
   referencedTableName;
   fieldName;
 };
@@ -42293,7 +40834,7 @@ var Relations = class {
     this.table = table;
     this.config = config2;
   }
-  static [entityKind2] = "Relations";
+  static [entityKind] = "Relations";
 };
 var One = class _One extends Relation {
   constructor(sourceTable, referencedTable, config2, isNullable) {
@@ -42301,7 +40842,7 @@ var One = class _One extends Relation {
     this.config = config2;
     this.isNullable = isNullable;
   }
-  static [entityKind2] = "One";
+  static [entityKind] = "One";
   withFieldName(fieldName) {
     const relation = new _One(
       this.sourceTable,
@@ -42318,7 +40859,7 @@ var Many = class _Many extends Relation {
     super(sourceTable, referencedTable, config2?.relationName);
     this.config = config2;
   }
-  static [entityKind2] = "Many";
+  static [entityKind] = "Many";
   withFieldName(fieldName) {
     const relation = new _Many(
       this.sourceTable,
@@ -42331,9 +40872,9 @@ var Many = class _Many extends Relation {
 };
 function getOperators() {
   return {
-    and: and2,
+    and,
     between,
-    eq: eq2,
+    eq,
     exists,
     gt,
     gte,
@@ -42352,52 +40893,52 @@ function getOperators() {
     notIlike,
     notInArray,
     or,
-    sql: sql2
+    sql
   };
 }
 function getOrderByOperators() {
   return {
-    sql: sql2,
-    asc: asc2,
-    desc: desc2
+    sql,
+    asc,
+    desc
   };
 }
 function extractTablesRelationalConfig(schema, configHelpers) {
-  if (Object.keys(schema).length === 1 && "default" in schema && !is2(schema["default"], Table2)) {
+  if (Object.keys(schema).length === 1 && "default" in schema && !is(schema["default"], Table)) {
     schema = schema["default"];
   }
   const tableNamesMap = {};
   const relationsBuffer = {};
   const tablesConfig = {};
   for (const [key, value] of Object.entries(schema)) {
-    if (is2(value, Table2)) {
+    if (is(value, Table)) {
       const dbName = getTableUniqueName(value);
       const bufferedRelations = relationsBuffer[dbName];
       tableNamesMap[dbName] = key;
       tablesConfig[key] = {
         tsName: key,
-        dbName: value[Table2.Symbol.Name],
-        schema: value[Table2.Symbol.Schema],
-        columns: value[Table2.Symbol.Columns],
+        dbName: value[Table.Symbol.Name],
+        schema: value[Table.Symbol.Schema],
+        columns: value[Table.Symbol.Columns],
         relations: bufferedRelations?.relations ?? {},
         primaryKey: bufferedRelations?.primaryKey ?? []
       };
       for (const column of Object.values(
-        value[Table2.Symbol.Columns]
+        value[Table.Symbol.Columns]
       )) {
         if (column.primary) {
           tablesConfig[key].primaryKey.push(column);
         }
       }
-      const extraConfig = value[Table2.Symbol.ExtraConfigBuilder]?.(value[Table2.Symbol.ExtraConfigColumns]);
+      const extraConfig = value[Table.Symbol.ExtraConfigBuilder]?.(value[Table.Symbol.ExtraConfigColumns]);
       if (extraConfig) {
         for (const configEntry of Object.values(extraConfig)) {
-          if (is2(configEntry, PrimaryKeyBuilder)) {
+          if (is(configEntry, PrimaryKeyBuilder)) {
             tablesConfig[key].primaryKey.push(...configEntry.columns);
           }
         }
       }
-    } else if (is2(value, Relations)) {
+    } else if (is(value, Relations)) {
       const dbName = getTableUniqueName(value.table);
       const tableName = tableNamesMap[dbName];
       const relations2 = value.config(
@@ -42441,7 +40982,7 @@ function createMany(sourceTable) {
   };
 }
 function normalizeRelation(schema, tableNamesMap, relation) {
-  if (is2(relation, One) && relation.config) {
+  if (is(relation, One) && relation.config) {
     return {
       fields: relation.config.fields,
       references: relation.config.references
@@ -42450,7 +40991,7 @@ function normalizeRelation(schema, tableNamesMap, relation) {
   const referencedTableTsName = tableNamesMap[getTableUniqueName(relation.referencedTable)];
   if (!referencedTableTsName) {
     throw new Error(
-      `Table "${relation.referencedTable[Table2.Symbol.Name]}" not found in schema`
+      `Table "${relation.referencedTable[Table.Symbol.Name]}" not found in schema`
     );
   }
   const referencedTableConfig = schema[referencedTableTsName];
@@ -42461,7 +41002,7 @@ function normalizeRelation(schema, tableNamesMap, relation) {
   const sourceTableTsName = tableNamesMap[getTableUniqueName(sourceTable)];
   if (!sourceTableTsName) {
     throw new Error(
-      `Table "${sourceTable[Table2.Symbol.Name]}" not found in schema`
+      `Table "${sourceTable[Table.Symbol.Name]}" not found in schema`
     );
   }
   const reverseRelations = [];
@@ -42476,10 +41017,10 @@ function normalizeRelation(schema, tableNamesMap, relation) {
     throw relation.relationName ? new Error(
       `There are multiple relations with name "${relation.relationName}" in table "${referencedTableTsName}"`
     ) : new Error(
-      `There are multiple relations between "${referencedTableTsName}" and "${relation.sourceTable[Table2.Symbol.Name]}". Please specify relation name`
+      `There are multiple relations between "${referencedTableTsName}" and "${relation.sourceTable[Table.Symbol.Name]}". Please specify relation name`
     );
   }
-  if (reverseRelations[0] && is2(reverseRelations[0], One) && reverseRelations[0].config) {
+  if (reverseRelations[0] && is(reverseRelations[0], One) && reverseRelations[0].config) {
     return {
       fields: reverseRelations[0].config.references,
       references: reverseRelations[0].config.fields
@@ -42505,7 +41046,7 @@ function mapRelationalRow(tablesConfig, tableConfig, row, buildQueryResultSelect
       const relation = tableConfig.relations[selectionItem.tsKey];
       const rawSubRows = row[selectionItemIndex];
       const subRows = typeof rawSubRows === "string" ? JSON.parse(rawSubRows) : rawSubRows;
-      result[selectionItem.tsKey] = is2(relation, One) ? subRows && mapRelationalRow(
+      result[selectionItem.tsKey] = is(relation, One) ? subRows && mapRelationalRow(
         tablesConfig,
         tablesConfig[selectionItem.relationTableTsKey],
         subRows,
@@ -42524,9 +41065,9 @@ function mapRelationalRow(tablesConfig, tableConfig, row, buildQueryResultSelect
       const value = mapColumnValue(row[selectionItemIndex]);
       const field = selectionItem.field;
       let decoder;
-      if (is2(field, Column2)) {
+      if (is(field, Column)) {
         decoder = field;
-      } else if (is2(field, SQL2)) {
+      } else if (is(field, SQL)) {
         decoder = field.decoder;
       } else {
         decoder = field.sql.decoder;
@@ -42538,8 +41079,8 @@ function mapRelationalRow(tablesConfig, tableConfig, row, buildQueryResultSelect
 }
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/foreign-keys.js
-var ForeignKeyBuilder3 = class {
-  static [entityKind2] = "MySqlForeignKeyBuilder";
+var ForeignKeyBuilder2 = class {
+  static [entityKind] = "MySqlForeignKeyBuilder";
   /** @internal */
   reference;
   /** @internal */
@@ -42566,17 +41107,17 @@ var ForeignKeyBuilder3 = class {
   }
   /** @internal */
   build(table) {
-    return new ForeignKey3(table, this);
+    return new ForeignKey2(table, this);
   }
 };
-var ForeignKey3 = class {
+var ForeignKey2 = class {
   constructor(table, builder) {
     this.table = table;
     this.reference = builder.reference;
     this.onUpdate = builder._onUpdate;
     this.onDelete = builder._onDelete;
   }
-  static [entityKind2] = "MySqlForeignKey";
+  static [entityKind] = "MySqlForeignKey";
   reference;
   onUpdate;
   onDelete;
@@ -42585,9 +41126,9 @@ var ForeignKey3 = class {
     const columnNames = columns.map((column) => column.name);
     const foreignColumnNames = foreignColumns.map((column) => column.name);
     const chunks = [
-      this.table[TableName2],
+      this.table[TableName],
       ...columnNames,
-      foreignColumns[0].table[TableName2],
+      foreignColumns[0].table[TableName],
       ...foreignColumnNames
     ];
     return name ?? `${chunks.join("_")}_fk`;
@@ -42595,40 +41136,40 @@ var ForeignKey3 = class {
 };
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/unique-constraint.js
-function uniqueKeyName3(table, columns) {
-  return `${table[TableName2]}_${columns.join("_")}_unique`;
+function uniqueKeyName2(table, columns) {
+  return `${table[TableName]}_${columns.join("_")}_unique`;
 }
-var UniqueConstraintBuilder3 = class {
+var UniqueConstraintBuilder2 = class {
   constructor(columns, name) {
     this.name = name;
     this.columns = columns;
   }
-  static [entityKind2] = "MySqlUniqueConstraintBuilder";
+  static [entityKind] = "MySqlUniqueConstraintBuilder";
   /** @internal */
   columns;
   /** @internal */
   build(table) {
-    return new UniqueConstraint3(table, this.columns, this.name);
+    return new UniqueConstraint2(table, this.columns, this.name);
   }
 };
-var UniqueOnConstraintBuilder3 = class {
-  static [entityKind2] = "MySqlUniqueOnConstraintBuilder";
+var UniqueOnConstraintBuilder2 = class {
+  static [entityKind] = "MySqlUniqueOnConstraintBuilder";
   /** @internal */
   name;
   constructor(name) {
     this.name = name;
   }
   on(...columns) {
-    return new UniqueConstraintBuilder3(columns, this.name);
+    return new UniqueConstraintBuilder2(columns, this.name);
   }
 };
-var UniqueConstraint3 = class {
+var UniqueConstraint2 = class {
   constructor(table, columns, name) {
     this.table = table;
     this.columns = columns;
-    this.name = name ?? uniqueKeyName3(this.table, this.columns.map((column) => column.name));
+    this.name = name ?? uniqueKeyName2(this.table, this.columns.map((column) => column.name));
   }
-  static [entityKind2] = "MySqlUniqueConstraint";
+  static [entityKind] = "MySqlUniqueConstraint";
   columns;
   name;
   nullsNotDistinct = false;
@@ -42638,8 +41179,8 @@ var UniqueConstraint3 = class {
 };
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/common.js
-var MySqlColumnBuilder = class extends ColumnBuilder2 {
-  static [entityKind2] = "MySqlColumnBuilder";
+var MySqlColumnBuilder = class extends ColumnBuilder {
+  static [entityKind] = "MySqlColumnBuilder";
   foreignKeyConfigs = [];
   references(ref, actions = {}) {
     this.foreignKeyConfigs.push({ ref, actions });
@@ -42662,7 +41203,7 @@ var MySqlColumnBuilder = class extends ColumnBuilder2 {
   buildForeignKeys(column, table) {
     return this.foreignKeyConfigs.map(({ ref, actions }) => {
       return ((ref2, actions2) => {
-        const builder = new ForeignKeyBuilder3(() => {
+        const builder = new ForeignKeyBuilder2(() => {
           const foreignColumn = ref2();
           return { columns: [column], foreignColumns: [foreignColumn] };
         });
@@ -42677,18 +41218,18 @@ var MySqlColumnBuilder = class extends ColumnBuilder2 {
     });
   }
 };
-var MySqlColumn = class extends Column2 {
+var MySqlColumn = class extends Column {
   constructor(table, config2) {
     if (!config2.uniqueName) {
-      config2.uniqueName = uniqueKeyName3(table, [config2.name]);
+      config2.uniqueName = uniqueKeyName2(table, [config2.name]);
     }
     super(table, config2);
     this.table = table;
   }
-  static [entityKind2] = "MySqlColumn";
+  static [entityKind] = "MySqlColumn";
 };
 var MySqlColumnBuilderWithAutoIncrement = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlColumnBuilderWithAutoIncrement";
+  static [entityKind] = "MySqlColumnBuilderWithAutoIncrement";
   constructor(name, dataType, columnType) {
     super(name, dataType, columnType);
     this.config.autoIncrement = false;
@@ -42700,13 +41241,13 @@ var MySqlColumnBuilderWithAutoIncrement = class extends MySqlColumnBuilder {
   }
 };
 var MySqlColumnWithAutoIncrement = class extends MySqlColumn {
-  static [entityKind2] = "MySqlColumnWithAutoIncrement";
+  static [entityKind] = "MySqlColumnWithAutoIncrement";
   autoIncrement = this.config.autoIncrement;
 };
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/bigint.js
 var MySqlBigInt53Builder = class extends MySqlColumnBuilderWithAutoIncrement {
-  static [entityKind2] = "MySqlBigInt53Builder";
+  static [entityKind] = "MySqlBigInt53Builder";
   constructor(name, unsigned = false) {
     super(name, "number", "MySqlBigInt53");
     this.config.unsigned = unsigned;
@@ -42720,7 +41261,7 @@ var MySqlBigInt53Builder = class extends MySqlColumnBuilderWithAutoIncrement {
   }
 };
 var MySqlBigInt53 = class extends MySqlColumnWithAutoIncrement {
-  static [entityKind2] = "MySqlBigInt53";
+  static [entityKind] = "MySqlBigInt53";
   getSQLType() {
     return `bigint${this.config.unsigned ? " unsigned" : ""}`;
   }
@@ -42732,7 +41273,7 @@ var MySqlBigInt53 = class extends MySqlColumnWithAutoIncrement {
   }
 };
 var MySqlBigInt64Builder = class extends MySqlColumnBuilderWithAutoIncrement {
-  static [entityKind2] = "MySqlBigInt64Builder";
+  static [entityKind] = "MySqlBigInt64Builder";
   constructor(name, unsigned = false) {
     super(name, "bigint", "MySqlBigInt64");
     this.config.unsigned = unsigned;
@@ -42746,7 +41287,7 @@ var MySqlBigInt64Builder = class extends MySqlColumnBuilderWithAutoIncrement {
   }
 };
 var MySqlBigInt64 = class extends MySqlColumnWithAutoIncrement {
-  static [entityKind2] = "MySqlBigInt64";
+  static [entityKind] = "MySqlBigInt64";
   getSQLType() {
     return `bigint${this.config.unsigned ? " unsigned" : ""}`;
   }
@@ -42765,7 +41306,7 @@ function bigint(a, b) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/binary.js
 var MySqlBinaryBuilder = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlBinaryBuilder";
+  static [entityKind] = "MySqlBinaryBuilder";
   constructor(name, length) {
     super(name, "string", "MySqlBinary");
     this.config.length = length;
@@ -42776,7 +41317,7 @@ var MySqlBinaryBuilder = class extends MySqlColumnBuilder {
   }
 };
 var MySqlBinary = class extends MySqlColumn {
-  static [entityKind2] = "MySqlBinary";
+  static [entityKind] = "MySqlBinary";
   length = this.config.length;
   mapFromDriverValue(value) {
     if (typeof value === "string") return value;
@@ -42798,7 +41339,7 @@ function binary(a, b = {}) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/boolean.js
 var MySqlBooleanBuilder = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlBooleanBuilder";
+  static [entityKind] = "MySqlBooleanBuilder";
   constructor(name) {
     super(name, "boolean", "MySqlBoolean");
   }
@@ -42811,7 +41352,7 @@ var MySqlBooleanBuilder = class extends MySqlColumnBuilder {
   }
 };
 var MySqlBoolean = class extends MySqlColumn {
-  static [entityKind2] = "MySqlBoolean";
+  static [entityKind] = "MySqlBoolean";
   getSQLType() {
     return "boolean";
   }
@@ -42828,7 +41369,7 @@ function boolean(name) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/char.js
 var MySqlCharBuilder = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlCharBuilder";
+  static [entityKind] = "MySqlCharBuilder";
   constructor(name, config2) {
     super(name, "string", "MySqlChar");
     this.config.length = config2.length;
@@ -42843,7 +41384,7 @@ var MySqlCharBuilder = class extends MySqlColumnBuilder {
   }
 };
 var MySqlChar = class extends MySqlColumn {
-  static [entityKind2] = "MySqlChar";
+  static [entityKind] = "MySqlChar";
   length = this.config.length;
   enumValues = this.config.enum;
   getSQLType() {
@@ -42857,7 +41398,7 @@ function char(a, b = {}) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/custom.js
 var MySqlCustomColumnBuilder = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlCustomColumnBuilder";
+  static [entityKind] = "MySqlCustomColumnBuilder";
   constructor(name, fieldConfig, customTypeParams) {
     super(name, "custom", "MySqlCustomColumn");
     this.config.fieldConfig = fieldConfig;
@@ -42872,7 +41413,7 @@ var MySqlCustomColumnBuilder = class extends MySqlColumnBuilder {
   }
 };
 var MySqlCustomColumn = class extends MySqlColumn {
-  static [entityKind2] = "MySqlCustomColumn";
+  static [entityKind] = "MySqlCustomColumn";
   sqlName;
   mapTo;
   mapFrom;
@@ -42901,7 +41442,7 @@ function customType(customTypeParams) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/date.js
 var MySqlDateBuilder = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlDateBuilder";
+  static [entityKind] = "MySqlDateBuilder";
   constructor(name) {
     super(name, "date", "MySqlDate");
   }
@@ -42911,7 +41452,7 @@ var MySqlDateBuilder = class extends MySqlColumnBuilder {
   }
 };
 var MySqlDate = class extends MySqlColumn {
-  static [entityKind2] = "MySqlDate";
+  static [entityKind] = "MySqlDate";
   constructor(table, config2) {
     super(table, config2);
   }
@@ -42923,7 +41464,7 @@ var MySqlDate = class extends MySqlColumn {
   }
 };
 var MySqlDateStringBuilder = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlDateStringBuilder";
+  static [entityKind] = "MySqlDateStringBuilder";
   constructor(name) {
     super(name, "string", "MySqlDateString");
   }
@@ -42936,7 +41477,7 @@ var MySqlDateStringBuilder = class extends MySqlColumnBuilder {
   }
 };
 var MySqlDateString = class extends MySqlColumn {
-  static [entityKind2] = "MySqlDateString";
+  static [entityKind] = "MySqlDateString";
   constructor(table, config2) {
     super(table, config2);
   }
@@ -42954,7 +41495,7 @@ function date(a, b) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/datetime.js
 var MySqlDateTimeBuilder = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlDateTimeBuilder";
+  static [entityKind] = "MySqlDateTimeBuilder";
   constructor(name, config2) {
     super(name, "date", "MySqlDateTime");
     this.config.fsp = config2?.fsp;
@@ -42968,7 +41509,7 @@ var MySqlDateTimeBuilder = class extends MySqlColumnBuilder {
   }
 };
 var MySqlDateTime = class extends MySqlColumn {
-  static [entityKind2] = "MySqlDateTime";
+  static [entityKind] = "MySqlDateTime";
   fsp;
   constructor(table, config2) {
     super(table, config2);
@@ -42986,7 +41527,7 @@ var MySqlDateTime = class extends MySqlColumn {
   }
 };
 var MySqlDateTimeStringBuilder = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlDateTimeStringBuilder";
+  static [entityKind] = "MySqlDateTimeStringBuilder";
   constructor(name, config2) {
     super(name, "string", "MySqlDateTimeString");
     this.config.fsp = config2?.fsp;
@@ -43000,7 +41541,7 @@ var MySqlDateTimeStringBuilder = class extends MySqlColumnBuilder {
   }
 };
 var MySqlDateTimeString = class extends MySqlColumn {
-  static [entityKind2] = "MySqlDateTimeString";
+  static [entityKind] = "MySqlDateTimeString";
   fsp;
   constructor(table, config2) {
     super(table, config2);
@@ -43021,7 +41562,7 @@ function datetime(a, b) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/decimal.js
 var MySqlDecimalBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
-  static [entityKind2] = "MySqlDecimalBuilder";
+  static [entityKind] = "MySqlDecimalBuilder";
   constructor(name, config2) {
     super(name, "string", "MySqlDecimal");
     this.config.precision = config2?.precision;
@@ -43037,7 +41578,7 @@ var MySqlDecimalBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
   }
 };
 var MySqlDecimal = class extends MySqlColumnWithAutoIncrement {
-  static [entityKind2] = "MySqlDecimal";
+  static [entityKind] = "MySqlDecimal";
   precision = this.config.precision;
   scale = this.config.scale;
   unsigned = this.config.unsigned;
@@ -43059,7 +41600,7 @@ var MySqlDecimal = class extends MySqlColumnWithAutoIncrement {
   }
 };
 var MySqlDecimalNumberBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
-  static [entityKind2] = "MySqlDecimalNumberBuilder";
+  static [entityKind] = "MySqlDecimalNumberBuilder";
   constructor(name, config2) {
     super(name, "number", "MySqlDecimalNumber");
     this.config.precision = config2?.precision;
@@ -43075,7 +41616,7 @@ var MySqlDecimalNumberBuilder = class extends MySqlColumnBuilderWithAutoIncremen
   }
 };
 var MySqlDecimalNumber = class extends MySqlColumnWithAutoIncrement {
-  static [entityKind2] = "MySqlDecimalNumber";
+  static [entityKind] = "MySqlDecimalNumber";
   precision = this.config.precision;
   scale = this.config.scale;
   unsigned = this.config.unsigned;
@@ -43098,7 +41639,7 @@ var MySqlDecimalNumber = class extends MySqlColumnWithAutoIncrement {
   }
 };
 var MySqlDecimalBigIntBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
-  static [entityKind2] = "MySqlDecimalBigIntBuilder";
+  static [entityKind] = "MySqlDecimalBigIntBuilder";
   constructor(name, config2) {
     super(name, "bigint", "MySqlDecimalBigInt");
     this.config.precision = config2?.precision;
@@ -43114,7 +41655,7 @@ var MySqlDecimalBigIntBuilder = class extends MySqlColumnBuilderWithAutoIncremen
   }
 };
 var MySqlDecimalBigInt = class extends MySqlColumnWithAutoIncrement {
-  static [entityKind2] = "MySqlDecimalBigInt";
+  static [entityKind] = "MySqlDecimalBigInt";
   precision = this.config.precision;
   scale = this.config.scale;
   unsigned = this.config.unsigned;
@@ -43141,7 +41682,7 @@ function decimal(a, b = {}) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/double.js
 var MySqlDoubleBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
-  static [entityKind2] = "MySqlDoubleBuilder";
+  static [entityKind] = "MySqlDoubleBuilder";
   constructor(name, config2) {
     super(name, "number", "MySqlDouble");
     this.config.precision = config2?.precision;
@@ -43154,7 +41695,7 @@ var MySqlDoubleBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
   }
 };
 var MySqlDouble = class extends MySqlColumnWithAutoIncrement {
-  static [entityKind2] = "MySqlDouble";
+  static [entityKind] = "MySqlDouble";
   precision = this.config.precision;
   scale = this.config.scale;
   unsigned = this.config.unsigned;
@@ -43177,7 +41718,7 @@ function double(a, b) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/enum.js
 var MySqlEnumColumnBuilder = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlEnumColumnBuilder";
+  static [entityKind] = "MySqlEnumColumnBuilder";
   constructor(name, values) {
     super(name, "string", "MySqlEnumColumn");
     this.config.enumValues = values;
@@ -43191,14 +41732,14 @@ var MySqlEnumColumnBuilder = class extends MySqlColumnBuilder {
   }
 };
 var MySqlEnumColumn = class extends MySqlColumn {
-  static [entityKind2] = "MySqlEnumColumn";
+  static [entityKind] = "MySqlEnumColumn";
   enumValues = this.config.enumValues;
   getSQLType() {
     return `enum(${this.enumValues.map((value) => `'${value}'`).join(",")})`;
   }
 };
 var MySqlEnumObjectColumnBuilder = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlEnumObjectColumnBuilder";
+  static [entityKind] = "MySqlEnumObjectColumnBuilder";
   constructor(name, values) {
     super(name, "string", "MySqlEnumObjectColumn");
     this.config.enumValues = values;
@@ -43212,7 +41753,7 @@ var MySqlEnumObjectColumnBuilder = class extends MySqlColumnBuilder {
   }
 };
 var MySqlEnumObjectColumn = class extends MySqlColumn {
-  static [entityKind2] = "MySqlEnumObjectColumn";
+  static [entityKind] = "MySqlEnumObjectColumn";
   enumValues = this.config.enumValues;
   getSQLType() {
     return `enum(${this.enumValues.map((value) => `'${value}'`).join(",")})`;
@@ -43239,7 +41780,7 @@ function mysqlEnum(a, b) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/float.js
 var MySqlFloatBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
-  static [entityKind2] = "MySqlFloatBuilder";
+  static [entityKind] = "MySqlFloatBuilder";
   constructor(name, config2) {
     super(name, "number", "MySqlFloat");
     this.config.precision = config2?.precision;
@@ -43252,7 +41793,7 @@ var MySqlFloatBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
   }
 };
 var MySqlFloat = class extends MySqlColumnWithAutoIncrement {
-  static [entityKind2] = "MySqlFloat";
+  static [entityKind] = "MySqlFloat";
   precision = this.config.precision;
   scale = this.config.scale;
   unsigned = this.config.unsigned;
@@ -43275,7 +41816,7 @@ function float(a, b) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/int.js
 var MySqlIntBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
-  static [entityKind2] = "MySqlIntBuilder";
+  static [entityKind] = "MySqlIntBuilder";
   constructor(name, config2) {
     super(name, "number", "MySqlInt");
     this.config.unsigned = config2 ? config2.unsigned : false;
@@ -43286,7 +41827,7 @@ var MySqlIntBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
   }
 };
 var MySqlInt = class extends MySqlColumnWithAutoIncrement {
-  static [entityKind2] = "MySqlInt";
+  static [entityKind] = "MySqlInt";
   getSQLType() {
     return `int${this.config.unsigned ? " unsigned" : ""}`;
   }
@@ -43304,7 +41845,7 @@ function int(a, b) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/json.js
 var MySqlJsonBuilder = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlJsonBuilder";
+  static [entityKind] = "MySqlJsonBuilder";
   constructor(name) {
     super(name, "json", "MySqlJson");
   }
@@ -43314,7 +41855,7 @@ var MySqlJsonBuilder = class extends MySqlColumnBuilder {
   }
 };
 var MySqlJson = class extends MySqlColumn {
-  static [entityKind2] = "MySqlJson";
+  static [entityKind] = "MySqlJson";
   getSQLType() {
     return "json";
   }
@@ -43328,7 +41869,7 @@ function json(name) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/mediumint.js
 var MySqlMediumIntBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
-  static [entityKind2] = "MySqlMediumIntBuilder";
+  static [entityKind] = "MySqlMediumIntBuilder";
   constructor(name, config2) {
     super(name, "number", "MySqlMediumInt");
     this.config.unsigned = config2 ? config2.unsigned : false;
@@ -43342,7 +41883,7 @@ var MySqlMediumIntBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
   }
 };
 var MySqlMediumInt = class extends MySqlColumnWithAutoIncrement {
-  static [entityKind2] = "MySqlMediumInt";
+  static [entityKind] = "MySqlMediumInt";
   getSQLType() {
     return `mediumint${this.config.unsigned ? " unsigned" : ""}`;
   }
@@ -43360,7 +41901,7 @@ function mediumint(a, b) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/real.js
 var MySqlRealBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
-  static [entityKind2] = "MySqlRealBuilder";
+  static [entityKind] = "MySqlRealBuilder";
   constructor(name, config2) {
     super(name, "number", "MySqlReal");
     this.config.precision = config2?.precision;
@@ -43372,7 +41913,7 @@ var MySqlRealBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
   }
 };
 var MySqlReal = class extends MySqlColumnWithAutoIncrement {
-  static [entityKind2] = "MySqlReal";
+  static [entityKind] = "MySqlReal";
   precision = this.config.precision;
   scale = this.config.scale;
   getSQLType() {
@@ -43392,7 +41933,7 @@ function real(a, b = {}) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/serial.js
 var MySqlSerialBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
-  static [entityKind2] = "MySqlSerialBuilder";
+  static [entityKind] = "MySqlSerialBuilder";
   constructor(name) {
     super(name, "number", "MySqlSerial");
     this.config.hasDefault = true;
@@ -43404,7 +41945,7 @@ var MySqlSerialBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
   }
 };
 var MySqlSerial = class extends MySqlColumnWithAutoIncrement {
-  static [entityKind2] = "MySqlSerial";
+  static [entityKind] = "MySqlSerial";
   getSQLType() {
     return "serial";
   }
@@ -43421,7 +41962,7 @@ function serial(name) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/smallint.js
 var MySqlSmallIntBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
-  static [entityKind2] = "MySqlSmallIntBuilder";
+  static [entityKind] = "MySqlSmallIntBuilder";
   constructor(name, config2) {
     super(name, "number", "MySqlSmallInt");
     this.config.unsigned = config2 ? config2.unsigned : false;
@@ -43435,7 +41976,7 @@ var MySqlSmallIntBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
   }
 };
 var MySqlSmallInt = class extends MySqlColumnWithAutoIncrement {
-  static [entityKind2] = "MySqlSmallInt";
+  static [entityKind] = "MySqlSmallInt";
   getSQLType() {
     return `smallint${this.config.unsigned ? " unsigned" : ""}`;
   }
@@ -43453,7 +41994,7 @@ function smallint(a, b) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/text.js
 var MySqlTextBuilder = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlTextBuilder";
+  static [entityKind] = "MySqlTextBuilder";
   constructor(name, textType, config2) {
     super(name, "string", "MySqlText");
     this.config.textType = textType;
@@ -43465,7 +42006,7 @@ var MySqlTextBuilder = class extends MySqlColumnBuilder {
   }
 };
 var MySqlText = class extends MySqlColumn {
-  static [entityKind2] = "MySqlText";
+  static [entityKind] = "MySqlText";
   textType = this.config.textType;
   enumValues = this.config.enumValues;
   getSQLType() {
@@ -43491,7 +42032,7 @@ function longtext(a, b = {}) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/time.js
 var MySqlTimeBuilder = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlTimeBuilder";
+  static [entityKind] = "MySqlTimeBuilder";
   constructor(name, config2) {
     super(name, "string", "MySqlTime");
     this.config.fsp = config2?.fsp;
@@ -43502,7 +42043,7 @@ var MySqlTimeBuilder = class extends MySqlColumnBuilder {
   }
 };
 var MySqlTime = class extends MySqlColumn {
-  static [entityKind2] = "MySqlTime";
+  static [entityKind] = "MySqlTime";
   fsp = this.config.fsp;
   getSQLType() {
     const precision = this.fsp === void 0 ? "" : `(${this.fsp})`;
@@ -43516,9 +42057,9 @@ function time(a, b) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/date.common.js
 var MySqlDateColumnBaseBuilder = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlDateColumnBuilder";
+  static [entityKind] = "MySqlDateColumnBuilder";
   defaultNow() {
-    return this.default(sql2`(now())`);
+    return this.default(sql`(now())`);
   }
   // "on update now" also adds an implicit default value to the column - https://dev.mysql.com/doc/refman/8.0/en/timestamp-initialization.html
   onUpdateNow() {
@@ -43528,13 +42069,13 @@ var MySqlDateColumnBaseBuilder = class extends MySqlColumnBuilder {
   }
 };
 var MySqlDateBaseColumn = class extends MySqlColumn {
-  static [entityKind2] = "MySqlDateColumn";
+  static [entityKind] = "MySqlDateColumn";
   hasOnUpdateNow = this.config.hasOnUpdateNow;
 };
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/timestamp.js
 var MySqlTimestampBuilder = class extends MySqlDateColumnBaseBuilder {
-  static [entityKind2] = "MySqlTimestampBuilder";
+  static [entityKind] = "MySqlTimestampBuilder";
   constructor(name, config2) {
     super(name, "date", "MySqlTimestamp");
     this.config.fsp = config2?.fsp;
@@ -43548,7 +42089,7 @@ var MySqlTimestampBuilder = class extends MySqlDateColumnBaseBuilder {
   }
 };
 var MySqlTimestamp = class extends MySqlDateBaseColumn {
-  static [entityKind2] = "MySqlTimestamp";
+  static [entityKind] = "MySqlTimestamp";
   fsp = this.config.fsp;
   getSQLType() {
     const precision = this.fsp === void 0 ? "" : `(${this.fsp})`;
@@ -43562,7 +42103,7 @@ var MySqlTimestamp = class extends MySqlDateBaseColumn {
   }
 };
 var MySqlTimestampStringBuilder = class extends MySqlDateColumnBaseBuilder {
-  static [entityKind2] = "MySqlTimestampStringBuilder";
+  static [entityKind] = "MySqlTimestampStringBuilder";
   constructor(name, config2) {
     super(name, "string", "MySqlTimestampString");
     this.config.fsp = config2?.fsp;
@@ -43576,7 +42117,7 @@ var MySqlTimestampStringBuilder = class extends MySqlDateColumnBaseBuilder {
   }
 };
 var MySqlTimestampString = class extends MySqlDateBaseColumn {
-  static [entityKind2] = "MySqlTimestampString";
+  static [entityKind] = "MySqlTimestampString";
   fsp = this.config.fsp;
   getSQLType() {
     const precision = this.fsp === void 0 ? "" : `(${this.fsp})`;
@@ -43593,7 +42134,7 @@ function timestamp(a, b = {}) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/tinyint.js
 var MySqlTinyIntBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
-  static [entityKind2] = "MySqlTinyIntBuilder";
+  static [entityKind] = "MySqlTinyIntBuilder";
   constructor(name, config2) {
     super(name, "number", "MySqlTinyInt");
     this.config.unsigned = config2 ? config2.unsigned : false;
@@ -43607,7 +42148,7 @@ var MySqlTinyIntBuilder = class extends MySqlColumnBuilderWithAutoIncrement {
   }
 };
 var MySqlTinyInt = class extends MySqlColumnWithAutoIncrement {
-  static [entityKind2] = "MySqlTinyInt";
+  static [entityKind] = "MySqlTinyInt";
   getSQLType() {
     return `tinyint${this.config.unsigned ? " unsigned" : ""}`;
   }
@@ -43625,7 +42166,7 @@ function tinyint(a, b) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/varbinary.js
 var MySqlVarBinaryBuilder = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlVarBinaryBuilder";
+  static [entityKind] = "MySqlVarBinaryBuilder";
   /** @internal */
   constructor(name, config2) {
     super(name, "string", "MySqlVarBinary");
@@ -43640,7 +42181,7 @@ var MySqlVarBinaryBuilder = class extends MySqlColumnBuilder {
   }
 };
 var MySqlVarBinary = class extends MySqlColumn {
-  static [entityKind2] = "MySqlVarBinary";
+  static [entityKind] = "MySqlVarBinary";
   length = this.config.length;
   mapFromDriverValue(value) {
     if (typeof value === "string") return value;
@@ -43662,7 +42203,7 @@ function varbinary(a, b) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/varchar.js
 var MySqlVarCharBuilder = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlVarCharBuilder";
+  static [entityKind] = "MySqlVarCharBuilder";
   /** @internal */
   constructor(name, config2) {
     super(name, "string", "MySqlVarChar");
@@ -43678,7 +42219,7 @@ var MySqlVarCharBuilder = class extends MySqlColumnBuilder {
   }
 };
 var MySqlVarChar = class extends MySqlColumn {
-  static [entityKind2] = "MySqlVarChar";
+  static [entityKind] = "MySqlVarChar";
   length = this.config.length;
   enumValues = this.config.enum;
   getSQLType() {
@@ -43692,7 +42233,7 @@ function varchar(a, b) {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/columns/year.js
 var MySqlYearBuilder = class extends MySqlColumnBuilder {
-  static [entityKind2] = "MySqlYearBuilder";
+  static [entityKind] = "MySqlYearBuilder";
   constructor(name) {
     super(name, "number", "MySqlYear");
   }
@@ -43702,7 +42243,7 @@ var MySqlYearBuilder = class extends MySqlColumnBuilder {
   }
 };
 var MySqlYear = class extends MySqlColumn {
-  static [entityKind2] = "MySqlYear";
+  static [entityKind] = "MySqlYear";
   getSQLType() {
     return `year`;
   }
@@ -43746,18 +42287,18 @@ function getMySqlColumnBuilders() {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/table.js
 var InlineForeignKeys2 = Symbol.for("drizzle:MySqlInlineForeignKeys");
-var MySqlTable = class extends Table2 {
-  static [entityKind2] = "MySqlTable";
+var MySqlTable = class extends Table {
+  static [entityKind] = "MySqlTable";
   /** @internal */
-  static Symbol = Object.assign({}, Table2.Symbol, {
+  static Symbol = Object.assign({}, Table.Symbol, {
     InlineForeignKeys: InlineForeignKeys2
   });
   /** @internal */
-  [Table2.Symbol.Columns];
+  [Table.Symbol.Columns];
   /** @internal */
   [InlineForeignKeys2] = [];
   /** @internal */
-  [Table2.Symbol.ExtraConfigBuilder] = void 0;
+  [Table.Symbol.ExtraConfigBuilder] = void 0;
 };
 function mysqlTableWithSchema(name, columns, extraConfig, schema, baseName = name) {
   const rawTable = new MySqlTable(name, schema, baseName);
@@ -43772,8 +42313,8 @@ function mysqlTableWithSchema(name, columns, extraConfig, schema, baseName = nam
     })
   );
   const table = Object.assign(rawTable, builtColumns);
-  table[Table2.Symbol.Columns] = builtColumns;
-  table[Table2.Symbol.ExtraConfigColumns] = builtColumns;
+  table[Table.Symbol.Columns] = builtColumns;
+  table[Table.Symbol.ExtraConfigColumns] = builtColumns;
   if (extraConfig) {
     table[MySqlTable.Symbol.ExtraConfigBuilder] = extraConfig;
   }
@@ -43785,13 +42326,13 @@ var mysqlTable = (name, columns, extraConfig) => {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/utils.js
 function extractUsedTable(table) {
-  if (is2(table, MySqlTable)) {
-    return [`${table[Table2.Symbol.BaseName]}`];
+  if (is(table, MySqlTable)) {
+    return [`${table[Table.Symbol.BaseName]}`];
   }
-  if (is2(table, Subquery2)) {
+  if (is(table, Subquery)) {
     return table._.usedTables ?? [];
   }
-  if (is2(table, SQL2)) {
+  if (is(table, SQL)) {
     return table.usedTables ?? [];
   }
   return [];
@@ -43814,7 +42355,7 @@ var MySqlDeleteBase = class extends QueryPromise {
     this.dialect = dialect;
     this.config = { table, withList };
   }
-  static [entityKind2] = "MySqlDelete";
+  static [entityKind] = "MySqlDelete";
   config;
   /**
    * Adds a `where` clause to the query.
@@ -43853,7 +42394,7 @@ var MySqlDeleteBase = class extends QueryPromise {
     if (typeof columns[0] === "function") {
       const orderBy = columns[0](
         new Proxy(
-          this.config.table[Table2.Symbol.Columns],
+          this.config.table[Table.Symbol.Columns],
           new SelectionProxyHandler({ sqlAliasedBehavior: "alias", sqlBehavior: "sql" })
         )
       );
@@ -43921,7 +42462,7 @@ function noopCase(input) {
   return input;
 }
 var CasingCache = class {
-  static [entityKind2] = "CasingCache";
+  static [entityKind] = "CasingCache";
   /** @internal */
   cache = {};
   cachedTables = {};
@@ -43931,8 +42472,8 @@ var CasingCache = class {
   }
   getColumnCasing(column) {
     if (!column.keyAsName) return column.name;
-    const schema = column.table[Table2.Symbol.Schema] ?? "public";
-    const tableName = column.table[Table2.Symbol.OriginalName];
+    const schema = column.table[Table.Symbol.Schema] ?? "public";
+    const tableName = column.table[Table.Symbol.OriginalName];
     const key = `${schema}.${tableName}.${column.name}`;
     if (!this.cache[key]) {
       this.cacheTable(column.table);
@@ -43940,11 +42481,11 @@ var CasingCache = class {
     return this.cache[key];
   }
   cacheTable(table) {
-    const schema = table[Table2.Symbol.Schema] ?? "public";
-    const tableName = table[Table2.Symbol.OriginalName];
+    const schema = table[Table.Symbol.Schema] ?? "public";
+    const tableName = table[Table.Symbol.OriginalName];
     const tableKey = `${schema}.${tableName}`;
     if (!this.cachedTables[tableKey]) {
-      for (const column of Object.values(table[Table2.Symbol.Columns])) {
+      for (const column of Object.values(table[Table.Symbol.Columns])) {
         const columnKey = `${tableKey}.${column.name}`;
         this.cache[columnKey] = this.convert(column.name);
       }
@@ -43958,13 +42499,13 @@ var CasingCache = class {
 };
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/view-base.js
-var MySqlViewBase = class extends View2 {
-  static [entityKind2] = "MySqlViewBase";
+var MySqlViewBase = class extends View {
+  static [entityKind] = "MySqlViewBase";
 };
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/dialect.js
 var MySqlDialect = class {
-  static [entityKind2] = "MySqlDialect";
+  static [entityKind] = "MySqlDialect";
   /** @internal */
   casing;
   constructor(config2) {
@@ -43972,8 +42513,8 @@ var MySqlDialect = class {
   }
   async migrate(migrations, session, config2) {
     const migrationsTable = config2.migrationsTable ?? "__drizzle_migrations";
-    const migrationTableCreate = sql2`
-			create table if not exists ${sql2.identifier(migrationsTable)} (
+    const migrationTableCreate = sql`
+			create table if not exists ${sql.identifier(migrationsTable)} (
 				id serial primary key,
 				hash text not null,
 				created_at bigint
@@ -43981,17 +42522,17 @@ var MySqlDialect = class {
 		`;
     await session.execute(migrationTableCreate);
     const dbMigrations = await session.all(
-      sql2`select id, hash, created_at from ${sql2.identifier(migrationsTable)} order by created_at desc limit 1`
+      sql`select id, hash, created_at from ${sql.identifier(migrationsTable)} order by created_at desc limit 1`
     );
     const lastDbMigration = dbMigrations[0];
     await session.transaction(async (tx) => {
       for (const migration of migrations) {
         if (!lastDbMigration || Number(lastDbMigration.created_at) < migration.folderMillis) {
           for (const stmt of migration.sql) {
-            await tx.execute(sql2.raw(stmt));
+            await tx.execute(sql.raw(stmt));
           }
           await tx.execute(
-            sql2`insert into ${sql2.identifier(
+            sql`insert into ${sql.identifier(
               migrationsTable
             )} (\`hash\`, \`created_at\`) values(${migration.hash}, ${migration.folderMillis})`
           );
@@ -44010,15 +42551,15 @@ var MySqlDialect = class {
   }
   buildWithCTE(queries) {
     if (!queries?.length) return void 0;
-    const withSqlChunks = [sql2`with `];
+    const withSqlChunks = [sql`with `];
     for (const [i, w] of queries.entries()) {
-      withSqlChunks.push(sql2`${sql2.identifier(w._.alias)} as (${w._.sql})`);
+      withSqlChunks.push(sql`${sql.identifier(w._.alias)} as (${w._.sql})`);
       if (i < queries.length - 1) {
-        withSqlChunks.push(sql2`, `);
+        withSqlChunks.push(sql`, `);
       }
     }
-    withSqlChunks.push(sql2` `);
-    return sql2.join(withSqlChunks);
+    withSqlChunks.push(sql` `);
+    return sql.join(withSqlChunks);
   }
   buildDeleteQuery({
     table,
@@ -44029,26 +42570,26 @@ var MySqlDialect = class {
     orderBy
   }) {
     const withSql = this.buildWithCTE(withList);
-    const returningSql = returning ? sql2` returning ${this.buildSelection(returning, { isSingleTable: true })}` : void 0;
-    const whereSql = where ? sql2` where ${where}` : void 0;
+    const returningSql = returning ? sql` returning ${this.buildSelection(returning, { isSingleTable: true })}` : void 0;
+    const whereSql = where ? sql` where ${where}` : void 0;
     const orderBySql = this.buildOrderBy(orderBy);
     const limitSql = this.buildLimit(limit);
-    return sql2`${withSql}delete from ${table}${whereSql}${orderBySql}${limitSql}${returningSql}`;
+    return sql`${withSql}delete from ${table}${whereSql}${orderBySql}${limitSql}${returningSql}`;
   }
   buildUpdateSet(table, set2) {
-    const tableColumns = table[Table2.Symbol.Columns];
+    const tableColumns = table[Table.Symbol.Columns];
     const columnNames = Object.keys(tableColumns).filter(
       (colName) => set2[colName] !== void 0 || tableColumns[colName]?.onUpdateFn !== void 0
     );
     const setSize = columnNames.length;
-    return sql2.join(
+    return sql.join(
       columnNames.flatMap((colName, i) => {
         const col = tableColumns[colName];
         const onUpdateFnResult = col.onUpdateFn?.();
-        const value = set2[colName] ?? (is2(onUpdateFnResult, SQL2) ? onUpdateFnResult : sql2.param(onUpdateFnResult, col));
-        const res = sql2`${sql2.identifier(this.casing.getColumnCasing(col))} = ${value}`;
+        const value = set2[colName] ?? (is(onUpdateFnResult, SQL) ? onUpdateFnResult : sql.param(onUpdateFnResult, col));
+        const res = sql`${sql.identifier(this.casing.getColumnCasing(col))} = ${value}`;
         if (i < setSize - 1) {
-          return [res, sql2.raw(", ")];
+          return [res, sql.raw(", ")];
         }
         return [res];
       })
@@ -44065,11 +42606,11 @@ var MySqlDialect = class {
   }) {
     const withSql = this.buildWithCTE(withList);
     const setSql = this.buildUpdateSet(table, set2);
-    const returningSql = returning ? sql2` returning ${this.buildSelection(returning, { isSingleTable: true })}` : void 0;
-    const whereSql = where ? sql2` where ${where}` : void 0;
+    const returningSql = returning ? sql` returning ${this.buildSelection(returning, { isSingleTable: true })}` : void 0;
+    const whereSql = where ? sql` where ${where}` : void 0;
     const orderBySql = this.buildOrderBy(orderBy);
     const limitSql = this.buildLimit(limit);
-    return sql2`${withSql}update ${table} set ${setSql}${whereSql}${orderBySql}${limitSql}${returningSql}`;
+    return sql`${withSql}update ${table} set ${setSql}${whereSql}${orderBySql}${limitSql}${returningSql}`;
   }
   /**
    * Builds selection SQL with provided fields/expressions
@@ -44086,16 +42627,16 @@ var MySqlDialect = class {
     const columnsLen = fields.length;
     const chunks = fields.flatMap(({ field }, i) => {
       const chunk = [];
-      if (is2(field, SQL2.Aliased) && field.isSelectionField) {
-        chunk.push(sql2.identifier(field.fieldAlias));
-      } else if (is2(field, SQL2.Aliased) || is2(field, SQL2)) {
-        const query = is2(field, SQL2.Aliased) ? field.sql : field;
+      if (is(field, SQL.Aliased) && field.isSelectionField) {
+        chunk.push(sql.identifier(field.fieldAlias));
+      } else if (is(field, SQL.Aliased) || is(field, SQL)) {
+        const query = is(field, SQL.Aliased) ? field.sql : field;
         if (isSingleTable) {
           chunk.push(
-            new SQL2(
+            new SQL(
               query.queryChunks.map((c) => {
-                if (is2(c, MySqlColumn)) {
-                  return sql2.identifier(this.casing.getColumnCasing(c));
+                if (is(c, MySqlColumn)) {
+                  return sql.identifier(this.casing.getColumnCasing(c));
                 }
                 return c;
               })
@@ -44104,20 +42645,20 @@ var MySqlDialect = class {
         } else {
           chunk.push(query);
         }
-        if (is2(field, SQL2.Aliased)) {
-          chunk.push(sql2` as ${sql2.identifier(field.fieldAlias)}`);
+        if (is(field, SQL.Aliased)) {
+          chunk.push(sql` as ${sql.identifier(field.fieldAlias)}`);
         }
-      } else if (is2(field, Column2)) {
+      } else if (is(field, Column)) {
         if (isSingleTable) {
-          chunk.push(sql2.identifier(this.casing.getColumnCasing(field)));
+          chunk.push(sql.identifier(this.casing.getColumnCasing(field)));
         } else {
           chunk.push(field);
         }
-      } else if (is2(field, Subquery2)) {
+      } else if (is(field, Subquery)) {
         const entries = Object.entries(field._.selectedFields);
         if (entries.length === 1) {
           const entry = entries[0][1];
-          const fieldDecoder = is2(entry, SQL2) ? entry.decoder : is2(entry, Column2) ? { mapFromDriverValue: (v) => entry.mapFromDriverValue(v) } : entry.sql.decoder;
+          const fieldDecoder = is(entry, SQL) ? entry.decoder : is(entry, Column) ? { mapFromDriverValue: (v) => entry.mapFromDriverValue(v) } : entry.sql.decoder;
           if (fieldDecoder) {
             field._.sql.decoder = fieldDecoder;
           }
@@ -44125,23 +42666,23 @@ var MySqlDialect = class {
         chunk.push(field);
       }
       if (i < columnsLen - 1) {
-        chunk.push(sql2`, `);
+        chunk.push(sql`, `);
       }
       return chunk;
     });
-    return sql2.join(chunks);
+    return sql.join(chunks);
   }
   buildLimit(limit) {
-    return typeof limit === "object" || typeof limit === "number" && limit >= 0 ? sql2` limit ${limit}` : void 0;
+    return typeof limit === "object" || typeof limit === "number" && limit >= 0 ? sql` limit ${limit}` : void 0;
   }
   buildOrderBy(orderBy) {
-    return orderBy && orderBy.length > 0 ? sql2` order by ${sql2.join(orderBy, sql2`, `)}` : void 0;
+    return orderBy && orderBy.length > 0 ? sql` order by ${sql.join(orderBy, sql`, `)}` : void 0;
   }
   buildIndex({
     indexes,
     indexFor
   }) {
-    return indexes && indexes.length > 0 ? sql2` ${sql2.raw(indexFor)} INDEX (${sql2.raw(indexes.join(`, `))})` : void 0;
+    return indexes && indexes.length > 0 ? sql` ${sql.raw(indexFor)} INDEX (${sql.raw(indexes.join(`, `))})` : void 0;
   }
   buildSelectQuery({
     withList,
@@ -44164,8 +42705,8 @@ var MySqlDialect = class {
   }) {
     const fieldsList = fieldsFlat ?? orderSelectedFields(fields);
     for (const f of fieldsList) {
-      if (is2(f.field, Column2) && getTableName(f.field.table) !== (is2(table, Subquery2) ? table._.alias : is2(table, MySqlViewBase) ? table[ViewBaseConfig2].name : is2(table, SQL2) ? void 0 : getTableName(table)) && !((table2) => joins?.some(
-        ({ alias }) => alias === (table2[Table2.Symbol.IsAlias] ? getTableName(table2) : table2[Table2.Symbol.BaseName])
+      if (is(f.field, Column) && getTableName(f.field.table) !== (is(table, Subquery) ? table._.alias : is(table, MySqlViewBase) ? table[ViewBaseConfig].name : is(table, SQL) ? void 0 : getTableName(table)) && !((table2) => joins?.some(
+        ({ alias }) => alias === (table2[Table.Symbol.IsAlias] ? getTableName(table2) : table2[Table.Symbol.BaseName])
       ))(f.field.table)) {
         const tableName = getTableName(f.field.table);
         throw new Error(
@@ -44177,13 +42718,13 @@ var MySqlDialect = class {
     }
     const isSingleTable = !joins || joins.length === 0;
     const withSql = this.buildWithCTE(withList);
-    const distinctSql = distinct ? sql2` distinct` : void 0;
+    const distinctSql = distinct ? sql` distinct` : void 0;
     const selection = this.buildSelection(fieldsList, { isSingleTable });
     const tableSql = (() => {
-      if (is2(table, Table2) && table[Table2.Symbol.IsAlias]) {
-        return sql2`${sql2`${sql2.identifier(table[Table2.Symbol.Schema] ?? "")}.`.if(table[Table2.Symbol.Schema])}${sql2.identifier(
-          table[Table2.Symbol.OriginalName]
-        )} ${sql2.identifier(table[Table2.Symbol.Name])}`;
+      if (is(table, Table) && table[Table.Symbol.IsAlias]) {
+        return sql`${sql`${sql.identifier(table[Table.Symbol.Schema] ?? "")}.`.if(table[Table.Symbol.Schema])}${sql.identifier(
+          table[Table.Symbol.OriginalName]
+        )} ${sql.identifier(table[Table.Symbol.Name])}`;
       }
       return table;
     })();
@@ -44191,12 +42732,12 @@ var MySqlDialect = class {
     if (joins) {
       for (const [index, joinMeta] of joins.entries()) {
         if (index === 0) {
-          joinsArray.push(sql2` `);
+          joinsArray.push(sql` `);
         }
         const table2 = joinMeta.table;
-        const lateralSql = joinMeta.lateral ? sql2` lateral` : void 0;
-        const onSql = joinMeta.on ? sql2` on ${joinMeta.on}` : void 0;
-        if (is2(table2, MySqlTable)) {
+        const lateralSql = joinMeta.lateral ? sql` lateral` : void 0;
+        const onSql = joinMeta.on ? sql` on ${joinMeta.on}` : void 0;
+        if (is(table2, MySqlTable)) {
           const tableName = table2[MySqlTable.Symbol.Name];
           const tableSchema = table2[MySqlTable.Symbol.Schema];
           const origTableName = table2[MySqlTable.Symbol.OriginalName];
@@ -44214,33 +42755,33 @@ var MySqlDialect = class {
             indexFor: "IGNORE"
           });
           joinsArray.push(
-            sql2`${sql2.raw(joinMeta.joinType)} join${lateralSql} ${tableSchema ? sql2`${sql2.identifier(tableSchema)}.` : void 0}${sql2.identifier(origTableName)}${useIndexSql2}${forceIndexSql2}${ignoreIndexSql2}${alias && sql2` ${sql2.identifier(alias)}`}${onSql}`
+            sql`${sql.raw(joinMeta.joinType)} join${lateralSql} ${tableSchema ? sql`${sql.identifier(tableSchema)}.` : void 0}${sql.identifier(origTableName)}${useIndexSql2}${forceIndexSql2}${ignoreIndexSql2}${alias && sql` ${sql.identifier(alias)}`}${onSql}`
           );
-        } else if (is2(table2, View2)) {
-          const viewName = table2[ViewBaseConfig2].name;
-          const viewSchema = table2[ViewBaseConfig2].schema;
-          const origViewName = table2[ViewBaseConfig2].originalName;
+        } else if (is(table2, View)) {
+          const viewName = table2[ViewBaseConfig].name;
+          const viewSchema = table2[ViewBaseConfig].schema;
+          const origViewName = table2[ViewBaseConfig].originalName;
           const alias = viewName === origViewName ? void 0 : joinMeta.alias;
           joinsArray.push(
-            sql2`${sql2.raw(joinMeta.joinType)} join${lateralSql} ${viewSchema ? sql2`${sql2.identifier(viewSchema)}.` : void 0}${sql2.identifier(origViewName)}${alias && sql2` ${sql2.identifier(alias)}`}${onSql}`
+            sql`${sql.raw(joinMeta.joinType)} join${lateralSql} ${viewSchema ? sql`${sql.identifier(viewSchema)}.` : void 0}${sql.identifier(origViewName)}${alias && sql` ${sql.identifier(alias)}`}${onSql}`
           );
         } else {
           joinsArray.push(
-            sql2`${sql2.raw(joinMeta.joinType)} join${lateralSql} ${table2}${onSql}`
+            sql`${sql.raw(joinMeta.joinType)} join${lateralSql} ${table2}${onSql}`
           );
         }
         if (index < joins.length - 1) {
-          joinsArray.push(sql2` `);
+          joinsArray.push(sql` `);
         }
       }
     }
-    const joinsSql = sql2.join(joinsArray);
-    const whereSql = where ? sql2` where ${where}` : void 0;
-    const havingSql = having ? sql2` having ${having}` : void 0;
+    const joinsSql = sql.join(joinsArray);
+    const whereSql = where ? sql` where ${where}` : void 0;
+    const havingSql = having ? sql` having ${having}` : void 0;
     const orderBySql = this.buildOrderBy(orderBy);
-    const groupBySql = groupBy && groupBy.length > 0 ? sql2` group by ${sql2.join(groupBy, sql2`, `)}` : void 0;
+    const groupBySql = groupBy && groupBy.length > 0 ? sql` group by ${sql.join(groupBy, sql`, `)}` : void 0;
     const limitSql = this.buildLimit(limit);
-    const offsetSql = offset ? sql2` offset ${offset}` : void 0;
+    const offsetSql = offset ? sql` offset ${offset}` : void 0;
     const useIndexSql = this.buildIndex({ indexes: useIndex, indexFor: "USE" });
     const forceIndexSql = this.buildIndex({
       indexes: forceIndex,
@@ -44253,14 +42794,14 @@ var MySqlDialect = class {
     let lockingClausesSql;
     if (lockingClause) {
       const { config: config2, strength } = lockingClause;
-      lockingClausesSql = sql2` for ${sql2.raw(strength)}`;
+      lockingClausesSql = sql` for ${sql.raw(strength)}`;
       if (config2.noWait) {
-        lockingClausesSql.append(sql2` nowait`);
+        lockingClausesSql.append(sql` nowait`);
       } else if (config2.skipLocked) {
-        lockingClausesSql.append(sql2` skip locked`);
+        lockingClausesSql.append(sql` skip locked`);
       }
     }
-    const finalQuery = sql2`${withSql}select${distinctSql} ${selection} from ${tableSql}${useIndexSql}${forceIndexSql}${ignoreIndexSql}${joinsSql}${whereSql}${groupBySql}${havingSql}${orderBySql}${limitSql}${offsetSql}${lockingClausesSql}`;
+    const finalQuery = sql`${withSql}select${distinctSql} ${selection} from ${tableSql}${useIndexSql}${forceIndexSql}${ignoreIndexSql}${joinsSql}${whereSql}${groupBySql}${havingSql}${orderBySql}${limitSql}${offsetSql}${lockingClausesSql}`;
     if (setOperators.length > 0) {
       return this.buildSetOperations(finalQuery, setOperators);
     }
@@ -44283,36 +42824,36 @@ var MySqlDialect = class {
     leftSelect,
     setOperator: { type, isAll, rightSelect, limit, orderBy, offset }
   }) {
-    const leftChunk = sql2`(${leftSelect.getSQL()}) `;
-    const rightChunk = sql2`(${rightSelect.getSQL()})`;
+    const leftChunk = sql`(${leftSelect.getSQL()}) `;
+    const rightChunk = sql`(${rightSelect.getSQL()})`;
     let orderBySql;
     if (orderBy && orderBy.length > 0) {
       const orderByValues = [];
       for (const orderByUnit of orderBy) {
-        if (is2(orderByUnit, MySqlColumn)) {
+        if (is(orderByUnit, MySqlColumn)) {
           orderByValues.push(
-            sql2.identifier(this.casing.getColumnCasing(orderByUnit))
+            sql.identifier(this.casing.getColumnCasing(orderByUnit))
           );
-        } else if (is2(orderByUnit, SQL2)) {
+        } else if (is(orderByUnit, SQL)) {
           for (let i = 0; i < orderByUnit.queryChunks.length; i++) {
             const chunk = orderByUnit.queryChunks[i];
-            if (is2(chunk, MySqlColumn)) {
-              orderByUnit.queryChunks[i] = sql2.identifier(
+            if (is(chunk, MySqlColumn)) {
+              orderByUnit.queryChunks[i] = sql.identifier(
                 this.casing.getColumnCasing(chunk)
               );
             }
           }
-          orderByValues.push(sql2`${orderByUnit}`);
+          orderByValues.push(sql`${orderByUnit}`);
         } else {
-          orderByValues.push(sql2`${orderByUnit}`);
+          orderByValues.push(sql`${orderByUnit}`);
         }
       }
-      orderBySql = sql2` order by ${sql2.join(orderByValues, sql2`, `)} `;
+      orderBySql = sql` order by ${sql.join(orderByValues, sql`, `)} `;
     }
-    const limitSql = typeof limit === "object" || typeof limit === "number" && limit >= 0 ? sql2` limit ${limit}` : void 0;
-    const operatorChunk = sql2.raw(`${type} ${isAll ? "all " : ""}`);
-    const offsetSql = offset ? sql2` offset ${offset}` : void 0;
-    return sql2`${leftChunk}${operatorChunk}${rightChunk}${orderBySql}${limitSql}${offsetSql}`;
+    const limitSql = typeof limit === "object" || typeof limit === "number" && limit >= 0 ? sql` limit ${limit}` : void 0;
+    const operatorChunk = sql.raw(`${type} ${isAll ? "all " : ""}`);
+    const offsetSql = offset ? sql` offset ${offset}` : void 0;
+    return sql`${leftChunk}${operatorChunk}${rightChunk}${orderBySql}${limitSql}${offsetSql}`;
   }
   buildInsertQuery({
     table,
@@ -44322,42 +42863,42 @@ var MySqlDialect = class {
     select
   }) {
     const valuesSqlList = [];
-    const columns = table[Table2.Symbol.Columns];
+    const columns = table[Table.Symbol.Columns];
     const colEntries = Object.entries(columns).filter(
       ([_, col]) => !col.shouldDisableInsert()
     );
-    const insertOrder = colEntries.map(([, column]) => sql2.identifier(this.casing.getColumnCasing(column)));
+    const insertOrder = colEntries.map(([, column]) => sql.identifier(this.casing.getColumnCasing(column)));
     const generatedIdsResponse = [];
     if (select) {
       const select2 = valuesOrSelect;
-      if (is2(select2, SQL2)) {
+      if (is(select2, SQL)) {
         valuesSqlList.push(select2);
       } else {
         valuesSqlList.push(select2.getSQL());
       }
     } else {
       const values = valuesOrSelect;
-      valuesSqlList.push(sql2.raw("values "));
+      valuesSqlList.push(sql.raw("values "));
       for (const [valueIndex, value] of values.entries()) {
         const generatedIds = {};
         const valueList = [];
         for (const [fieldName, col] of colEntries) {
           const colValue = value[fieldName];
-          if (colValue === void 0 || is2(colValue, Param2) && colValue.value === void 0) {
+          if (colValue === void 0 || is(colValue, Param) && colValue.value === void 0) {
             if (col.defaultFn !== void 0) {
               const defaultFnResult = col.defaultFn();
               generatedIds[fieldName] = defaultFnResult;
-              const defaultValue = is2(defaultFnResult, SQL2) ? defaultFnResult : sql2.param(defaultFnResult, col);
+              const defaultValue = is(defaultFnResult, SQL) ? defaultFnResult : sql.param(defaultFnResult, col);
               valueList.push(defaultValue);
             } else if (!col.default && col.onUpdateFn !== void 0) {
               const onUpdateFnResult = col.onUpdateFn();
-              const newValue = is2(onUpdateFnResult, SQL2) ? onUpdateFnResult : sql2.param(onUpdateFnResult, col);
+              const newValue = is(onUpdateFnResult, SQL) ? onUpdateFnResult : sql.param(onUpdateFnResult, col);
               valueList.push(newValue);
             } else {
-              valueList.push(sql2`default`);
+              valueList.push(sql`default`);
             }
           } else {
-            if (col.defaultFn && is2(colValue, Param2)) {
+            if (col.defaultFn && is(colValue, Param)) {
               generatedIds[fieldName] = colValue.value;
             }
             valueList.push(colValue);
@@ -44366,15 +42907,15 @@ var MySqlDialect = class {
         generatedIdsResponse.push(generatedIds);
         valuesSqlList.push(valueList);
         if (valueIndex < values.length - 1) {
-          valuesSqlList.push(sql2`, `);
+          valuesSqlList.push(sql`, `);
         }
       }
     }
-    const valuesSql = sql2.join(valuesSqlList);
-    const ignoreSql = ignore ? sql2` ignore` : void 0;
-    const onConflictSql = onConflict ? sql2` on duplicate key ${onConflict}` : void 0;
+    const valuesSql = sql.join(valuesSqlList);
+    const ignoreSql = ignore ? sql` ignore` : void 0;
+    const onConflictSql = onConflict ? sql` on duplicate key ${onConflict}` : void 0;
     return {
-      sql: sql2`insert${ignoreSql} into ${table} ${insertOrder} ${valuesSql}${onConflictSql}`,
+      sql: sql`insert${ignoreSql} into ${table} ${insertOrder} ${valuesSql}${onConflictSql}`,
       generatedIds: generatedIdsResponse
     };
   }
@@ -44461,7 +43002,7 @@ var MySqlDialect = class {
       }
       let extras;
       if (config2.extras) {
-        extras = typeof config2.extras === "function" ? config2.extras(aliasedColumns, { sql: sql2 }) : config2.extras;
+        extras = typeof config2.extras === "function" ? config2.extras(aliasedColumns, { sql }) : config2.extras;
         for (const [tsKey, value] of Object.entries(extras)) {
           fieldsSelection.push({
             tsKey,
@@ -44471,9 +43012,9 @@ var MySqlDialect = class {
       }
       for (const { tsKey, value } of fieldsSelection) {
         selection.push({
-          dbKey: is2(value, SQL2.Aliased) ? value.fieldAlias : tableConfig.columns[tsKey].name,
+          dbKey: is(value, SQL.Aliased) ? value.fieldAlias : tableConfig.columns[tsKey].name,
           tsKey,
-          field: is2(value, Column2) ? aliasedTableColumn(value, tableAlias) : value,
+          field: is(value, Column) ? aliasedTableColumn(value, tableAlias) : value,
           relationTableTsKey: void 0,
           isJson: false,
           selection: []
@@ -44484,7 +43025,7 @@ var MySqlDialect = class {
         orderByOrig = [orderByOrig];
       }
       orderBy = orderByOrig.map((orderByValue) => {
-        if (is2(orderByValue, Column2)) {
+        if (is(orderByValue, Column)) {
           return aliasedTableColumn(orderByValue, tableAlias);
         }
         return mapColumnsInSQLToAlias(orderByValue, tableAlias);
@@ -44504,9 +43045,9 @@ var MySqlDialect = class {
         const relationTableName = getTableUniqueName(relation.referencedTable);
         const relationTableTsName = tableNamesMap[relationTableName];
         const relationTableAlias = `${tableAlias}_${selectedRelationTsKey}`;
-        const joinOn2 = and2(
+        const joinOn2 = and(
           ...normalizedRelation.fields.map(
-            (field2, i) => eq2(
+            (field2, i) => eq(
               aliasedTableColumn(
                 normalizedRelation.references[i],
                 relationTableAlias
@@ -44521,17 +43062,17 @@ var MySqlDialect = class {
           tableNamesMap,
           table: fullSchema[relationTableTsName],
           tableConfig: schema[relationTableTsName],
-          queryConfig: is2(relation, One) ? selectedRelationConfigValue === true ? { limit: 1 } : { ...selectedRelationConfigValue, limit: 1 } : selectedRelationConfigValue,
+          queryConfig: is(relation, One) ? selectedRelationConfigValue === true ? { limit: 1 } : { ...selectedRelationConfigValue, limit: 1 } : selectedRelationConfigValue,
           tableAlias: relationTableAlias,
           joinOn: joinOn2,
           nestedQueryRelation: relation
         });
-        const field = sql2`${sql2.identifier(relationTableAlias)}.${sql2.identifier("data")}`.as(
+        const field = sql`${sql.identifier(relationTableAlias)}.${sql.identifier("data")}`.as(
           selectedRelationTsKey
         );
         joins.push({
-          on: sql2`true`,
-          table: new Subquery2(builtRelation.sql, {}, relationTableAlias),
+          on: sql`true`,
+          table: new Subquery(builtRelation.sql, {}, relationTableAlias),
           alias: relationTableAlias,
           joinType: "left",
           lateral: true
@@ -44552,16 +43093,16 @@ var MySqlDialect = class {
       });
     }
     let result;
-    where = and2(joinOn, where);
+    where = and(joinOn, where);
     if (nestedQueryRelation) {
-      let field = sql2`json_array(${sql2.join(
+      let field = sql`json_array(${sql.join(
         selection.map(
-          ({ field: field2, tsKey, isJson }) => isJson ? sql2`${sql2.identifier(`${tableAlias}_${tsKey}`)}.${sql2.identifier("data")}` : is2(field2, SQL2.Aliased) ? field2.sql : field2
+          ({ field: field2, tsKey, isJson }) => isJson ? sql`${sql.identifier(`${tableAlias}_${tsKey}`)}.${sql.identifier("data")}` : is(field2, SQL.Aliased) ? field2.sql : field2
         ),
-        sql2`, `
+        sql`, `
       )})`;
-      if (is2(nestedQueryRelation, Many)) {
-        field = sql2`coalesce(json_arrayagg(${field}), json_array())`;
+      if (is(nestedQueryRelation, Many)) {
+        field = sql`coalesce(json_arrayagg(${field}), json_array())`;
       }
       const nestedSelection = [
         {
@@ -44581,12 +43122,12 @@ var MySqlDialect = class {
           fieldsFlat: [
             {
               path: [],
-              field: sql2.raw("*")
+              field: sql.raw("*")
             },
             ...(orderBy?.length ?? 0) > 0 ? [
               {
                 path: [],
-                field: sql2`row_number() over (order by ${sql2.join(orderBy, sql2`, `)})`
+                field: sql`row_number() over (order by ${sql.join(orderBy, sql`, `)})`
               }
             ] : []
           ],
@@ -44603,11 +43144,11 @@ var MySqlDialect = class {
         result = aliasedTable(table, tableAlias);
       }
       result = this.buildSelectQuery({
-        table: is2(result, MySqlTable) ? result : new Subquery2(result, {}, tableAlias),
+        table: is(result, MySqlTable) ? result : new Subquery(result, {}, tableAlias),
         fields: {},
         fieldsFlat: nestedSelection.map(({ field: field2 }) => ({
           path: [],
-          field: is2(field2, Column2) ? aliasedTableColumn(field2, tableAlias) : field2
+          field: is(field2, Column) ? aliasedTableColumn(field2, tableAlias) : field2
         })),
         joins,
         where,
@@ -44622,7 +43163,7 @@ var MySqlDialect = class {
         fields: {},
         fieldsFlat: selection.map(({ field }) => ({
           path: [],
-          field: is2(field, Column2) ? aliasedTableColumn(field, tableAlias) : field
+          field: is(field, Column) ? aliasedTableColumn(field, tableAlias) : field
         })),
         joins,
         where,
@@ -44711,7 +43252,7 @@ var MySqlDialect = class {
       }
       let extras;
       if (config2.extras) {
-        extras = typeof config2.extras === "function" ? config2.extras(aliasedColumns, { sql: sql2 }) : config2.extras;
+        extras = typeof config2.extras === "function" ? config2.extras(aliasedColumns, { sql }) : config2.extras;
         for (const [tsKey, value] of Object.entries(extras)) {
           fieldsSelection.push({
             tsKey,
@@ -44721,9 +43262,9 @@ var MySqlDialect = class {
       }
       for (const { tsKey, value } of fieldsSelection) {
         selection.push({
-          dbKey: is2(value, SQL2.Aliased) ? value.fieldAlias : tableConfig.columns[tsKey].name,
+          dbKey: is(value, SQL.Aliased) ? value.fieldAlias : tableConfig.columns[tsKey].name,
           tsKey,
-          field: is2(value, Column2) ? aliasedTableColumn(value, tableAlias) : value,
+          field: is(value, Column) ? aliasedTableColumn(value, tableAlias) : value,
           relationTableTsKey: void 0,
           isJson: false,
           selection: []
@@ -44734,7 +43275,7 @@ var MySqlDialect = class {
         orderByOrig = [orderByOrig];
       }
       orderBy = orderByOrig.map((orderByValue) => {
-        if (is2(orderByValue, Column2)) {
+        if (is(orderByValue, Column)) {
           return aliasedTableColumn(orderByValue, tableAlias);
         }
         return mapColumnsInSQLToAlias(orderByValue, tableAlias);
@@ -44754,9 +43295,9 @@ var MySqlDialect = class {
         const relationTableName = getTableUniqueName(relation.referencedTable);
         const relationTableTsName = tableNamesMap[relationTableName];
         const relationTableAlias = `${tableAlias}_${selectedRelationTsKey}`;
-        const joinOn2 = and2(
+        const joinOn2 = and(
           ...normalizedRelation.fields.map(
-            (field2, i) => eq2(
+            (field2, i) => eq(
               aliasedTableColumn(
                 normalizedRelation.references[i],
                 relationTableAlias
@@ -44772,15 +43313,15 @@ var MySqlDialect = class {
             tableNamesMap,
             table: fullSchema[relationTableTsName],
             tableConfig: schema[relationTableTsName],
-            queryConfig: is2(relation, One) ? selectedRelationConfigValue === true ? { limit: 1 } : { ...selectedRelationConfigValue, limit: 1 } : selectedRelationConfigValue,
+            queryConfig: is(relation, One) ? selectedRelationConfigValue === true ? { limit: 1 } : { ...selectedRelationConfigValue, limit: 1 } : selectedRelationConfigValue,
             tableAlias: relationTableAlias,
             joinOn: joinOn2,
             nestedQueryRelation: relation
           }
         );
-        let fieldSql = sql2`(${builtRelation.sql})`;
-        if (is2(relation, Many)) {
-          fieldSql = sql2`coalesce(${fieldSql}, json_array())`;
+        let fieldSql = sql`(${builtRelation.sql})`;
+        if (is(relation, Many)) {
+          fieldSql = sql`coalesce(${fieldSql}, json_array())`;
         }
         const field = fieldSql.as(selectedRelationTsKey);
         selection.push({
@@ -44799,16 +43340,16 @@ var MySqlDialect = class {
       });
     }
     let result;
-    where = and2(joinOn, where);
+    where = and(joinOn, where);
     if (nestedQueryRelation) {
-      let field = sql2`json_array(${sql2.join(
+      let field = sql`json_array(${sql.join(
         selection.map(
-          ({ field: field2 }) => is2(field2, MySqlColumn) ? sql2.identifier(this.casing.getColumnCasing(field2)) : is2(field2, SQL2.Aliased) ? field2.sql : field2
+          ({ field: field2 }) => is(field2, MySqlColumn) ? sql.identifier(this.casing.getColumnCasing(field2)) : is(field2, SQL.Aliased) ? field2.sql : field2
         ),
-        sql2`, `
+        sql`, `
       )})`;
-      if (is2(nestedQueryRelation, Many)) {
-        field = sql2`json_arrayagg(${field})`;
+      if (is(nestedQueryRelation, Many)) {
+        field = sql`json_arrayagg(${field})`;
       }
       const nestedSelection = [
         {
@@ -44828,12 +43369,12 @@ var MySqlDialect = class {
           fieldsFlat: [
             {
               path: [],
-              field: sql2.raw("*")
+              field: sql.raw("*")
             },
             ...orderBy.length > 0 ? [
               {
                 path: [],
-                field: sql2`row_number() over (order by ${sql2.join(orderBy, sql2`, `)})`
+                field: sql`row_number() over (order by ${sql.join(orderBy, sql`, `)})`
               }
             ] : []
           ],
@@ -44850,11 +43391,11 @@ var MySqlDialect = class {
         result = aliasedTable(table, tableAlias);
       }
       result = this.buildSelectQuery({
-        table: is2(result, MySqlTable) ? result : new Subquery2(result, {}, tableAlias),
+        table: is(result, MySqlTable) ? result : new Subquery(result, {}, tableAlias),
         fields: {},
         fieldsFlat: nestedSelection.map(({ field: field2 }) => ({
           path: [],
-          field: is2(field2, Column2) ? aliasedTableColumn(field2, tableAlias) : field2
+          field: is(field2, Column) ? aliasedTableColumn(field2, tableAlias) : field2
         })),
         where,
         limit,
@@ -44868,7 +43409,7 @@ var MySqlDialect = class {
         fields: {},
         fieldsFlat: selection.map(({ field }) => ({
           path: [],
-          field: is2(field, Column2) ? aliasedTableColumn(field, tableAlias) : field
+          field: is(field, Column) ? aliasedTableColumn(field, tableAlias) : field
         })),
         where,
         limit,
@@ -44887,7 +43428,7 @@ var MySqlDialect = class {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/query-builders/query-builder.js
 var TypedQueryBuilder = class {
-  static [entityKind2] = "TypedQueryBuilder";
+  static [entityKind] = "TypedQueryBuilder";
   /** @internal */
   getSelectedFields() {
     return this._.selectedFields;
@@ -44896,7 +43437,7 @@ var TypedQueryBuilder = class {
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/query-builders/select.js
 var MySqlSelectBuilder = class {
-  static [entityKind2] = "MySqlSelectBuilder";
+  static [entityKind] = "MySqlSelectBuilder";
   fields;
   session;
   dialect;
@@ -44916,13 +43457,13 @@ var MySqlSelectBuilder = class {
     let fields;
     if (this.fields) {
       fields = this.fields;
-    } else if (is2(source, Subquery2)) {
+    } else if (is(source, Subquery)) {
       fields = Object.fromEntries(
         Object.keys(source._.selectedFields).map((key) => [key, source[key]])
       );
-    } else if (is2(source, MySqlViewBase)) {
-      fields = source[ViewBaseConfig2].selectedFields;
-    } else if (is2(source, SQL2)) {
+    } else if (is(source, MySqlViewBase)) {
+      fields = source[ViewBaseConfig].selectedFields;
+    } else if (is(source, SQL)) {
       fields = {};
     } else {
       fields = getTableColumns(source);
@@ -44930,7 +43471,7 @@ var MySqlSelectBuilder = class {
     let useIndex = [];
     let forceIndex = [];
     let ignoreIndex = [];
-    if (is2(source, MySqlTable) && onIndex && typeof onIndex !== "string") {
+    if (is(source, MySqlTable) && onIndex && typeof onIndex !== "string") {
       if (onIndex.useIndex) {
         useIndex = convertIndexToString(toArray(onIndex.useIndex));
       }
@@ -44958,7 +43499,7 @@ var MySqlSelectBuilder = class {
   }
 };
 var MySqlSelectQueryBuilderBase = class extends TypedQueryBuilder {
-  static [entityKind2] = "MySqlSelectQueryBuilder";
+  static [entityKind] = "MySqlSelectQueryBuilder";
   _;
   config;
   joinsNotNullableMap;
@@ -45004,7 +43545,7 @@ var MySqlSelectQueryBuilderBase = class extends TypedQueryBuilder {
       const baseTableName = this.tableName;
       const tableName = getTableLikeName(table);
       for (const item of extractUsedTable(table)) this.usedTables.add(item);
-      if (typeof tableName === "string" && this.config.joins?.some((join3) => join3.alias === tableName)) {
+      if (typeof tableName === "string" && this.config.joins?.some((join2) => join2.alias === tableName)) {
         throw new Error(`Alias "${tableName}" is already used in this query`);
       }
       if (!this.isPartialSelect) {
@@ -45013,8 +43554,8 @@ var MySqlSelectQueryBuilderBase = class extends TypedQueryBuilder {
             [baseTableName]: this.config.fields
           };
         }
-        if (typeof tableName === "string" && !is2(table, SQL2)) {
-          const selection = is2(table, Subquery2) ? table._.selectedFields : is2(table, View2) ? table[ViewBaseConfig2].selectedFields : table[Table2.Symbol.Columns];
+        if (typeof tableName === "string" && !is(table, SQL)) {
+          const selection = is(table, Subquery) ? table._.selectedFields : is(table, View) ? table[ViewBaseConfig].selectedFields : table[Table.Symbol.Columns];
           this.config.fields[tableName] = selection;
         }
       }
@@ -45032,7 +43573,7 @@ var MySqlSelectQueryBuilderBase = class extends TypedQueryBuilder {
       let useIndex = [];
       let forceIndex = [];
       let ignoreIndex = [];
-      if (is2(table, MySqlTable) && onIndex && typeof onIndex !== "string") {
+      if (is(table, MySqlTable) && onIndex && typeof onIndex !== "string") {
         if (onIndex.useIndex) {
           useIndex = convertIndexToString(toArray(onIndex.useIndex));
         }
@@ -45653,7 +44194,7 @@ var MySqlSelectQueryBuilderBase = class extends TypedQueryBuilder {
       for (const it of this.config.joins) usedTables.push(...extractUsedTable(it.table));
     }
     return new Proxy(
-      new Subquery2(this.getSQL(), this.config.fields, alias, false, [...new Set(usedTables)]),
+      new Subquery(this.getSQL(), this.config.fields, alias, false, [...new Set(usedTables)]),
       new SelectionProxyHandler({ alias, sqlAliasedBehavior: "alias", sqlBehavior: "error" })
     );
   }
@@ -45673,7 +44214,7 @@ var MySqlSelectQueryBuilderBase = class extends TypedQueryBuilder {
   }
 };
 var MySqlSelectBase = class extends MySqlSelectQueryBuilderBase {
-  static [entityKind2] = "MySqlSelect";
+  static [entityKind] = "MySqlSelect";
   prepare() {
     if (!this.session) {
       throw new Error("Cannot execute a query on a query builder. Please use a database instance instead.");
@@ -45732,12 +44273,12 @@ var exceptAll = createSetOperator("except", true);
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/mysql-core/query-builders/query-builder.js
 var QueryBuilder = class {
-  static [entityKind2] = "MySqlQueryBuilder";
+  static [entityKind] = "MySqlQueryBuilder";
   dialect;
   dialectConfig;
   constructor(dialect) {
-    this.dialect = is2(dialect, MySqlDialect) ? dialect : void 0;
-    this.dialectConfig = is2(dialect, MySqlDialect) ? void 0 : dialect;
+    this.dialect = is(dialect, MySqlDialect) ? dialect : void 0;
+    this.dialectConfig = is(dialect, MySqlDialect) ? void 0 : dialect;
   }
   $with = (alias, selection) => {
     const queryBuilder = this;
@@ -45746,7 +44287,7 @@ var QueryBuilder = class {
         qb = qb(queryBuilder);
       }
       return new Proxy(
-        new WithSubquery2(
+        new WithSubquery(
           qb.getSQL(),
           selection ?? ("getSelectedFields" in qb ? qb.getSelectedFields() ?? {} : {}),
           alias,
@@ -45805,7 +44346,7 @@ var MySqlInsertBuilder = class {
     this.session = session;
     this.dialect = dialect;
   }
-  static [entityKind2] = "MySqlInsertBuilder";
+  static [entityKind] = "MySqlInsertBuilder";
   shouldIgnore = false;
   ignore() {
     this.shouldIgnore = true;
@@ -45818,10 +44359,10 @@ var MySqlInsertBuilder = class {
     }
     const mappedValues = values.map((entry) => {
       const result = {};
-      const cols = this.table[Table2.Symbol.Columns];
+      const cols = this.table[Table.Symbol.Columns];
       for (const colKey of Object.keys(entry)) {
         const colValue = entry[colKey];
-        result[colKey] = is2(colValue, SQL2) ? colValue : new Param2(colValue, cols[colKey]);
+        result[colKey] = is(colValue, SQL) ? colValue : new Param(colValue, cols[colKey]);
       }
       return result;
     });
@@ -45829,7 +44370,7 @@ var MySqlInsertBuilder = class {
   }
   select(selectQuery) {
     const select = typeof selectQuery === "function" ? selectQuery(new QueryBuilder()) : selectQuery;
-    if (!is2(select, SQL2) && !haveSameKeys(this.table[Columns2], select._.selectedFields)) {
+    if (!is(select, SQL) && !haveSameKeys(this.table[Columns], select._.selectedFields)) {
       throw new Error(
         "Insert select error: selected fields are not the same or are in a different order compared to the table definition"
       );
@@ -45844,7 +44385,7 @@ var MySqlInsertBase = class extends QueryPromise {
     this.dialect = dialect;
     this.config = { table, values, select, ignore };
   }
-  static [entityKind2] = "MySqlInsert";
+  static [entityKind] = "MySqlInsert";
   config;
   cacheConfig;
   /**
@@ -45875,12 +44416,12 @@ var MySqlInsertBase = class extends QueryPromise {
    */
   onDuplicateKeyUpdate(config2) {
     const setSql = this.dialect.buildUpdateSet(this.config.table, mapUpdateSet(this.config.table, config2.set));
-    this.config.onConflict = sql2`update ${setSql}`;
+    this.config.onConflict = sql`update ${setSql}`;
     return this;
   }
   $returningId() {
     const returning = [];
-    for (const [key, value] of Object.entries(this.config.table[Table2.Symbol.Columns])) {
+    for (const [key, value] of Object.entries(this.config.table[Table.Symbol.Columns])) {
       if (value.primary) {
         returning.push({ field: value, path: [key] });
       }
@@ -45934,7 +44475,7 @@ var MySqlUpdateBuilder = class {
     this.dialect = dialect;
     this.withList = withList;
   }
-  static [entityKind2] = "MySqlUpdateBuilder";
+  static [entityKind] = "MySqlUpdateBuilder";
   set(values) {
     return new MySqlUpdateBase(this.table, mapUpdateSet(this.table, values), this.session, this.dialect, this.withList);
   }
@@ -45946,7 +44487,7 @@ var MySqlUpdateBase = class extends QueryPromise {
     this.dialect = dialect;
     this.config = { set: set2, table, withList };
   }
-  static [entityKind2] = "MySqlUpdate";
+  static [entityKind] = "MySqlUpdate";
   config;
   cacheConfig;
   /**
@@ -45990,7 +44531,7 @@ var MySqlUpdateBase = class extends QueryPromise {
     if (typeof columns[0] === "function") {
       const orderBy = columns[0](
         new Proxy(
-          this.config.table[Table2.Symbol.Columns],
+          this.config.table[Table.Symbol.Columns],
           new SelectionProxyHandler({ sqlAliasedBehavior: "alias", sqlBehavior: "sql" })
         )
       );
@@ -46055,7 +44596,7 @@ var RelationalQueryBuilder = class {
     this.session = session;
     this.mode = mode;
   }
-  static [entityKind2] = "MySqlRelationalQueryBuilder";
+  static [entityKind] = "MySqlRelationalQueryBuilder";
   findMany(config2) {
     return new MySqlRelationalQuery(
       this.fullSchema,
@@ -46099,7 +44640,7 @@ var MySqlRelationalQuery = class extends QueryPromise {
     this.queryMode = queryMode;
     this.mode = mode;
   }
-  static [entityKind2] = "MySqlRelationalQuery";
+  static [entityKind] = "MySqlRelationalQuery";
   prepare() {
     const { query, builtQuery } = this._toSQL();
     return this.session.prepareQuery(
@@ -46184,7 +44725,7 @@ var MySqlDatabase = class {
     this.$cache = { invalidate: async (_params) => {
     } };
   }
-  static [entityKind2] = "MySqlDatabase";
+  static [entityKind] = "MySqlDatabase";
   query;
   /**
    * Creates a subquery that defines a temporary named result set as a CTE.
@@ -46225,7 +44766,7 @@ var MySqlDatabase = class {
         qb = qb(new QueryBuilder(self2.dialect));
       }
       return new Proxy(
-        new WithSubquery2(
+        new WithSubquery(
           qb.getSQL(),
           selection ?? ("getSelectedFields" in qb ? qb.getSelectedFields() ?? {} : {}),
           alias,
@@ -46366,7 +44907,7 @@ var MySqlDatabase = class {
     return new MySqlDeleteBase(table, this.session, this.dialect);
   }
   execute(query) {
-    return this.session.execute(typeof query === "string" ? sql2.raw(query) : query.getSQL());
+    return this.session.execute(typeof query === "string" ? sql.raw(query) : query.getSQL());
   }
   transaction(transaction, config2) {
     return this.session.transaction(transaction, config2);
@@ -46378,13 +44919,13 @@ import { once } from "node:events";
 
 // node_modules/.pnpm/drizzle-orm@0.45.2_mysql2@3.22.3_@types+node@25.6.2_/node_modules/drizzle-orm/cache/core/cache.js
 var Cache = class {
-  static [entityKind2] = "Cache";
+  static [entityKind] = "Cache";
 };
 var NoopCache = class extends Cache {
   strategy() {
     return "all";
   }
-  static [entityKind2] = "NoopCache";
+  static [entityKind] = "NoopCache";
   async get(_key) {
     return void 0;
   }
@@ -46416,10 +44957,10 @@ var MySqlPreparedQuery = class {
       this.cacheConfig = void 0;
     }
   }
-  static [entityKind2] = "MySqlPreparedQuery";
+  static [entityKind] = "MySqlPreparedQuery";
   /** @internal */
   async queryWithCache(queryString, params, query) {
-    if (this.cache === void 0 || is2(this.cache, NoopCache) || this.queryMetadata === void 0) {
+    if (this.cache === void 0 || is(this.cache, NoopCache) || this.queryMetadata === void 0) {
       try {
         return await query();
       } catch (e) {
@@ -46490,7 +45031,7 @@ var MySqlSession = class {
   constructor(dialect) {
     this.dialect = dialect;
   }
-  static [entityKind2] = "MySqlSession";
+  static [entityKind] = "MySqlSession";
   execute(query) {
     return this.prepareQuery(
       this.dialect.sqlToQuery(query),
@@ -46508,7 +45049,7 @@ var MySqlSession = class {
     if (config2.isolationLevel) {
       parts.push(`isolation level ${config2.isolationLevel}`);
     }
-    return parts.length ? sql2`set transaction ${sql2.raw(parts.join(" "))}` : void 0;
+    return parts.length ? sql`set transaction ${sql.raw(parts.join(" "))}` : void 0;
   }
   getStartTransactionSQL(config2) {
     const parts = [];
@@ -46518,7 +45059,7 @@ var MySqlSession = class {
     if (config2.accessMode) {
       parts.push(config2.accessMode);
     }
-    return parts.length ? sql2`start transaction ${sql2.raw(parts.join(" "))}` : void 0;
+    return parts.length ? sql`start transaction ${sql.raw(parts.join(" "))}` : void 0;
   }
 };
 var MySqlTransaction = class extends MySqlDatabase {
@@ -46527,7 +45068,7 @@ var MySqlTransaction = class extends MySqlDatabase {
     this.schema = schema;
     this.nestedIndex = nestedIndex;
   }
-  static [entityKind2] = "MySqlTransaction";
+  static [entityKind] = "MySqlTransaction";
   rollback() {
     throw new TransactionRollbackError();
   }
@@ -46565,7 +45106,7 @@ var MySql2PreparedQuery = class extends MySqlPreparedQuery {
       }
     };
   }
-  static [entityKind2] = "MySql2PreparedQuery";
+  static [entityKind] = "MySql2PreparedQuery";
   rawQuery;
   query;
   async execute(placeholderValues = {}) {
@@ -46584,7 +45125,7 @@ var MySql2PreparedQuery = class extends MySqlPreparedQuery {
         for (let i = insertId; i < insertId + affectedRows; i++) {
           for (const column of returningIds) {
             const key = returningIds[0].path[0];
-            if (is2(column.field, Column2)) {
+            if (is(column.field, Column)) {
               if (column.field.primary && column.field.autoIncrement) {
                 returningResponse.push({ [key]: i });
               }
@@ -46660,7 +45201,7 @@ var MySql2Session = class _MySql2Session extends MySqlSession {
     this.cache = options.cache ?? new NoopCache();
     this.mode = options.mode;
   }
-  static [entityKind2] = "MySql2Session";
+  static [entityKind] = "MySql2Session";
   logger;
   mode;
   cache;
@@ -46723,16 +45264,16 @@ var MySql2Session = class _MySql2Session extends MySqlSession {
         await tx.execute(setTransactionConfigSql);
       }
       const startTransactionSql = this.getStartTransactionSQL(config2);
-      await (startTransactionSql ? tx.execute(startTransactionSql) : tx.execute(sql2`begin`));
+      await (startTransactionSql ? tx.execute(startTransactionSql) : tx.execute(sql`begin`));
     } else {
-      await tx.execute(sql2`begin`);
+      await tx.execute(sql`begin`);
     }
     try {
       const result = await transaction(tx);
-      await tx.execute(sql2`commit`);
+      await tx.execute(sql`commit`);
       return result;
     } catch (err) {
-      await tx.execute(sql2`rollback`);
+      await tx.execute(sql`rollback`);
       throw err;
     } finally {
       if (isPool(this.client)) {
@@ -46742,7 +45283,7 @@ var MySql2Session = class _MySql2Session extends MySqlSession {
   }
 };
 var MySql2Transaction = class _MySql2Transaction extends MySqlTransaction {
-  static [entityKind2] = "MySql2Transaction";
+  static [entityKind] = "MySql2Transaction";
   async transaction(transaction) {
     const savepointName = `sp${this.nestedIndex + 1}`;
     const tx = new _MySql2Transaction(
@@ -46752,13 +45293,13 @@ var MySql2Transaction = class _MySql2Transaction extends MySqlTransaction {
       this.nestedIndex + 1,
       this.mode
     );
-    await tx.execute(sql2.raw(`savepoint ${savepointName}`));
+    await tx.execute(sql.raw(`savepoint ${savepointName}`));
     try {
       const result = await transaction(tx);
-      await tx.execute(sql2.raw(`release savepoint ${savepointName}`));
+      await tx.execute(sql.raw(`release savepoint ${savepointName}`));
       return result;
     } catch (err) {
-      await tx.execute(sql2.raw(`rollback to savepoint ${savepointName}`));
+      await tx.execute(sql.raw(`rollback to savepoint ${savepointName}`));
       throw err;
     }
   }
@@ -46774,7 +45315,7 @@ var MySql2Driver = class {
     this.dialect = dialect;
     this.options = options;
   }
-  static [entityKind2] = "MySql2Driver";
+  static [entityKind] = "MySql2Driver";
   createSession(schema, mode) {
     return new MySql2Session(this.client, this.dialect, schema, {
       logger: this.options.logger,
@@ -46784,7 +45325,7 @@ var MySql2Driver = class {
   }
 };
 var MySql2Database = class extends MySqlDatabase {
-  static [entityKind2] = "MySql2Database";
+  static [entityKind] = "MySql2Database";
 };
 function construct(client, config2 = {}) {
   const dialect = new MySqlDialect({ casing: config2.casing });
@@ -46874,7 +45415,8 @@ __export(schema_exports, {
   menuItemsTable: () => menuItemsTable,
   outletsTable: () => outletsTable,
   promotionsTable: () => promotionsTable,
-  siteInfoTable: () => siteInfoTable
+  siteInfoTable: () => siteInfoTable,
+  storageObjectsTable: () => storageObjectsTable
 });
 
 // node_modules/.pnpm/zod@3.25.76/node_modules/zod/v4/classic/external.js
@@ -47330,7 +45872,7 @@ __export(core_exports2, {
   toJSONSchema: () => toJSONSchema,
   treeifyError: () => treeifyError,
   util: () => util_exports,
-  version: () => version3
+  version: () => version2
 });
 
 // node_modules/.pnpm/zod@3.25.76/node_modules/zod/v4/core/core.js
@@ -48801,7 +47343,7 @@ var Doc = class {
 };
 
 // node_modules/.pnpm/zod@3.25.76/node_modules/zod/v4/core/versions.js
-var version3 = {
+var version2 = {
   major: 4,
   minor: 0,
   patch: 0
@@ -48813,7 +47355,7 @@ var $ZodType = /* @__PURE__ */ $constructor("$ZodType", (inst, def) => {
   inst ?? (inst = {});
   inst._zod.def = def;
   inst._zod.bag = inst._zod.bag || {};
-  inst._zod.version = version3;
+  inst._zod.version = version2;
   const checks = [...inst._zod.def.checks ?? []];
   if (inst._zod.traits.has("$ZodCheck")) {
     checks.unshift(inst);
@@ -58224,7 +56766,7 @@ function getColumns(tableLike) {
 function handleColumns(columns, refinements, conditions, factory) {
   const columnSchemas = {};
   for (const [key, selected] of Object.entries(columns)) {
-    if (!is2(selected, Column2) && !is2(selected, SQL2) && !is2(selected, SQL2.Aliased) && typeof selected === "object") {
+    if (!is(selected, Column) && !is(selected, SQL) && !is(selected, SQL.Aliased) && typeof selected === "object") {
       const columns2 = isTable(selected) || isView(selected) ? getColumns(selected) : selected;
       columnSchemas[key] = handleColumns(columns2, refinements[key] ?? {}, conditions, factory);
       continue;
@@ -58234,7 +56776,7 @@ function handleColumns(columns, refinements, conditions, factory) {
       columnSchemas[key] = refinement;
       continue;
     }
-    const column = is2(selected, Column2) ? selected : void 0;
+    const column = is(selected, Column) ? selected : void 0;
     const schema = column ? columnToSchema(column, factory) : external_exports2.any();
     const refined = typeof refinement === "function" ? refinement(schema) : schema;
     if (conditions.never(column)) {
@@ -58418,15 +56960,1552 @@ var insertAdminUserSchema = createInsertSchema(adminUsersTable).omit({
   updatedAt: true
 });
 
+// lib/db/src/schema/storage.ts
+var mediumblob = customType({
+  dataType() {
+    return "mediumblob";
+  },
+  toDriver(value) {
+    return value.toString("binary");
+  },
+  fromDriver(value) {
+    if (Buffer.isBuffer(value)) return value;
+    return Buffer.from(value, "binary");
+  }
+});
+var storageObjectsTable = mysqlTable("storage_objects", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  content: mediumblob("content").notNull(),
+  mimeType: varchar("mime_type", { length: 255 }).notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow()
+});
+
 // lib/db/src/index.ts
 var import_dotenv = __toESM(require_main());
-import path3 from "path";
-import_dotenv.default.config({ path: path3.resolve(import.meta.dirname, "../../../.env") });
+import path from "path";
+import_dotenv.default.config({ path: path.resolve(import.meta.dirname, "../../../.env") });
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL must be set. Did you forget to provision a database?");
 }
 var pool = mysql.createPool({ uri: process.env.DATABASE_URL });
 var db = drizzle(pool, { schema: schema_exports, mode: "default" });
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/entity.js
+var entityKind2 = Symbol.for("drizzle:entityKind");
+var hasOwnEntityKind2 = Symbol.for("drizzle:hasOwnEntityKind");
+function is2(value, type) {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  if (value instanceof type) {
+    return true;
+  }
+  if (!Object.prototype.hasOwnProperty.call(type, entityKind2)) {
+    throw new Error(
+      `Class "${type.name ?? "<unknown>"}" doesn't look like a Drizzle entity. If this is incorrect and the class is provided by Drizzle, please report this as a bug.`
+    );
+  }
+  let cls = Object.getPrototypeOf(value).constructor;
+  if (cls) {
+    while (cls) {
+      if (entityKind2 in cls && cls[entityKind2] === type[entityKind2]) {
+        return true;
+      }
+      cls = Object.getPrototypeOf(cls);
+    }
+  }
+  return false;
+}
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/column.js
+var Column2 = class {
+  constructor(table, config2) {
+    this.table = table;
+    this.config = config2;
+    this.name = config2.name;
+    this.keyAsName = config2.keyAsName;
+    this.notNull = config2.notNull;
+    this.default = config2.default;
+    this.defaultFn = config2.defaultFn;
+    this.onUpdateFn = config2.onUpdateFn;
+    this.hasDefault = config2.hasDefault;
+    this.primary = config2.primaryKey;
+    this.isUnique = config2.isUnique;
+    this.uniqueName = config2.uniqueName;
+    this.uniqueType = config2.uniqueType;
+    this.dataType = config2.dataType;
+    this.columnType = config2.columnType;
+    this.generated = config2.generated;
+    this.generatedIdentity = config2.generatedIdentity;
+  }
+  static [entityKind2] = "Column";
+  name;
+  keyAsName;
+  primary;
+  notNull;
+  default;
+  defaultFn;
+  onUpdateFn;
+  hasDefault;
+  isUnique;
+  uniqueName;
+  uniqueType;
+  dataType;
+  columnType;
+  enumValues = void 0;
+  generated = void 0;
+  generatedIdentity = void 0;
+  config;
+  mapFromDriverValue(value) {
+    return value;
+  }
+  mapToDriverValue(value) {
+    return value;
+  }
+  // ** @internal */
+  shouldDisableInsert() {
+    return this.config.generated !== void 0 && this.config.generated.type !== "byDefault";
+  }
+};
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/column-builder.js
+var ColumnBuilder2 = class {
+  static [entityKind2] = "ColumnBuilder";
+  config;
+  constructor(name, dataType, columnType) {
+    this.config = {
+      name,
+      keyAsName: name === "",
+      notNull: false,
+      default: void 0,
+      hasDefault: false,
+      primaryKey: false,
+      isUnique: false,
+      uniqueName: void 0,
+      uniqueType: void 0,
+      dataType,
+      columnType,
+      generated: void 0
+    };
+  }
+  /**
+   * Changes the data type of the column. Commonly used with `json` columns. Also, useful for branded types.
+   *
+   * @example
+   * ```ts
+   * const users = pgTable('users', {
+   * 	id: integer('id').$type<UserId>().primaryKey(),
+   * 	details: json('details').$type<UserDetails>().notNull(),
+   * });
+   * ```
+   */
+  $type() {
+    return this;
+  }
+  /**
+   * Adds a `not null` clause to the column definition.
+   *
+   * Affects the `select` model of the table - columns *without* `not null` will be nullable on select.
+   */
+  notNull() {
+    this.config.notNull = true;
+    return this;
+  }
+  /**
+   * Adds a `default <value>` clause to the column definition.
+   *
+   * Affects the `insert` model of the table - columns *with* `default` are optional on insert.
+   *
+   * If you need to set a dynamic default value, use {@link $defaultFn} instead.
+   */
+  default(value) {
+    this.config.default = value;
+    this.config.hasDefault = true;
+    return this;
+  }
+  /**
+   * Adds a dynamic default value to the column.
+   * The function will be called when the row is inserted, and the returned value will be used as the column value.
+   *
+   * **Note:** This value does not affect the `drizzle-kit` behavior, it is only used at runtime in `drizzle-orm`.
+   */
+  $defaultFn(fn) {
+    this.config.defaultFn = fn;
+    this.config.hasDefault = true;
+    return this;
+  }
+  /**
+   * Alias for {@link $defaultFn}.
+   */
+  $default = this.$defaultFn;
+  /**
+   * Adds a dynamic update value to the column.
+   * The function will be called when the row is updated, and the returned value will be used as the column value if none is provided.
+   * If no `default` (or `$defaultFn`) value is provided, the function will be called when the row is inserted as well, and the returned value will be used as the column value.
+   *
+   * **Note:** This value does not affect the `drizzle-kit` behavior, it is only used at runtime in `drizzle-orm`.
+   */
+  $onUpdateFn(fn) {
+    this.config.onUpdateFn = fn;
+    this.config.hasDefault = true;
+    return this;
+  }
+  /**
+   * Alias for {@link $onUpdateFn}.
+   */
+  $onUpdate = this.$onUpdateFn;
+  /**
+   * Adds a `primary key` clause to the column definition. This implicitly makes the column `not null`.
+   *
+   * In SQLite, `integer primary key` implicitly makes the column auto-incrementing.
+   */
+  primaryKey() {
+    this.config.primaryKey = true;
+    this.config.notNull = true;
+    return this;
+  }
+  /** @internal Sets the name of the column to the key within the table definition if a name was not given. */
+  setName(name) {
+    if (this.config.name !== "")
+      return;
+    this.config.name = name;
+  }
+};
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/table.utils.js
+var TableName2 = Symbol.for("drizzle:Name");
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/pg-core/foreign-keys.js
+var ForeignKeyBuilder3 = class {
+  static [entityKind2] = "PgForeignKeyBuilder";
+  /** @internal */
+  reference;
+  /** @internal */
+  _onUpdate = "no action";
+  /** @internal */
+  _onDelete = "no action";
+  constructor(config2, actions) {
+    this.reference = () => {
+      const { name, columns, foreignColumns } = config2();
+      return { name, columns, foreignTable: foreignColumns[0].table, foreignColumns };
+    };
+    if (actions) {
+      this._onUpdate = actions.onUpdate;
+      this._onDelete = actions.onDelete;
+    }
+  }
+  onUpdate(action) {
+    this._onUpdate = action === void 0 ? "no action" : action;
+    return this;
+  }
+  onDelete(action) {
+    this._onDelete = action === void 0 ? "no action" : action;
+    return this;
+  }
+  /** @internal */
+  build(table) {
+    return new ForeignKey3(table, this);
+  }
+};
+var ForeignKey3 = class {
+  constructor(table, builder) {
+    this.table = table;
+    this.reference = builder.reference;
+    this.onUpdate = builder._onUpdate;
+    this.onDelete = builder._onDelete;
+  }
+  static [entityKind2] = "PgForeignKey";
+  reference;
+  onUpdate;
+  onDelete;
+  getName() {
+    const { name, columns, foreignColumns } = this.reference();
+    const columnNames = columns.map((column) => column.name);
+    const foreignColumnNames = foreignColumns.map((column) => column.name);
+    const chunks = [
+      this.table[TableName2],
+      ...columnNames,
+      foreignColumns[0].table[TableName2],
+      ...foreignColumnNames
+    ];
+    return name ?? `${chunks.join("_")}_fk`;
+  }
+};
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/tracing-utils.js
+function iife2(fn, ...args) {
+  return fn(...args);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/pg-core/unique-constraint.js
+function uniqueKeyName3(table, columns) {
+  return `${table[TableName2]}_${columns.join("_")}_unique`;
+}
+var UniqueConstraintBuilder3 = class {
+  constructor(columns, name) {
+    this.name = name;
+    this.columns = columns;
+  }
+  static [entityKind2] = "PgUniqueConstraintBuilder";
+  /** @internal */
+  columns;
+  /** @internal */
+  nullsNotDistinctConfig = false;
+  nullsNotDistinct() {
+    this.nullsNotDistinctConfig = true;
+    return this;
+  }
+  /** @internal */
+  build(table) {
+    return new UniqueConstraint3(table, this.columns, this.nullsNotDistinctConfig, this.name);
+  }
+};
+var UniqueOnConstraintBuilder3 = class {
+  static [entityKind2] = "PgUniqueOnConstraintBuilder";
+  /** @internal */
+  name;
+  constructor(name) {
+    this.name = name;
+  }
+  on(...columns) {
+    return new UniqueConstraintBuilder3(columns, this.name);
+  }
+};
+var UniqueConstraint3 = class {
+  constructor(table, columns, nullsNotDistinct, name) {
+    this.table = table;
+    this.columns = columns;
+    this.name = name ?? uniqueKeyName3(this.table, this.columns.map((column) => column.name));
+    this.nullsNotDistinct = nullsNotDistinct;
+  }
+  static [entityKind2] = "PgUniqueConstraint";
+  columns;
+  name;
+  nullsNotDistinct = false;
+  getName() {
+    return this.name;
+  }
+};
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/pg-core/utils/array.js
+function parsePgArrayValue2(arrayString, startFrom, inQuotes) {
+  for (let i = startFrom; i < arrayString.length; i++) {
+    const char2 = arrayString[i];
+    if (char2 === "\\") {
+      i++;
+      continue;
+    }
+    if (char2 === '"') {
+      return [arrayString.slice(startFrom, i).replace(/\\/g, ""), i + 1];
+    }
+    if (inQuotes) {
+      continue;
+    }
+    if (char2 === "," || char2 === "}") {
+      return [arrayString.slice(startFrom, i).replace(/\\/g, ""), i];
+    }
+  }
+  return [arrayString.slice(startFrom).replace(/\\/g, ""), arrayString.length];
+}
+function parsePgNestedArray2(arrayString, startFrom = 0) {
+  const result = [];
+  let i = startFrom;
+  let lastCharIsComma = false;
+  while (i < arrayString.length) {
+    const char2 = arrayString[i];
+    if (char2 === ",") {
+      if (lastCharIsComma || i === startFrom) {
+        result.push("");
+      }
+      lastCharIsComma = true;
+      i++;
+      continue;
+    }
+    lastCharIsComma = false;
+    if (char2 === "\\") {
+      i += 2;
+      continue;
+    }
+    if (char2 === '"') {
+      const [value2, startFrom2] = parsePgArrayValue2(arrayString, i + 1, true);
+      result.push(value2);
+      i = startFrom2;
+      continue;
+    }
+    if (char2 === "}") {
+      return [result, i + 1];
+    }
+    if (char2 === "{") {
+      const [value2, startFrom2] = parsePgNestedArray2(arrayString, i + 1);
+      result.push(value2);
+      i = startFrom2;
+      continue;
+    }
+    const [value, newStartFrom] = parsePgArrayValue2(arrayString, i, false);
+    result.push(value);
+    i = newStartFrom;
+  }
+  return [result, i];
+}
+function parsePgArray2(arrayString) {
+  const [result] = parsePgNestedArray2(arrayString, 1);
+  return result;
+}
+function makePgArray2(array2) {
+  return `{${array2.map((item) => {
+    if (Array.isArray(item)) {
+      return makePgArray2(item);
+    }
+    if (typeof item === "string") {
+      return `"${item.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+    }
+    return `${item}`;
+  }).join(",")}}`;
+}
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/pg-core/columns/common.js
+var PgColumnBuilder2 = class extends ColumnBuilder2 {
+  foreignKeyConfigs = [];
+  static [entityKind2] = "PgColumnBuilder";
+  array(size) {
+    return new PgArrayBuilder2(this.config.name, this, size);
+  }
+  references(ref, actions = {}) {
+    this.foreignKeyConfigs.push({ ref, actions });
+    return this;
+  }
+  unique(name, config2) {
+    this.config.isUnique = true;
+    this.config.uniqueName = name;
+    this.config.uniqueType = config2?.nulls;
+    return this;
+  }
+  generatedAlwaysAs(as) {
+    this.config.generated = {
+      as,
+      type: "always",
+      mode: "stored"
+    };
+    return this;
+  }
+  /** @internal */
+  buildForeignKeys(column, table) {
+    return this.foreignKeyConfigs.map(({ ref, actions }) => {
+      return iife2(
+        (ref2, actions2) => {
+          const builder = new ForeignKeyBuilder3(() => {
+            const foreignColumn = ref2();
+            return { columns: [column], foreignColumns: [foreignColumn] };
+          });
+          if (actions2.onUpdate) {
+            builder.onUpdate(actions2.onUpdate);
+          }
+          if (actions2.onDelete) {
+            builder.onDelete(actions2.onDelete);
+          }
+          return builder.build(table);
+        },
+        ref,
+        actions
+      );
+    });
+  }
+  /** @internal */
+  buildExtraConfigColumn(table) {
+    return new ExtraConfigColumn2(table, this.config);
+  }
+};
+var PgColumn2 = class extends Column2 {
+  constructor(table, config2) {
+    if (!config2.uniqueName) {
+      config2.uniqueName = uniqueKeyName3(table, [config2.name]);
+    }
+    super(table, config2);
+    this.table = table;
+  }
+  static [entityKind2] = "PgColumn";
+};
+var ExtraConfigColumn2 = class extends PgColumn2 {
+  static [entityKind2] = "ExtraConfigColumn";
+  getSQLType() {
+    return this.getSQLType();
+  }
+  indexConfig = {
+    order: this.config.order ?? "asc",
+    nulls: this.config.nulls ?? "last",
+    opClass: this.config.opClass
+  };
+  defaultConfig = {
+    order: "asc",
+    nulls: "last",
+    opClass: void 0
+  };
+  asc() {
+    this.indexConfig.order = "asc";
+    return this;
+  }
+  desc() {
+    this.indexConfig.order = "desc";
+    return this;
+  }
+  nullsFirst() {
+    this.indexConfig.nulls = "first";
+    return this;
+  }
+  nullsLast() {
+    this.indexConfig.nulls = "last";
+    return this;
+  }
+  /**
+   * ### PostgreSQL documentation quote
+   *
+   * > An operator class with optional parameters can be specified for each column of an index.
+   * The operator class identifies the operators to be used by the index for that column.
+   * For example, a B-tree index on four-byte integers would use the int4_ops class;
+   * this operator class includes comparison functions for four-byte integers.
+   * In practice the default operator class for the column's data type is usually sufficient.
+   * The main point of having operator classes is that for some data types, there could be more than one meaningful ordering.
+   * For example, we might want to sort a complex-number data type either by absolute value or by real part.
+   * We could do this by defining two operator classes for the data type and then selecting the proper class when creating an index.
+   * More information about operator classes check:
+   *
+   * ### Useful links
+   * https://www.postgresql.org/docs/current/sql-createindex.html
+   *
+   * https://www.postgresql.org/docs/current/indexes-opclass.html
+   *
+   * https://www.postgresql.org/docs/current/xindex.html
+   *
+   * ### Additional types
+   * If you have the `pg_vector` extension installed in your database, you can use the
+   * `vector_l2_ops`, `vector_ip_ops`, `vector_cosine_ops`, `vector_l1_ops`, `bit_hamming_ops`, `bit_jaccard_ops`, `halfvec_l2_ops`, `sparsevec_l2_ops` options, which are predefined types.
+   *
+   * **You can always specify any string you want in the operator class, in case Drizzle doesn't have it natively in its types**
+   *
+   * @param opClass
+   * @returns
+   */
+  op(opClass) {
+    this.indexConfig.opClass = opClass;
+    return this;
+  }
+};
+var IndexedColumn2 = class {
+  static [entityKind2] = "IndexedColumn";
+  constructor(name, keyAsName, type, indexConfig) {
+    this.name = name;
+    this.keyAsName = keyAsName;
+    this.type = type;
+    this.indexConfig = indexConfig;
+  }
+  name;
+  keyAsName;
+  type;
+  indexConfig;
+};
+var PgArrayBuilder2 = class extends PgColumnBuilder2 {
+  static [entityKind2] = "PgArrayBuilder";
+  constructor(name, baseBuilder, size) {
+    super(name, "array", "PgArray");
+    this.config.baseBuilder = baseBuilder;
+    this.config.size = size;
+  }
+  /** @internal */
+  build(table) {
+    const baseColumn = this.config.baseBuilder.build(table);
+    return new PgArray2(
+      table,
+      this.config,
+      baseColumn
+    );
+  }
+};
+var PgArray2 = class _PgArray extends PgColumn2 {
+  constructor(table, config2, baseColumn, range) {
+    super(table, config2);
+    this.baseColumn = baseColumn;
+    this.range = range;
+    this.size = config2.size;
+  }
+  size;
+  static [entityKind2] = "PgArray";
+  getSQLType() {
+    return `${this.baseColumn.getSQLType()}[${typeof this.size === "number" ? this.size : ""}]`;
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string") {
+      value = parsePgArray2(value);
+    }
+    return value.map((v) => this.baseColumn.mapFromDriverValue(v));
+  }
+  mapToDriverValue(value, isNestedArray = false) {
+    const a = value.map(
+      (v) => v === null ? null : is2(this.baseColumn, _PgArray) ? this.baseColumn.mapToDriverValue(v, true) : this.baseColumn.mapToDriverValue(v)
+    );
+    if (isNestedArray)
+      return a;
+    return makePgArray2(a);
+  }
+};
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/pg-core/columns/enum.js
+var isPgEnumSym2 = Symbol.for("drizzle:isPgEnum");
+function isPgEnum2(obj) {
+  return !!obj && typeof obj === "function" && isPgEnumSym2 in obj && obj[isPgEnumSym2] === true;
+}
+var PgEnumColumnBuilder2 = class extends PgColumnBuilder2 {
+  static [entityKind2] = "PgEnumColumnBuilder";
+  constructor(name, enumInstance) {
+    super(name, "string", "PgEnumColumn");
+    this.config.enum = enumInstance;
+  }
+  /** @internal */
+  build(table) {
+    return new PgEnumColumn2(
+      table,
+      this.config
+    );
+  }
+};
+var PgEnumColumn2 = class extends PgColumn2 {
+  static [entityKind2] = "PgEnumColumn";
+  enum = this.config.enum;
+  enumValues = this.config.enum.enumValues;
+  constructor(table, config2) {
+    super(table, config2);
+    this.enum = config2.enum;
+  }
+  getSQLType() {
+    return this.enum.enumName;
+  }
+};
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/subquery.js
+var Subquery2 = class {
+  static [entityKind2] = "Subquery";
+  constructor(sql4, selection, alias, isWith = false) {
+    this._ = {
+      brand: "Subquery",
+      sql: sql4,
+      selectedFields: selection,
+      alias,
+      isWith
+    };
+  }
+  // getSQL(): SQL<unknown> {
+  // 	return new SQL([this]);
+  // }
+};
+var WithSubquery2 = class extends Subquery2 {
+  static [entityKind2] = "WithSubquery";
+};
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/version.js
+var version3 = "0.40.1";
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/tracing.js
+var otel2;
+var rawTracer2;
+var tracer2 = {
+  startActiveSpan(name, fn) {
+    if (!otel2) {
+      return fn();
+    }
+    if (!rawTracer2) {
+      rawTracer2 = otel2.trace.getTracer("drizzle-orm", version3);
+    }
+    return iife2(
+      (otel22, rawTracer22) => rawTracer22.startActiveSpan(
+        name,
+        (span) => {
+          try {
+            return fn(span);
+          } catch (e) {
+            span.setStatus({
+              code: otel22.SpanStatusCode.ERROR,
+              message: e instanceof Error ? e.message : "Unknown error"
+              // eslint-disable-line no-instanceof/no-instanceof
+            });
+            throw e;
+          } finally {
+            span.end();
+          }
+        }
+      ),
+      otel2,
+      rawTracer2
+    );
+  }
+};
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/view-common.js
+var ViewBaseConfig2 = Symbol.for("drizzle:ViewBaseConfig");
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/table.js
+var Schema2 = Symbol.for("drizzle:Schema");
+var Columns2 = Symbol.for("drizzle:Columns");
+var ExtraConfigColumns2 = Symbol.for("drizzle:ExtraConfigColumns");
+var OriginalName2 = Symbol.for("drizzle:OriginalName");
+var BaseName2 = Symbol.for("drizzle:BaseName");
+var IsAlias2 = Symbol.for("drizzle:IsAlias");
+var ExtraConfigBuilder2 = Symbol.for("drizzle:ExtraConfigBuilder");
+var IsDrizzleTable2 = Symbol.for("drizzle:IsDrizzleTable");
+var Table2 = class {
+  static [entityKind2] = "Table";
+  /** @internal */
+  static Symbol = {
+    Name: TableName2,
+    Schema: Schema2,
+    OriginalName: OriginalName2,
+    Columns: Columns2,
+    ExtraConfigColumns: ExtraConfigColumns2,
+    BaseName: BaseName2,
+    IsAlias: IsAlias2,
+    ExtraConfigBuilder: ExtraConfigBuilder2
+  };
+  /**
+   * @internal
+   * Can be changed if the table is aliased.
+   */
+  [TableName2];
+  /**
+   * @internal
+   * Used to store the original name of the table, before any aliasing.
+   */
+  [OriginalName2];
+  /** @internal */
+  [Schema2];
+  /** @internal */
+  [Columns2];
+  /** @internal */
+  [ExtraConfigColumns2];
+  /**
+   *  @internal
+   * Used to store the table name before the transformation via the `tableCreator` functions.
+   */
+  [BaseName2];
+  /** @internal */
+  [IsAlias2] = false;
+  /** @internal */
+  [IsDrizzleTable2] = true;
+  /** @internal */
+  [ExtraConfigBuilder2] = void 0;
+  constructor(name, schema, baseName) {
+    this[TableName2] = this[OriginalName2] = name;
+    this[Schema2] = schema;
+    this[BaseName2] = baseName;
+  }
+};
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/sql/sql.js
+var FakePrimitiveParam2 = class {
+  static [entityKind2] = "FakePrimitiveParam";
+};
+function isSQLWrapper2(value) {
+  return value !== null && value !== void 0 && typeof value.getSQL === "function";
+}
+function mergeQueries2(queries) {
+  const result = { sql: "", params: [] };
+  for (const query of queries) {
+    result.sql += query.sql;
+    result.params.push(...query.params);
+    if (query.typings?.length) {
+      if (!result.typings) {
+        result.typings = [];
+      }
+      result.typings.push(...query.typings);
+    }
+  }
+  return result;
+}
+var StringChunk2 = class {
+  static [entityKind2] = "StringChunk";
+  value;
+  constructor(value) {
+    this.value = Array.isArray(value) ? value : [value];
+  }
+  getSQL() {
+    return new SQL2([this]);
+  }
+};
+var SQL2 = class _SQL {
+  constructor(queryChunks) {
+    this.queryChunks = queryChunks;
+  }
+  static [entityKind2] = "SQL";
+  /** @internal */
+  decoder = noopDecoder2;
+  shouldInlineParams = false;
+  append(query) {
+    this.queryChunks.push(...query.queryChunks);
+    return this;
+  }
+  toQuery(config2) {
+    return tracer2.startActiveSpan("drizzle.buildSQL", (span) => {
+      const query = this.buildQueryFromSourceParams(this.queryChunks, config2);
+      span?.setAttributes({
+        "drizzle.query.text": query.sql,
+        "drizzle.query.params": JSON.stringify(query.params)
+      });
+      return query;
+    });
+  }
+  buildQueryFromSourceParams(chunks, _config) {
+    const config2 = Object.assign({}, _config, {
+      inlineParams: _config.inlineParams || this.shouldInlineParams,
+      paramStartIndex: _config.paramStartIndex || { value: 0 }
+    });
+    const {
+      casing,
+      escapeName,
+      escapeParam,
+      prepareTyping,
+      inlineParams,
+      paramStartIndex
+    } = config2;
+    return mergeQueries2(chunks.map((chunk) => {
+      if (is2(chunk, StringChunk2)) {
+        return { sql: chunk.value.join(""), params: [] };
+      }
+      if (is2(chunk, Name2)) {
+        return { sql: escapeName(chunk.value), params: [] };
+      }
+      if (chunk === void 0) {
+        return { sql: "", params: [] };
+      }
+      if (Array.isArray(chunk)) {
+        const result = [new StringChunk2("(")];
+        for (const [i, p] of chunk.entries()) {
+          result.push(p);
+          if (i < chunk.length - 1) {
+            result.push(new StringChunk2(", "));
+          }
+        }
+        result.push(new StringChunk2(")"));
+        return this.buildQueryFromSourceParams(result, config2);
+      }
+      if (is2(chunk, _SQL)) {
+        return this.buildQueryFromSourceParams(chunk.queryChunks, {
+          ...config2,
+          inlineParams: inlineParams || chunk.shouldInlineParams
+        });
+      }
+      if (is2(chunk, Table2)) {
+        const schemaName = chunk[Table2.Symbol.Schema];
+        const tableName = chunk[Table2.Symbol.Name];
+        return {
+          sql: schemaName === void 0 || chunk[IsAlias2] ? escapeName(tableName) : escapeName(schemaName) + "." + escapeName(tableName),
+          params: []
+        };
+      }
+      if (is2(chunk, Column2)) {
+        const columnName = casing.getColumnCasing(chunk);
+        if (_config.invokeSource === "indexes") {
+          return { sql: escapeName(columnName), params: [] };
+        }
+        const schemaName = chunk.table[Table2.Symbol.Schema];
+        return {
+          sql: chunk.table[IsAlias2] || schemaName === void 0 ? escapeName(chunk.table[Table2.Symbol.Name]) + "." + escapeName(columnName) : escapeName(schemaName) + "." + escapeName(chunk.table[Table2.Symbol.Name]) + "." + escapeName(columnName),
+          params: []
+        };
+      }
+      if (is2(chunk, View2)) {
+        const schemaName = chunk[ViewBaseConfig2].schema;
+        const viewName = chunk[ViewBaseConfig2].name;
+        return {
+          sql: schemaName === void 0 || chunk[ViewBaseConfig2].isAlias ? escapeName(viewName) : escapeName(schemaName) + "." + escapeName(viewName),
+          params: []
+        };
+      }
+      if (is2(chunk, Param2)) {
+        if (is2(chunk.value, Placeholder2)) {
+          return { sql: escapeParam(paramStartIndex.value++, chunk), params: [chunk], typings: ["none"] };
+        }
+        const mappedValue = chunk.value === null ? null : chunk.encoder.mapToDriverValue(chunk.value);
+        if (is2(mappedValue, _SQL)) {
+          return this.buildQueryFromSourceParams([mappedValue], config2);
+        }
+        if (inlineParams) {
+          return { sql: this.mapInlineParam(mappedValue, config2), params: [] };
+        }
+        let typings = ["none"];
+        if (prepareTyping) {
+          typings = [prepareTyping(chunk.encoder)];
+        }
+        return { sql: escapeParam(paramStartIndex.value++, mappedValue), params: [mappedValue], typings };
+      }
+      if (is2(chunk, Placeholder2)) {
+        return { sql: escapeParam(paramStartIndex.value++, chunk), params: [chunk], typings: ["none"] };
+      }
+      if (is2(chunk, _SQL.Aliased) && chunk.fieldAlias !== void 0) {
+        return { sql: escapeName(chunk.fieldAlias), params: [] };
+      }
+      if (is2(chunk, Subquery2)) {
+        if (chunk._.isWith) {
+          return { sql: escapeName(chunk._.alias), params: [] };
+        }
+        return this.buildQueryFromSourceParams([
+          new StringChunk2("("),
+          chunk._.sql,
+          new StringChunk2(") "),
+          new Name2(chunk._.alias)
+        ], config2);
+      }
+      if (isPgEnum2(chunk)) {
+        if (chunk.schema) {
+          return { sql: escapeName(chunk.schema) + "." + escapeName(chunk.enumName), params: [] };
+        }
+        return { sql: escapeName(chunk.enumName), params: [] };
+      }
+      if (isSQLWrapper2(chunk)) {
+        if (chunk.shouldOmitSQLParens?.()) {
+          return this.buildQueryFromSourceParams([chunk.getSQL()], config2);
+        }
+        return this.buildQueryFromSourceParams([
+          new StringChunk2("("),
+          chunk.getSQL(),
+          new StringChunk2(")")
+        ], config2);
+      }
+      if (inlineParams) {
+        return { sql: this.mapInlineParam(chunk, config2), params: [] };
+      }
+      return { sql: escapeParam(paramStartIndex.value++, chunk), params: [chunk], typings: ["none"] };
+    }));
+  }
+  mapInlineParam(chunk, { escapeString }) {
+    if (chunk === null) {
+      return "null";
+    }
+    if (typeof chunk === "number" || typeof chunk === "boolean") {
+      return chunk.toString();
+    }
+    if (typeof chunk === "string") {
+      return escapeString(chunk);
+    }
+    if (typeof chunk === "object") {
+      const mappedValueAsString = chunk.toString();
+      if (mappedValueAsString === "[object Object]") {
+        return escapeString(JSON.stringify(chunk));
+      }
+      return escapeString(mappedValueAsString);
+    }
+    throw new Error("Unexpected param value: " + chunk);
+  }
+  getSQL() {
+    return this;
+  }
+  as(alias) {
+    if (alias === void 0) {
+      return this;
+    }
+    return new _SQL.Aliased(this, alias);
+  }
+  mapWith(decoder) {
+    this.decoder = typeof decoder === "function" ? { mapFromDriverValue: decoder } : decoder;
+    return this;
+  }
+  inlineParams() {
+    this.shouldInlineParams = true;
+    return this;
+  }
+  /**
+   * This method is used to conditionally include a part of the query.
+   *
+   * @param condition - Condition to check
+   * @returns itself if the condition is `true`, otherwise `undefined`
+   */
+  if(condition) {
+    return condition ? this : void 0;
+  }
+};
+var Name2 = class {
+  constructor(value) {
+    this.value = value;
+  }
+  static [entityKind2] = "Name";
+  brand;
+  getSQL() {
+    return new SQL2([this]);
+  }
+};
+function isDriverValueEncoder2(value) {
+  return typeof value === "object" && value !== null && "mapToDriverValue" in value && typeof value.mapToDriverValue === "function";
+}
+var noopDecoder2 = {
+  mapFromDriverValue: (value) => value
+};
+var noopEncoder2 = {
+  mapToDriverValue: (value) => value
+};
+var noopMapper2 = {
+  ...noopDecoder2,
+  ...noopEncoder2
+};
+var Param2 = class {
+  /**
+   * @param value - Parameter value
+   * @param encoder - Encoder to convert the value to a driver parameter
+   */
+  constructor(value, encoder = noopEncoder2) {
+    this.value = value;
+    this.encoder = encoder;
+  }
+  static [entityKind2] = "Param";
+  brand;
+  getSQL() {
+    return new SQL2([this]);
+  }
+};
+function sql2(strings, ...params) {
+  const queryChunks = [];
+  if (params.length > 0 || strings.length > 0 && strings[0] !== "") {
+    queryChunks.push(new StringChunk2(strings[0]));
+  }
+  for (const [paramIndex, param2] of params.entries()) {
+    queryChunks.push(param2, new StringChunk2(strings[paramIndex + 1]));
+  }
+  return new SQL2(queryChunks);
+}
+((sql22) => {
+  function empty() {
+    return new SQL2([]);
+  }
+  sql22.empty = empty;
+  function fromList(list) {
+    return new SQL2(list);
+  }
+  sql22.fromList = fromList;
+  function raw(str) {
+    return new SQL2([new StringChunk2(str)]);
+  }
+  sql22.raw = raw;
+  function join2(chunks, separator) {
+    const result = [];
+    for (const [i, chunk] of chunks.entries()) {
+      if (i > 0 && separator !== void 0) {
+        result.push(separator);
+      }
+      result.push(chunk);
+    }
+    return new SQL2(result);
+  }
+  sql22.join = join2;
+  function identifier(value) {
+    return new Name2(value);
+  }
+  sql22.identifier = identifier;
+  function placeholder2(name2) {
+    return new Placeholder2(name2);
+  }
+  sql22.placeholder = placeholder2;
+  function param2(value, encoder) {
+    return new Param2(value, encoder);
+  }
+  sql22.param = param2;
+})(sql2 || (sql2 = {}));
+((SQL22) => {
+  class Aliased {
+    constructor(sql22, fieldAlias) {
+      this.sql = sql22;
+      this.fieldAlias = fieldAlias;
+    }
+    static [entityKind2] = "SQL.Aliased";
+    /** @internal */
+    isSelectionField = false;
+    getSQL() {
+      return this.sql;
+    }
+    /** @internal */
+    clone() {
+      return new Aliased(this.sql, this.fieldAlias);
+    }
+  }
+  SQL22.Aliased = Aliased;
+})(SQL2 || (SQL2 = {}));
+var Placeholder2 = class {
+  constructor(name2) {
+    this.name = name2;
+  }
+  static [entityKind2] = "Placeholder";
+  getSQL() {
+    return new SQL2([this]);
+  }
+};
+var IsDrizzleView2 = Symbol.for("drizzle:IsDrizzleView");
+var View2 = class {
+  static [entityKind2] = "View";
+  /** @internal */
+  [ViewBaseConfig2];
+  /** @internal */
+  [IsDrizzleView2] = true;
+  constructor({ name: name2, schema, selectedFields, query }) {
+    this[ViewBaseConfig2] = {
+      name: name2,
+      originalName: name2,
+      schema,
+      selectedFields,
+      query,
+      isExisting: !query,
+      isAlias: false
+    };
+  }
+  getSQL() {
+    return new SQL2([this]);
+  }
+};
+Column2.prototype.getSQL = function() {
+  return new SQL2([this]);
+};
+Table2.prototype.getSQL = function() {
+  return new SQL2([this]);
+};
+Subquery2.prototype.getSQL = function() {
+  return new SQL2([this]);
+};
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/sql/expressions/conditions.js
+function bindIfParam2(value, column) {
+  if (isDriverValueEncoder2(column) && !isSQLWrapper2(value) && !is2(value, Param2) && !is2(value, Placeholder2) && !is2(value, Column2) && !is2(value, Table2) && !is2(value, View2)) {
+    return new Param2(value, column);
+  }
+  return value;
+}
+var eq2 = (left, right) => {
+  return sql2`${left} = ${bindIfParam2(right, left)}`;
+};
+function and2(...unfilteredConditions) {
+  const conditions = unfilteredConditions.filter(
+    (c) => c !== void 0
+  );
+  if (conditions.length === 0) {
+    return void 0;
+  }
+  if (conditions.length === 1) {
+    return new SQL2(conditions);
+  }
+  return new SQL2([
+    new StringChunk2("("),
+    sql2.join(conditions, new StringChunk2(" and ")),
+    new StringChunk2(")")
+  ]);
+}
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/sql/expressions/select.js
+function asc2(column) {
+  return sql2`${column} asc`;
+}
+function desc2(column) {
+  return sql2`${column} desc`;
+}
+
+// node_modules/.pnpm/drizzle-orm@0.40.1_mysql2@3.22.3_@types+node@22.19.18_/node_modules/drizzle-orm/sql/functions/aggregate.js
+function count(expression) {
+  return sql2`count(${expression || sql2.raw("*")})`.mapWith(Number);
+}
+
+// src/lib/objectStorage.ts
+var LOCAL_STORAGE_DIR = path2.resolve(process.cwd(), "local-storage");
+if (!fs.existsSync(LOCAL_STORAGE_DIR)) {
+  fs.mkdirSync(LOCAL_STORAGE_DIR, { recursive: true });
+}
+var ObjectNotFoundError = class _ObjectNotFoundError extends Error {
+  constructor() {
+    super("Object not found");
+    this.name = "ObjectNotFoundError";
+    Object.setPrototypeOf(this, _ObjectNotFoundError.prototype);
+  }
+};
+var CONTENT_TYPES = {
+  ".webp": "image/webp",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif": "image/gif",
+  ".svg": "image/svg+xml"
+};
+async function fileExists(p) {
+  try {
+    await fsPromises.access(p);
+    return true;
+  } catch {
+    return false;
+  }
+}
+async function resolveWithWebpFallback(fullPath) {
+  if (await fileExists(fullPath)) return fullPath;
+  const webpPath = fullPath.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif)$/i, "") + ".webp";
+  if (webpPath !== fullPath && await fileExists(webpPath)) return webpPath;
+  const appended = fullPath + ".webp";
+  if (await fileExists(appended)) return appended;
+  return null;
+}
+var ObjectStorageService = class {
+  constructor() {
+  }
+  async saveObject(id, content, mimeType) {
+    await db.insert(storageObjectsTable).values({
+      id,
+      content,
+      mimeType
+    });
+  }
+  async searchPublicObject(filePath) {
+    const fullPath = path2.join(LOCAL_STORAGE_DIR, filePath.replace(/^\/+/, ""));
+    const local = await resolveWithWebpFallback(fullPath);
+    if (local) return local;
+    return null;
+  }
+  async downloadObject(filePath, cacheTtlSec = 3600) {
+    const stat2 = await fsPromises.stat(filePath);
+    const nodeStream = fs.createReadStream(filePath);
+    const webStream = Readable.toWeb(nodeStream);
+    const ext = path2.extname(filePath).toLowerCase();
+    const contentType = CONTENT_TYPES[ext] ?? "application/octet-stream";
+    const etag = `"${crypto2.createHash("md5").update(`${stat2.mtimeMs}-${stat2.size}`).digest("hex").slice(0, 16)}"`;
+    const headers = {
+      "Content-Type": contentType,
+      "Cache-Control": `public, max-age=${cacheTtlSec}, immutable`,
+      "Content-Length": String(stat2.size),
+      "ETag": etag,
+      "Vary": "Accept"
+    };
+    return new Response(webStream, { headers });
+  }
+  async getObjectEntityUploadURL(_originalName) {
+    const objectId = randomUUID();
+    return `/api/upload-file/${objectId}`;
+  }
+  async getObjectEntityFile(objectPath) {
+    if (!objectPath.startsWith("/objects/")) {
+      throw new ObjectNotFoundError();
+    }
+    const objectId = objectPath.replace("/objects/", "").replace(/^\/+/, "");
+    const rows = await db.select().from(storageObjectsTable).where(eq2(storageObjectsTable.id, objectId)).limit(1);
+    if (rows.length > 0) {
+      return { buffer: rows[0].content, mimeType: rows[0].mimeType };
+    }
+    if (!objectId.endsWith(".webp")) {
+      const webpRows = await db.select().from(storageObjectsTable).where(eq2(storageObjectsTable.id, objectId + ".webp")).limit(1);
+      if (webpRows.length > 0) {
+        return { buffer: webpRows[0].content, mimeType: webpRows[0].mimeType };
+      }
+    }
+    const fullPath = path2.join(LOCAL_STORAGE_DIR, objectId);
+    const resolved = await resolveWithWebpFallback(fullPath);
+    if (!resolved) throw new ObjectNotFoundError();
+    return resolved;
+  }
+  normalizeObjectEntityPath(rawPath) {
+    if (rawPath.startsWith("/api/upload-file/")) {
+      const id = rawPath.replace("/api/upload-file/", "");
+      return `/objects/${id}`;
+    }
+    return rawPath;
+  }
+};
+
+// src/routes/storage.ts
+var router2 = (0, import_express2.Router)();
+var objectStorageService = new ObjectStorageService();
+var MAX_IMAGE_DIMENSION = 1920;
+var WEBP_QUALITY = 82;
+var CACHE_TTL_SEC = 60 * 60 * 24 * 365;
+var CONTENT_TYPES2 = {
+  ".webp": "image/webp",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif": "image/gif",
+  ".svg": "image/svg+xml"
+};
+function detectMimeTypeSync(filePath) {
+  try {
+    const buffer = Buffer.alloc(12);
+    const fd = fs2.openSync(filePath, "r");
+    fs2.readSync(fd, buffer, 0, 12, 0);
+    fs2.closeSync(fd);
+    if (buffer[0] === 255 && buffer[1] === 216 && buffer[2] === 255) return "image/jpeg";
+    if (buffer[0] === 137 && buffer[1] === 80 && buffer[2] === 78 && buffer[3] === 71) return "image/png";
+    if (buffer[0] === 82 && buffer[1] === 73 && buffer[2] === 70 && buffer[3] === 70 && buffer[8] === 87 && buffer[9] === 69 && buffer[10] === 66 && buffer[11] === 80) return "image/webp";
+    if (buffer[0] === 71 && buffer[1] === 73 && buffer[2] === 70) return "image/gif";
+  } catch (e) {
+  }
+  return "application/octet-stream";
+}
+async function getSharp() {
+  try {
+    const sharpModule = await import("sharp");
+    return sharpModule.default ?? sharpModule;
+  } catch (err) {
+    console.error("Failed to load sharp:", err);
+    return null;
+  }
+}
+async function serveProcessedObject(req, res, fileData) {
+  try {
+    const isBuffer = typeof fileData !== "string";
+    const filePath = !isBuffer ? fileData : "";
+    const bufferData = isBuffer ? fileData : null;
+    const ext = isBuffer ? "" : path3.extname(filePath).toLowerCase();
+    const hasExtension = isBuffer ? false : ext !== "";
+    let isImage = false;
+    let originalMime = "application/octet-stream";
+    if (isBuffer) {
+      originalMime = bufferData.mimeType;
+      isImage = originalMime.startsWith("image/");
+    } else {
+      isImage = hasExtension ? [".webp", ".jpg", ".jpeg", ".png", ".gif", ".avif"].includes(ext) : true;
+      originalMime = hasExtension ? CONTENT_TYPES2[ext] || detectMimeTypeSync(filePath) : detectMimeTypeSync(filePath);
+    }
+    const width = parseInt(req.query.w);
+    const quality = parseInt(req.query.q) || WEBP_QUALITY;
+    const sendOriginal = () => {
+      const options = {
+        maxAge: CACHE_TTL_SEC * 1e3,
+        immutable: true
+      };
+      if (isBuffer) {
+        res.set("Content-Type", originalMime);
+        res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
+        const etag2 = `"${crypto3.createHash("md5").update(bufferData.buffer).digest("hex").slice(0, 16)}"`;
+        if (req.headers["if-none-match"] === etag2) {
+          return res.sendStatus(304);
+        }
+        res.set("ETag", etag2);
+        res.set("Content-Length", String(bufferData.buffer.length));
+        return res.send(bufferData.buffer);
+      } else {
+        if (!hasExtension) {
+          options.headers = {
+            "Content-Type": originalMime
+          };
+        }
+        return res.sendFile(filePath, options);
+      }
+    };
+    if (!isImage || isNaN(width) || ext === ".svg" || isBuffer && originalMime === "image/svg+xml") {
+      return sendOriginal();
+    }
+    const sharp = await getSharp();
+    if (!sharp) {
+      return sendOriginal();
+    }
+    let rawBuffer;
+    let etagSource;
+    if (isBuffer) {
+      rawBuffer = bufferData.buffer;
+      etagSource = `${rawBuffer.length}-${width}-${quality}-db`;
+    } else {
+      const stat2 = await fs2.promises.stat(filePath);
+      rawBuffer = await fs2.promises.readFile(filePath);
+      etagSource = `${stat2.mtimeMs}-${stat2.size}-${width}-${quality}-fs`;
+    }
+    const etag = `"${crypto3.createHash("md5").update(etagSource).digest("hex").slice(0, 16)}"`;
+    if (req.headers["if-none-match"] === etag) {
+      return res.sendStatus(304);
+    }
+    try {
+      const processed = await sharp(rawBuffer).resize({
+        width: Math.min(width, MAX_IMAGE_DIMENSION),
+        withoutEnlargement: true,
+        fit: "inside"
+      }).webp({ quality }).toBuffer();
+      res.set("ETag", etag);
+      res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
+      res.set("Content-Type", "image/webp");
+      res.set("Content-Length", String(processed.length));
+      res.send(processed);
+    } catch (sharpError) {
+      console.error(`Sharp processing error:`, sharpError);
+      sendOriginal();
+    }
+  } catch (error40) {
+    console.error(`Error serving processed object:`, error40);
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Failed to serve object" });
+    }
+  }
+}
+router2.post("/storage/uploads/request-url", async (req, res) => {
+  try {
+    const parsed = RequestUploadUrlBody.safeParse(req.body);
+    if (!parsed.success) {
+      console.warn("Invalid upload request body:", parsed.error.format());
+      return res.status(400).json({ error: "Invalid metadata provided" });
+    }
+    const { name } = parsed.data;
+    const uploadURL = await objectStorageService.getObjectEntityUploadURL(name);
+    const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
+    return res.json(
+      RequestUploadUrlResponse.parse({
+        uploadURL,
+        objectPath
+      })
+    );
+  } catch (error40) {
+    console.error("Upload URL generation failed:", error40);
+    return res.status(500).json({ error: "Could not generate upload URL" });
+  }
+});
+router2.get("/storage/public-objects/*filePath", async (req, res) => {
+  try {
+    const raw = req.params.filePath;
+    const filePath = Array.isArray(raw) ? raw.join("/") : raw;
+    const file2 = await objectStorageService.searchPublicObject(filePath);
+    if (!file2) return res.status(404).json({ error: "Asset not found" });
+    return await serveProcessedObject(req, res, file2);
+  } catch (error40) {
+    return res.status(500).json({ error: "Error searching asset" });
+  }
+});
+router2.get("/storage/objects/*path", async (req, res) => {
+  try {
+    const raw = req.params.path;
+    const wildcardPath = Array.isArray(raw) ? raw.join("/") : raw;
+    const objectPath = `/objects/${wildcardPath}`;
+    const objectFile = await objectStorageService.getObjectEntityFile(objectPath);
+    return await serveProcessedObject(req, res, objectFile);
+  } catch (error40) {
+    if (error40 instanceof ObjectNotFoundError) {
+      return res.status(404).json({ error: "Object not found" });
+    }
+    console.error("Object serving failed:", error40);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+function collectBody(req) {
+  return new Promise((resolve2, reject) => {
+    const chunks = [];
+    req.on("data", (chunk) => chunks.push(chunk));
+    req.on("end", () => resolve2(Buffer.concat(chunks)));
+    req.on("error", reject);
+  });
+}
+function extractFromMultipart(rawBuffer, rawContentType) {
+  const isMultipart = rawContentType.includes("multipart/form-data") || rawBuffer.subarray(0, 6).toString("ascii").startsWith("------");
+  if (!isMultipart) {
+    return { buffer: rawBuffer, detectedMime: rawContentType.split(";")[0].trim() };
+  }
+  const firstLineEnd = rawBuffer.indexOf(13);
+  if (firstLineEnd === -1) {
+    return { buffer: rawBuffer, detectedMime: "application/octet-stream" };
+  }
+  const boundary = rawBuffer.subarray(0, firstLineEnd).toString("ascii").trim();
+  const filePartMarker = Buffer.from('name="file"');
+  const filePartPos = rawBuffer.indexOf(filePartMarker);
+  if (filePartPos !== -1) {
+    const headerEnd2 = rawBuffer.indexOf("\r\n\r\n", filePartPos);
+    if (headerEnd2 !== -1) {
+      const partHeaders = rawBuffer.subarray(filePartPos, headerEnd2).toString("ascii");
+      const ctMatch = partHeaders.match(/Content-Type:\s*([^\r\n]+)/i);
+      const detectedMime = ctMatch ? ctMatch[1].trim() : "application/octet-stream";
+      const contentStart = headerEnd2 + 4;
+      const closingBoundary = Buffer.from("\r\n" + boundary);
+      const contentEnd = rawBuffer.indexOf(closingBoundary, contentStart);
+      const fileContent = contentEnd !== -1 ? rawBuffer.subarray(contentStart, contentEnd) : rawBuffer.subarray(contentStart);
+      return { buffer: fileContent, detectedMime };
+    }
+  }
+  let searchPos = 0;
+  while (searchPos < rawBuffer.length - 4) {
+    const idx = rawBuffer.indexOf("\r\n\r\n", searchPos);
+    if (idx === -1) break;
+    const contentStart = idx + 4;
+    if (contentStart + 4 > rawBuffer.length) break;
+    const b0 = rawBuffer[contentStart];
+    const b1 = rawBuffer[contentStart + 1];
+    const b2 = rawBuffer[contentStart + 2];
+    const b3 = rawBuffer[contentStart + 3];
+    if (b0 === 255 && b1 === 216 || // JPEG
+    b0 === 137 && b1 === 80 || // PNG
+    b0 === 82 && b1 === 73 && b2 === 70 && b3 === 70 || // WebP (RIFF)
+    b0 === 71 && b1 === 73 && b2 === 70) {
+      const closingBoundary = Buffer.from("\r\n" + boundary);
+      const contentEnd = rawBuffer.indexOf(closingBoundary, contentStart);
+      const fileContent = contentEnd !== -1 ? rawBuffer.subarray(contentStart, contentEnd) : rawBuffer.subarray(contentStart);
+      const mimeMap = { 255: "image/jpeg", 137: "image/png", 82: "image/webp", 71: "image/gif" };
+      return { buffer: fileContent, detectedMime: mimeMap[b0] || "application/octet-stream" };
+    }
+    searchPos = idx + 4;
+  }
+  const headerEnd = rawBuffer.indexOf("\r\n\r\n");
+  if (headerEnd !== -1) {
+    const contentStart = headerEnd + 4;
+    const closingBoundary = Buffer.from("\r\n" + boundary);
+    const contentEnd = rawBuffer.indexOf(closingBoundary, contentStart);
+    const fileContent = contentEnd !== -1 ? rawBuffer.subarray(contentStart, contentEnd) : rawBuffer.subarray(contentStart);
+    return { buffer: fileContent, detectedMime: "application/octet-stream" };
+  }
+  return { buffer: rawBuffer, detectedMime: "application/octet-stream" };
+}
+var handleLocalUpload = async (req, res) => {
+  const objectId = req.params.objectId;
+  const rawContentType = req.headers["content-type"] || "application/octet-stream";
+  const contentType = rawContentType.split(";")[0].trim();
+  try {
+    const rawBuffer = await collectBody(req);
+    const extracted = extractFromMultipart(rawBuffer, rawContentType);
+    const fileBuffer = extracted.buffer;
+    const effectiveMime = contentType.startsWith("image/") ? contentType : extracted.detectedMime;
+    const isImage = /^image\/(jpe?g|jpg|png|webp|gif|avif|tiff|bmp)/.test(effectiveMime);
+    let finalBuffer = fileBuffer;
+    let finalId = objectId;
+    if (isImage) {
+      const sharp = await getSharp();
+      if (sharp) {
+        try {
+          finalBuffer = await sharp(fileBuffer).rotate().resize({ width: MAX_IMAGE_DIMENSION, height: MAX_IMAGE_DIMENSION, fit: "inside", withoutEnlargement: true }).webp({ quality: WEBP_QUALITY }).toBuffer();
+          finalId = objectId.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif|webp)$/i, "") + ".webp";
+        } catch (e) {
+          console.warn("Sharp optimization failed, using raw buffer:", e);
+        }
+      } else {
+        const extMap = {
+          "image/jpeg": ".jpg",
+          "image/jpg": ".jpg",
+          "image/png": ".png",
+          "image/webp": ".webp",
+          "image/gif": ".gif",
+          "image/avif": ".avif"
+        };
+        const defaultExt = extMap[effectiveMime] || "";
+        if (defaultExt) {
+          finalId = objectId.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif|webp)$/i, "") + defaultExt;
+        }
+      }
+    }
+    await objectStorageService.saveObject(finalId, finalBuffer, effectiveMime);
+    const etag = `"${crypto3.createHash("md5").update(finalBuffer).digest("hex").slice(0, 16)}"`;
+    res.set("ETag", etag);
+    res.sendStatus(200);
+    return;
+  } catch (err) {
+    console.error(`Upload save failed for ${objectId}:`, err);
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Failed to save file" });
+      return;
+    }
+  }
+};
+router2.put("/upload-file/:objectId", handleLocalUpload);
+router2.post("/upload-file/:objectId", handleLocalUpload);
+router2.get("/storage/local-upload/:objectId", async (req, res) => {
+  const objectId = req.params.objectId;
+  try {
+    const objectFile = await objectStorageService.getObjectEntityFile("/objects/" + objectId);
+    return await serveProcessedObject(req, res, objectFile);
+  } catch (error40) {
+    if (error40 instanceof ObjectNotFoundError) {
+      return res.status(404).json({ error: "File not found" });
+    }
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+var storage_default = router2;
+
+// src/routes/banners.ts
+var import_express3 = __toESM(require_express2(), 1);
 
 // src/lib/serialize.ts
 function serializeForResponse(value) {
@@ -58441,7 +58520,7 @@ router3.get("/banners", async (req, res) => {
     res.status(400).json({ error: query.error.message });
     return;
   }
-  const rows = query.data.activeOnly ? await db.select().from(bannersTable).where(eq(bannersTable.active, true)).orderBy(asc(bannersTable.sortOrder), asc(bannersTable.id)) : await db.select().from(bannersTable).orderBy(asc(bannersTable.sortOrder), asc(bannersTable.id));
+  const rows = query.data.activeOnly ? await db.select().from(bannersTable).where(eq2(bannersTable.active, true)).orderBy(asc2(bannersTable.sortOrder), asc2(bannersTable.id)) : await db.select().from(bannersTable).orderBy(asc2(bannersTable.sortOrder), asc2(bannersTable.id));
   res.json(ListBannersResponse.parse(serializeForResponse(rows)));
 });
 router3.post("/banners", async (req, res) => {
@@ -58451,7 +58530,7 @@ router3.post("/banners", async (req, res) => {
     return;
   }
   const [result] = await db.insert(bannersTable).values(parsed.data);
-  const [row] = await db.select().from(bannersTable).where(eq(bannersTable.id, result.insertId));
+  const [row] = await db.select().from(bannersTable).where(eq2(bannersTable.id, result.insertId));
   res.status(201).json(GetBannerResponse.parse(serializeForResponse(row)));
 });
 router3.get("/banners/:id", async (req, res) => {
@@ -58460,7 +58539,7 @@ router3.get("/banners/:id", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [row] = await db.select().from(bannersTable).where(eq(bannersTable.id, params.data.id));
+  const [row] = await db.select().from(bannersTable).where(eq2(bannersTable.id, params.data.id));
   if (!row) {
     res.status(404).json({ error: "Banner not found" });
     return;
@@ -58478,8 +58557,8 @@ router3.patch("/banners/:id", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  await db.update(bannersTable).set(parsed.data).where(eq(bannersTable.id, params.data.id));
-  const [row] = await db.select().from(bannersTable).where(eq(bannersTable.id, params.data.id));
+  await db.update(bannersTable).set(parsed.data).where(eq2(bannersTable.id, params.data.id));
+  const [row] = await db.select().from(bannersTable).where(eq2(bannersTable.id, params.data.id));
   if (!row) {
     res.status(404).json({ error: "Banner not found" });
     return;
@@ -58492,12 +58571,12 @@ router3.delete("/banners/:id", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [existing] = await db.select().from(bannersTable).where(eq(bannersTable.id, params.data.id));
+  const [existing] = await db.select().from(bannersTable).where(eq2(bannersTable.id, params.data.id));
   if (!existing) {
     res.status(404).json({ error: "Banner not found" });
     return;
   }
-  await db.delete(bannersTable).where(eq(bannersTable.id, params.data.id));
+  await db.delete(bannersTable).where(eq2(bannersTable.id, params.data.id));
   res.sendStatus(204);
 });
 var banners_default = router3;
@@ -58506,7 +58585,7 @@ var banners_default = router3;
 var import_express4 = __toESM(require_express2(), 1);
 var router4 = (0, import_express4.Router)();
 router4.get("/outlets", async (_req, res) => {
-  const rows = await db.select().from(outletsTable).orderBy(asc(outletsTable.sortOrder), asc(outletsTable.id));
+  const rows = await db.select().from(outletsTable).orderBy(asc2(outletsTable.sortOrder), asc2(outletsTable.id));
   res.json(ListOutletsResponse.parse(serializeForResponse(rows)));
 });
 router4.post("/outlets", async (req, res) => {
@@ -58516,7 +58595,7 @@ router4.post("/outlets", async (req, res) => {
     return;
   }
   const [result] = await db.insert(outletsTable).values(parsed.data);
-  const [row] = await db.select().from(outletsTable).where(eq(outletsTable.id, result.insertId));
+  const [row] = await db.select().from(outletsTable).where(eq2(outletsTable.id, result.insertId));
   res.status(201).json(GetOutletResponse.parse(serializeForResponse(row)));
 });
 router4.get("/outlets/by-slug/:slug", async (req, res) => {
@@ -58525,7 +58604,7 @@ router4.get("/outlets/by-slug/:slug", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [row] = await db.select().from(outletsTable).where(eq(outletsTable.slug, params.data.slug));
+  const [row] = await db.select().from(outletsTable).where(eq2(outletsTable.slug, params.data.slug));
   if (!row) {
     res.status(404).json({ error: "Outlet not found" });
     return;
@@ -58538,7 +58617,7 @@ router4.get("/outlets/:id", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [row] = await db.select().from(outletsTable).where(eq(outletsTable.id, params.data.id));
+  const [row] = await db.select().from(outletsTable).where(eq2(outletsTable.id, params.data.id));
   if (!row) {
     res.status(404).json({ error: "Outlet not found" });
     return;
@@ -58556,8 +58635,8 @@ router4.patch("/outlets/:id", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  await db.update(outletsTable).set(parsed.data).where(eq(outletsTable.id, params.data.id));
-  const [row] = await db.select().from(outletsTable).where(eq(outletsTable.id, params.data.id));
+  await db.update(outletsTable).set(parsed.data).where(eq2(outletsTable.id, params.data.id));
+  const [row] = await db.select().from(outletsTable).where(eq2(outletsTable.id, params.data.id));
   if (!row) {
     res.status(404).json({ error: "Outlet not found" });
     return;
@@ -58570,12 +58649,12 @@ router4.delete("/outlets/:id", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [existing] = await db.select().from(outletsTable).where(eq(outletsTable.id, params.data.id));
+  const [existing] = await db.select().from(outletsTable).where(eq2(outletsTable.id, params.data.id));
   if (!existing) {
     res.status(404).json({ error: "Outlet not found" });
     return;
   }
-  await db.delete(outletsTable).where(eq(outletsTable.id, params.data.id));
+  await db.delete(outletsTable).where(eq2(outletsTable.id, params.data.id));
   res.sendStatus(204);
 });
 var outlets_default = router4;
@@ -58589,7 +58668,7 @@ router5.get("/outlets/:outletId/menu-items", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const rows = await db.select().from(menuItemsTable).where(eq(menuItemsTable.outletId, params.data.outletId)).orderBy(asc(menuItemsTable.sortOrder), asc(menuItemsTable.id));
+  const rows = await db.select().from(menuItemsTable).where(eq2(menuItemsTable.outletId, params.data.outletId)).orderBy(asc2(menuItemsTable.sortOrder), asc2(menuItemsTable.id));
   res.json(ListMenuItemsResponse.parse(serializeForResponse(rows)));
 });
 router5.post("/outlets/:outletId/menu-items", async (req, res) => {
@@ -58603,13 +58682,13 @@ router5.post("/outlets/:outletId/menu-items", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [outlet] = await db.select().from(outletsTable).where(eq(outletsTable.id, params.data.outletId));
+  const [outlet] = await db.select().from(outletsTable).where(eq2(outletsTable.id, params.data.outletId));
   if (!outlet) {
     res.status(404).json({ error: "Outlet not found" });
     return;
   }
   const [result] = await db.insert(menuItemsTable).values({ ...parsed.data, outletId: params.data.outletId });
-  const [row] = await db.select().from(menuItemsTable).where(eq(menuItemsTable.id, result.insertId));
+  const [row] = await db.select().from(menuItemsTable).where(eq2(menuItemsTable.id, result.insertId));
   res.status(201).json(GetMenuItemResponse.parse(serializeForResponse(row)));
 });
 router5.get("/menu-items/:id", async (req, res) => {
@@ -58618,7 +58697,7 @@ router5.get("/menu-items/:id", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [row] = await db.select().from(menuItemsTable).where(eq(menuItemsTable.id, params.data.id));
+  const [row] = await db.select().from(menuItemsTable).where(eq2(menuItemsTable.id, params.data.id));
   if (!row) {
     res.status(404).json({ error: "Menu item not found" });
     return;
@@ -58636,8 +58715,8 @@ router5.patch("/menu-items/:id", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  await db.update(menuItemsTable).set(parsed.data).where(eq(menuItemsTable.id, params.data.id));
-  const [row] = await db.select().from(menuItemsTable).where(eq(menuItemsTable.id, params.data.id));
+  await db.update(menuItemsTable).set(parsed.data).where(eq2(menuItemsTable.id, params.data.id));
+  const [row] = await db.select().from(menuItemsTable).where(eq2(menuItemsTable.id, params.data.id));
   if (!row) {
     res.status(404).json({ error: "Menu item not found" });
     return;
@@ -58650,12 +58729,12 @@ router5.delete("/menu-items/:id", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [existing] = await db.select().from(menuItemsTable).where(eq(menuItemsTable.id, params.data.id));
+  const [existing] = await db.select().from(menuItemsTable).where(eq2(menuItemsTable.id, params.data.id));
   if (!existing) {
     res.status(404).json({ error: "Menu item not found" });
     return;
   }
-  await db.delete(menuItemsTable).where(eq(menuItemsTable.id, params.data.id));
+  await db.delete(menuItemsTable).where(eq2(menuItemsTable.id, params.data.id));
   res.sendStatus(204);
 });
 var menu_items_default = router5;
@@ -58669,7 +58748,7 @@ router6.get("/outlets/:outletId/beverages", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const rows = await db.select().from(beveragesTable).where(eq(beveragesTable.outletId, params.data.outletId)).orderBy(asc(beveragesTable.sortOrder), asc(beveragesTable.id));
+  const rows = await db.select().from(beveragesTable).where(eq2(beveragesTable.outletId, params.data.outletId)).orderBy(asc2(beveragesTable.sortOrder), asc2(beveragesTable.id));
   res.json(ListBeveragesResponse.parse(serializeForResponse(rows)));
 });
 router6.post("/outlets/:outletId/beverages", async (req, res) => {
@@ -58683,13 +58762,13 @@ router6.post("/outlets/:outletId/beverages", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [outlet] = await db.select().from(outletsTable).where(eq(outletsTable.id, params.data.outletId));
+  const [outlet] = await db.select().from(outletsTable).where(eq2(outletsTable.id, params.data.outletId));
   if (!outlet) {
     res.status(404).json({ error: "Outlet not found" });
     return;
   }
   const [result] = await db.insert(beveragesTable).values({ ...parsed.data, outletId: params.data.outletId });
-  const [row] = await db.select().from(beveragesTable).where(eq(beveragesTable.id, result.insertId));
+  const [row] = await db.select().from(beveragesTable).where(eq2(beveragesTable.id, result.insertId));
   res.status(201).json(GetBeverageResponse.parse(serializeForResponse(row)));
 });
 router6.get("/beverages/:id", async (req, res) => {
@@ -58698,7 +58777,7 @@ router6.get("/beverages/:id", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [row] = await db.select().from(beveragesTable).where(eq(beveragesTable.id, params.data.id));
+  const [row] = await db.select().from(beveragesTable).where(eq2(beveragesTable.id, params.data.id));
   if (!row) {
     res.status(404).json({ error: "Beverage not found" });
     return;
@@ -58716,8 +58795,8 @@ router6.patch("/beverages/:id", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  await db.update(beveragesTable).set(parsed.data).where(eq(beveragesTable.id, params.data.id));
-  const [row] = await db.select().from(beveragesTable).where(eq(beveragesTable.id, params.data.id));
+  await db.update(beveragesTable).set(parsed.data).where(eq2(beveragesTable.id, params.data.id));
+  const [row] = await db.select().from(beveragesTable).where(eq2(beveragesTable.id, params.data.id));
   if (!row) {
     res.status(404).json({ error: "Beverage not found" });
     return;
@@ -58730,12 +58809,12 @@ router6.delete("/beverages/:id", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [existing] = await db.select().from(beveragesTable).where(eq(beveragesTable.id, params.data.id));
+  const [existing] = await db.select().from(beveragesTable).where(eq2(beveragesTable.id, params.data.id));
   if (!existing) {
     res.status(404).json({ error: "Beverage not found" });
     return;
   }
-  await db.delete(beveragesTable).where(eq(beveragesTable.id, params.data.id));
+  await db.delete(beveragesTable).where(eq2(beveragesTable.id, params.data.id));
   res.sendStatus(204);
 });
 var beverages_default = router6;
@@ -58749,7 +58828,7 @@ router7.get("/gallery", async (req, res) => {
     res.status(400).json({ error: query.error.message });
     return;
   }
-  const rows = query.data.outletId !== void 0 ? await db.select().from(galleryImagesTable).where(eq(galleryImagesTable.outletId, query.data.outletId)).orderBy(asc(galleryImagesTable.sortOrder), asc(galleryImagesTable.id)) : await db.select().from(galleryImagesTable).orderBy(asc(galleryImagesTable.sortOrder), asc(galleryImagesTable.id));
+  const rows = query.data.outletId !== void 0 ? await db.select().from(galleryImagesTable).where(eq2(galleryImagesTable.outletId, query.data.outletId)).orderBy(asc2(galleryImagesTable.sortOrder), asc2(galleryImagesTable.id)) : await db.select().from(galleryImagesTable).orderBy(asc2(galleryImagesTable.sortOrder), asc2(galleryImagesTable.id));
   res.json(ListGalleryImagesResponse.parse(serializeForResponse(rows)));
 });
 router7.post("/gallery", async (req, res) => {
@@ -58759,7 +58838,7 @@ router7.post("/gallery", async (req, res) => {
     return;
   }
   const [result] = await db.insert(galleryImagesTable).values(parsed.data);
-  const [row] = await db.select().from(galleryImagesTable).where(eq(galleryImagesTable.id, result.insertId));
+  const [row] = await db.select().from(galleryImagesTable).where(eq2(galleryImagesTable.id, result.insertId));
   res.status(201).json(UpdateGalleryImageResponse.parse(serializeForResponse(row)));
 });
 router7.patch("/gallery/:id", async (req, res) => {
@@ -58773,8 +58852,8 @@ router7.patch("/gallery/:id", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  await db.update(galleryImagesTable).set(parsed.data).where(eq(galleryImagesTable.id, params.data.id));
-  const [row] = await db.select().from(galleryImagesTable).where(eq(galleryImagesTable.id, params.data.id));
+  await db.update(galleryImagesTable).set(parsed.data).where(eq2(galleryImagesTable.id, params.data.id));
+  const [row] = await db.select().from(galleryImagesTable).where(eq2(galleryImagesTable.id, params.data.id));
   if (!row) {
     res.status(404).json({ error: "Gallery image not found" });
     return;
@@ -58787,12 +58866,12 @@ router7.delete("/gallery/:id", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [existing] = await db.select().from(galleryImagesTable).where(eq(galleryImagesTable.id, params.data.id));
+  const [existing] = await db.select().from(galleryImagesTable).where(eq2(galleryImagesTable.id, params.data.id));
   if (!existing) {
     res.status(404).json({ error: "Gallery image not found" });
     return;
   }
-  await db.delete(galleryImagesTable).where(eq(galleryImagesTable.id, params.data.id));
+  await db.delete(galleryImagesTable).where(eq2(galleryImagesTable.id, params.data.id));
   res.sendStatus(204);
 });
 var gallery_default = router7;
@@ -58804,7 +58883,7 @@ async function ensureSiteInfo() {
   const [existing] = await db.select().from(siteInfoTable).limit(1);
   if (existing) return existing;
   const [result] = await db.insert(siteInfoTable).values({ brandName: "Avenue Hospitality Group" });
-  const [created] = await db.select().from(siteInfoTable).where(eq(siteInfoTable.id, result.insertId));
+  const [created] = await db.select().from(siteInfoTable).where(eq2(siteInfoTable.id, result.insertId));
   return created;
 }
 router8.get("/site-info", async (_req, res) => {
@@ -58818,8 +58897,8 @@ router8.patch("/site-info", async (req, res) => {
     return;
   }
   const existing = await ensureSiteInfo();
-  await db.update(siteInfoTable).set(parsed.data).where(eq(siteInfoTable.id, existing.id));
-  const [row] = await db.select().from(siteInfoTable).where(eq(siteInfoTable.id, existing.id));
+  await db.update(siteInfoTable).set(parsed.data).where(eq2(siteInfoTable.id, existing.id));
+  const [row] = await db.select().from(siteInfoTable).where(eq2(siteInfoTable.id, existing.id));
   res.json(UpdateSiteInfoResponse.parse(serializeForResponse(row)));
 });
 router8.get("/dashboard/summary", async (_req, res) => {
@@ -58827,7 +58906,7 @@ router8.get("/dashboard/summary", async (_req, res) => {
   const [menuCountRow] = await db.select({ count: count() }).from(menuItemsTable);
   const [bannerCountRow] = await db.select({ count: count() }).from(bannersTable);
   const [galleryCountRow] = await db.select({ count: count() }).from(galleryImagesTable);
-  const recentMenuItems = await db.select().from(menuItemsTable).orderBy(desc(menuItemsTable.createdAt)).limit(6);
+  const recentMenuItems = await db.select().from(menuItemsTable).orderBy(desc2(menuItemsTable.createdAt)).limit(6);
   res.json(
     GetDashboardSummaryResponse.parse({
       outletCount: outletCountRow?.count ?? 0,
@@ -58854,11 +58933,11 @@ router9.get("/outlets/:outletId/promotions", async (req, res) => {
     res.status(400).json({ error: query.error.message });
     return;
   }
-  const conditions = query.data.activeOnly ? and(
-    eq(promotionsTable.outletId, params.data.outletId),
-    eq(promotionsTable.active, true)
-  ) : eq(promotionsTable.outletId, params.data.outletId);
-  const rows = await db.select().from(promotionsTable).where(conditions).orderBy(asc(promotionsTable.sortOrder), asc(promotionsTable.id));
+  const conditions = query.data.activeOnly ? and2(
+    eq2(promotionsTable.outletId, params.data.outletId),
+    eq2(promotionsTable.active, true)
+  ) : eq2(promotionsTable.outletId, params.data.outletId);
+  const rows = await db.select().from(promotionsTable).where(conditions).orderBy(asc2(promotionsTable.sortOrder), asc2(promotionsTable.id));
   res.json(ListPromotionsResponse.parse(serializeForResponse(rows)));
 });
 router9.post("/outlets/:outletId/promotions", async (req, res) => {
@@ -58872,13 +58951,13 @@ router9.post("/outlets/:outletId/promotions", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [outlet] = await db.select().from(outletsTable).where(eq(outletsTable.id, params.data.outletId));
+  const [outlet] = await db.select().from(outletsTable).where(eq2(outletsTable.id, params.data.outletId));
   if (!outlet) {
     res.status(404).json({ error: "Outlet not found" });
     return;
   }
   const [result] = await db.insert(promotionsTable).values({ ...parsed.data, outletId: params.data.outletId });
-  const [row] = await db.select().from(promotionsTable).where(eq(promotionsTable.id, result.insertId));
+  const [row] = await db.select().from(promotionsTable).where(eq2(promotionsTable.id, result.insertId));
   res.status(201).json(GetPromotionResponse.parse(serializeForResponse(row)));
 });
 router9.get("/promotions/:id", async (req, res) => {
@@ -58887,7 +58966,7 @@ router9.get("/promotions/:id", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [row] = await db.select().from(promotionsTable).where(eq(promotionsTable.id, params.data.id));
+  const [row] = await db.select().from(promotionsTable).where(eq2(promotionsTable.id, params.data.id));
   if (!row) {
     res.status(404).json({ error: "Promotion not found" });
     return;
@@ -58905,8 +58984,8 @@ router9.patch("/promotions/:id", async (req, res) => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  await db.update(promotionsTable).set(parsed.data).where(eq(promotionsTable.id, params.data.id));
-  const [row] = await db.select().from(promotionsTable).where(eq(promotionsTable.id, params.data.id));
+  await db.update(promotionsTable).set(parsed.data).where(eq2(promotionsTable.id, params.data.id));
+  const [row] = await db.select().from(promotionsTable).where(eq2(promotionsTable.id, params.data.id));
   if (!row) {
     res.status(404).json({ error: "Promotion not found" });
     return;
@@ -58919,12 +58998,12 @@ router9.delete("/promotions/:id", async (req, res) => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [existing] = await db.select().from(promotionsTable).where(eq(promotionsTable.id, params.data.id));
+  const [existing] = await db.select().from(promotionsTable).where(eq2(promotionsTable.id, params.data.id));
   if (!existing) {
     res.status(404).json({ error: "Promotion not found" });
     return;
   }
-  await db.delete(promotionsTable).where(eq(promotionsTable.id, params.data.id));
+  await db.delete(promotionsTable).where(eq2(promotionsTable.id, params.data.id));
   res.sendStatus(204);
 });
 var promotions_default = router9;
@@ -58978,7 +59057,7 @@ router10.post("/auth/login", async (req, res) => {
   }
   const { username, password } = parsed.data;
   try {
-    const [user] = await db.select().from(adminUsersTable).where(eq(adminUsersTable.username, username)).limit(1);
+    const [user] = await db.select().from(adminUsersTable).where(eq2(adminUsersTable.username, username)).limit(1);
     if (!user) {
       res.status(401).json({ error: "Invalid username or password" });
       return;
@@ -59013,7 +59092,7 @@ router10.get("/auth/me", requireAuth, async (req, res) => {
     return;
   }
   try {
-    const [user] = await db.select().from(adminUsersTable).where(eq(adminUsersTable.id, authReq.user.id)).limit(1);
+    const [user] = await db.select().from(adminUsersTable).where(eq2(adminUsersTable.id, authReq.user.id)).limit(1);
     if (!user) {
       res.status(404).json({ error: "User no longer exists" });
       return;
@@ -59045,7 +59124,7 @@ router10.post("/auth/change-password", requireAuth, async (req, res) => {
   }
   const { currentPassword, newPassword } = parsed.data;
   try {
-    const [user] = await db.select().from(adminUsersTable).where(eq(adminUsersTable.id, authReq.user.id)).limit(1);
+    const [user] = await db.select().from(adminUsersTable).where(eq2(adminUsersTable.id, authReq.user.id)).limit(1);
     if (!user) {
       res.status(404).json({ error: "User no longer exists" });
       return;
@@ -59056,7 +59135,7 @@ router10.post("/auth/change-password", requireAuth, async (req, res) => {
       return;
     }
     const hashedPassword = await import_bcryptjs.default.hash(newPassword, 10);
-    await db.update(adminUsersTable).set({ password: hashedPassword }).where(eq(adminUsersTable.id, user.id));
+    await db.update(adminUsersTable).set({ password: hashedPassword }).where(eq2(adminUsersTable.id, user.id));
     res.json({ message: "Password updated successfully" });
   } catch (error40) {
     res.status(500).json({ error: error40.message || "An error occurred" });
@@ -59104,7 +59183,7 @@ router11.post("/users", async (req, res) => {
   }
   const { username, email: email3, password, role } = parsed.data;
   try {
-    const [existing] = await db.select().from(adminUsersTable).where(eq(adminUsersTable.username, username)).limit(1);
+    const [existing] = await db.select().from(adminUsersTable).where(eq2(adminUsersTable.username, username)).limit(1);
     if (existing) {
       res.status(400).json({ error: "Username already exists" });
       return;
@@ -59123,7 +59202,7 @@ router11.post("/users", async (req, res) => {
       role: adminUsersTable.role,
       createdAt: adminUsersTable.createdAt,
       updatedAt: adminUsersTable.updatedAt
-    }).from(adminUsersTable).where(eq(adminUsersTable.id, result.insertId)).limit(1);
+    }).from(adminUsersTable).where(eq2(adminUsersTable.id, result.insertId)).limit(1);
     res.status(201).json(createdUser);
   } catch (error40) {
     res.status(500).json({ error: error40.message || "An error occurred creating user" });
@@ -59142,13 +59221,13 @@ router11.patch("/users/:id", async (req, res) => {
   }
   const { username, email: email3, password, role } = parsed.data;
   try {
-    const [existing] = await db.select().from(adminUsersTable).where(eq(adminUsersTable.id, id)).limit(1);
+    const [existing] = await db.select().from(adminUsersTable).where(eq2(adminUsersTable.id, id)).limit(1);
     if (!existing) {
       res.status(404).json({ error: "User not found" });
       return;
     }
     if (username && username !== existing.username) {
-      const [taken] = await db.select().from(adminUsersTable).where(eq(adminUsersTable.username, username)).limit(1);
+      const [taken] = await db.select().from(adminUsersTable).where(eq2(adminUsersTable.username, username)).limit(1);
       if (taken) {
         res.status(400).json({ error: "Username already taken" });
         return;
@@ -59162,7 +59241,7 @@ router11.patch("/users/:id", async (req, res) => {
       updateData.password = await import_bcryptjs2.default.hash(password, 10);
     }
     if (Object.keys(updateData).length > 0) {
-      await db.update(adminUsersTable).set(updateData).where(eq(adminUsersTable.id, id));
+      await db.update(adminUsersTable).set(updateData).where(eq2(adminUsersTable.id, id));
     }
     const [updatedUser] = await db.select({
       id: adminUsersTable.id,
@@ -59171,7 +59250,7 @@ router11.patch("/users/:id", async (req, res) => {
       role: adminUsersTable.role,
       createdAt: adminUsersTable.createdAt,
       updatedAt: adminUsersTable.updatedAt
-    }).from(adminUsersTable).where(eq(adminUsersTable.id, id)).limit(1);
+    }).from(adminUsersTable).where(eq2(adminUsersTable.id, id)).limit(1);
     res.json(updatedUser);
   } catch (error40) {
     res.status(500).json({ error: error40.message || "An error occurred updating user" });
@@ -59189,12 +59268,12 @@ router11.delete("/users/:id", async (req, res) => {
     return;
   }
   try {
-    const [existing] = await db.select().from(adminUsersTable).where(eq(adminUsersTable.id, id)).limit(1);
+    const [existing] = await db.select().from(adminUsersTable).where(eq2(adminUsersTable.id, id)).limit(1);
     if (!existing) {
       res.status(404).json({ error: "User not found" });
       return;
     }
-    await db.delete(adminUsersTable).where(eq(adminUsersTable.id, id));
+    await db.delete(adminUsersTable).where(eq2(adminUsersTable.id, id));
     res.sendStatus(204);
   } catch (error40) {
     res.status(500).json({ error: error40.message || "An error occurred deleting user" });

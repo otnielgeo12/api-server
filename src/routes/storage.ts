@@ -17,6 +17,14 @@ const MAX_IMAGE_DIMENSION = 1920;
 const WEBP_QUALITY = 82;
 // Long cache TTL for images (1 year).
 const CACHE_TTL_SEC = 60 * 60 * 24 * 365;
+const CONTENT_TYPES: Record<string, string> = {
+  ".webp": "image/webp",
+  ".png":  "image/png",
+  ".jpg":  "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif":  "image/gif",
+  ".svg":  "image/svg+xml",
+};
 
 function detectMimeTypeSync(filePath: string): string {
   try {
@@ -50,14 +58,33 @@ async function getSharp() {
 
 /**
  * Common handler for serving images with optional resizing.
+ * Can serve from either a local file path (string) or a DB buffer object.
  */
-async function serveProcessedObject(req: Request, res: Response, filePath: string) {
+async function serveProcessedObject(
+  req: Request, 
+  res: Response, 
+  fileData: string | { buffer: Buffer; mimeType: string }
+) {
   try {
-    const ext = path.extname(filePath).toLowerCase();
-    const hasExtension = ext !== "";
-    const isImage = hasExtension 
-      ? [".webp", ".jpg", ".jpeg", ".png", ".gif", ".avif"].includes(ext)
-      : true; // If no extension, assume it could be an image
+    const isBuffer = typeof fileData !== "string";
+    const filePath = !isBuffer ? (fileData as string) : "";
+    const bufferData = isBuffer ? (fileData as { buffer: Buffer; mimeType: string }) : null;
+
+    const ext = isBuffer ? "" : path.extname(filePath).toLowerCase();
+    const hasExtension = isBuffer ? false : ext !== "";
+    
+    let isImage = false;
+    let originalMime = "application/octet-stream";
+    
+    if (isBuffer) {
+      originalMime = bufferData!.mimeType;
+      isImage = originalMime.startsWith("image/");
+    } else {
+      isImage = hasExtension 
+        ? [".webp", ".jpg", ".jpeg", ".png", ".gif", ".avif"].includes(ext)
+        : true; // If no extension, assume it could be an image
+      originalMime = hasExtension ? (CONTENT_TYPES[ext] || detectMimeTypeSync(filePath)) : detectMimeTypeSync(filePath);
+    }
     
     // Parse resize parameters
     const width = parseInt(req.query.w as string);
@@ -68,18 +95,32 @@ async function serveProcessedObject(req: Request, res: Response, filePath: strin
         maxAge: CACHE_TTL_SEC * 1000,
         immutable: true,
       };
-      if (!hasExtension) {
-        options.headers = {
-          "Content-Type": detectMimeTypeSync(filePath)
-        };
+      
+      if (isBuffer) {
+        res.set("Content-Type", originalMime);
+        res.set("Cache-Control", `public, max-age=${CACHE_TTL_SEC}, immutable`);
+        
+        // Generate ETag for Buffer
+        const etag = `"${crypto.createHash("md5").update(bufferData!.buffer).digest("hex").slice(0, 16)}"`;
+        if (req.headers["if-none-match"] === etag) {
+          return res.sendStatus(304);
+        }
+        res.set("ETag", etag);
+        res.set("Content-Length", String(bufferData!.buffer.length));
+        return res.send(bufferData!.buffer);
+      } else {
+        if (!hasExtension) {
+          options.headers = {
+            "Content-Type": originalMime
+          };
+        }
+        return res.sendFile(filePath, options);
       }
-      res.sendFile(filePath, options);
     };
 
     // Standard serving: Let Express handle everything (headers, ETag, MIME types, etc.)
-    if (!isImage || isNaN(width) || ext === ".svg") {
-      sendOriginal();
-      return;
+    if (!isImage || isNaN(width) || ext === ".svg" || (isBuffer && originalMime === "image/svg+xml")) {
+      return sendOriginal();
     }
 
     // Dynamic Resizing Path
@@ -88,17 +129,27 @@ async function serveProcessedObject(req: Request, res: Response, filePath: strin
       return sendOriginal();
     }
 
-    const stat = await fs.promises.stat(filePath);
+    let rawBuffer: Buffer;
+    let etagSource: string;
+
+    if (isBuffer) {
+      rawBuffer = bufferData!.buffer;
+      etagSource = `${rawBuffer.length}-${width}-${quality}-db`;
+    } else {
+      const stat = await fs.promises.stat(filePath);
+      rawBuffer = await fs.promises.readFile(filePath);
+      etagSource = `${stat.mtimeMs}-${stat.size}-${width}-${quality}-fs`;
+    }
+
     // ETag must include width/quality to distinguish between different versions of the same file
-    const etag = `"${crypto.createHash("md5").update(`${stat.mtimeMs}-${stat.size}-${width}-${quality}`).digest("hex").slice(0, 16)}"`;
+    const etag = `"${crypto.createHash("md5").update(etagSource).digest("hex").slice(0, 16)}"`;
 
     if (req.headers["if-none-match"] === etag) {
       return res.sendStatus(304);
     }
 
     try {
-      const buffer = await fs.promises.readFile(filePath);
-      const processed = await sharp(buffer)
+      const processed = await sharp(rawBuffer)
         .resize({ 
           width: Math.min(width, MAX_IMAGE_DIMENSION), 
           withoutEnlargement: true,
@@ -113,12 +164,12 @@ async function serveProcessedObject(req: Request, res: Response, filePath: strin
       res.set("Content-Length", String(processed.length));
       res.send(processed);
     } catch (sharpError) {
-      console.error(`Sharp processing error for ${filePath}:`, sharpError);
+      console.error(`Sharp processing error:`, sharpError);
       sendOriginal();
     }
 
   } catch (error) {
-    console.error(`Error serving processed object ${filePath}:`, error);
+    console.error(`Error serving processed object:`, error);
     if (!res.headersSent) {
       res.status(500).json({ error: "Failed to serve object" });
     }
@@ -324,8 +375,8 @@ const handleLocalUpload = async (req: Request, res: Response): Promise<void> => 
       }
     }
 
-    const fullPath = path.join(process.cwd(), "local-storage", finalId.replace(/^\/+/, ""));
-    await fs.promises.writeFile(fullPath, finalBuffer);
+    // Save to the DB via ObjectStorageService
+    await objectStorageService.saveObject(finalId, finalBuffer, effectiveMime);
 
     const etag = `"${crypto.createHash("md5").update(finalBuffer).digest("hex").slice(0, 16)}"`;
     res.set("ETag", etag);
@@ -348,18 +399,15 @@ router.post("/upload-file/:objectId", handleLocalUpload);
  */
 router.get("/storage/local-upload/:objectId", async (req: Request, res: Response) => {
   const objectId = req.params.objectId as string;
-  const base = path.join(process.cwd(), "local-storage");
-
-  const candidates = [
-    path.join(base, objectId),
-    path.join(base, objectId.replace(/\.(jpe?g|png|gif|tiff?|bmp|avif)$/i, "") + ".webp"),
-    path.join(base, objectId + ".webp"),
-  ];
-
-  const fullPath = candidates.find(p => fs.existsSync(p));
-  if (!fullPath) return res.status(404).json({ error: "File not found" });
-  
-  return await serveProcessedObject(req, res, fullPath);
+  try {
+    const objectFile = await objectStorageService.getObjectEntityFile("/objects/" + objectId);
+    return await serveProcessedObject(req, res, objectFile);
+  } catch (error) {
+    if (error instanceof ObjectNotFoundError) {
+      return res.status(404).json({ error: "File not found" });
+    }
+    return res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 export default router;

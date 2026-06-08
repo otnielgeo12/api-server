@@ -1,0 +1,79 @@
+npm warn Unknown project config "auto-install-peers". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm warn Unknown project config "strict-peer-dependencies". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm warn Unknown project config "onlyBuiltDependencies". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> api-server@0.0.0 dev
+> export PORT=5000 NODE_ENV=development && pnpm run build && pnpm run start
+
+[WARN] The "pnpm" field in package.json is no longer read by pnpm. The following keys were ignored: "pnpm.onlyBuiltDependencies". See https://pnpm.io/settings for the new home of each setting.
+$ node ./build.mjs
+Memulai proses bundling sakti... Mohon tunggu.
+
+  dist/index.mjs                       2.2mb ⚠️
+  dist/pino-worker.mjs               152.4kb
+  dist/pino-file.mjs                 141.1kb
+  dist/pino-pretty.mjs               114.1kb
+  dist/thread-stream-worker.mjs        7.3kb
+  dist/index.mjs.map                   4.0mb
+  dist/pino-worker.mjs.map           256.6kb
+  dist/pino-file.mjs.map             228.8kb
+  dist/pino-pretty.mjs.map           203.8kb
+  dist/thread-stream-worker.mjs.map   12.0kb
+
+⚡ Done in 164ms
+Build berhasil! File dist/index.mjs sekarang sudah sakti dan mandiri.
+[WARN] The "pnpm" field in package.json is no longer read by pnpm. The following keys were ignored: "pnpm.onlyBuiltDependencies". See https://pnpm.io/settings for the new home of each setting.
+$ node --enable-source-maps ./dist/index.mjs
+Server is running on port 5000
+[16:56:33.283] [32mINFO[39m (22333): [36mServer listening[39m
+    [35mport[39m: 5000
+[16:56:40.672] [32mINFO[39m (22333): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 1,
+      "method": "POST",
+      "url": "/storage/uploads/request-url"
+    }
+    [35mres[39m: {
+      "statusCode": 404
+    }
+    [35mresponseTime[39m: 7
+[16:56:52.976] [32mINFO[39m (22333): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 2,
+      "method": "POST",
+      "url": "/api/storage/uploads/request-url"
+    }
+    [35mres[39m: {
+      "statusCode": 401
+    }
+    [35mresponseTime[39m: 2
+[16:56:58.901] [32mINFO[39m (22333): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 3,
+      "method": "HEAD",
+      "url": "/api/storage/public-objects/seed/banner-1.jpg"
+    }
+    [35mres[39m: {
+      "statusCode": 404
+    }
+    [35mresponseTime[39m: 2
+[16:57:29.508] [32mINFO[39m (22333): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 4,
+      "method": "GET",
+      "url": "/storage/objects/test-image.webp"
+    }
+    [35mres[39m: {
+      "statusCode": 404
+    }
+    [35mresponseTime[39m: 1
+[16:57:36.086] [32mINFO[39m (22333): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 5,
+      "method": "GET",
+      "url": "/api/storage/objects/test-image.webp"
+    }
+    [35mres[39m: {
+      "statusCode": 200
+    }
+    [35mresponseTime[39m: 26

@@ -4,6 +4,8 @@ import * as path from "node:path";
 import { Readable } from "node:stream";
 import { randomUUID } from "node:crypto";
 import * as crypto from "node:crypto";
+import { db, storageObjectsTable } from "@workspace/db";
+import { eq } from "drizzle-orm";
 
 const LOCAL_STORAGE_DIR = path.resolve(process.cwd(), "local-storage");
 
@@ -57,9 +59,21 @@ async function resolveWithWebpFallback(fullPath: string): Promise<string | null>
 export class ObjectStorageService {
   constructor() {}
 
-  async searchPublicObject(filePath: string): Promise<string | null> {
+  async saveObject(id: string, content: Buffer, mimeType: string): Promise<void> {
+    await db.insert(storageObjectsTable).values({
+      id,
+      content,
+      mimeType,
+    });
+  }
+
+  async searchPublicObject(filePath: string): Promise<{ buffer: Buffer; mimeType: string } | string | null> {
     const fullPath = path.join(LOCAL_STORAGE_DIR, filePath.replace(/^\/+/, ""));
-    return resolveWithWebpFallback(fullPath);
+    // Always fallback to local storage for seed images
+    const local = await resolveWithWebpFallback(fullPath);
+    if (local) return local;
+
+    return null; // Public objects are usually seed files or served via /api/upload-file logic
   }
 
   async downloadObject(filePath: string, cacheTtlSec: number = 3600): Promise<Response> {
@@ -89,11 +103,37 @@ export class ObjectStorageService {
     return `/api/upload-file/${objectId}`;
   }
 
-  async getObjectEntityFile(objectPath: string): Promise<string> {
+  async getObjectEntityFile(objectPath: string): Promise<{ buffer: Buffer; mimeType: string } | string> {
     if (!objectPath.startsWith("/objects/")) {
       throw new ObjectNotFoundError();
     }
     const objectId = objectPath.replace("/objects/", "").replace(/^\/+/, "");
+
+    // 1. Check DB first
+    const rows = await db
+      .select()
+      .from(storageObjectsTable)
+      .where(eq(storageObjectsTable.id, objectId))
+      .limit(1);
+
+    if (rows.length > 0) {
+      return { buffer: rows[0].content, mimeType: rows[0].mimeType };
+    }
+
+    // 2. Check DB with .webp extension (if requested without)
+    if (!objectId.endsWith('.webp')) {
+      const webpRows = await db
+        .select()
+        .from(storageObjectsTable)
+        .where(eq(storageObjectsTable.id, objectId + ".webp"))
+        .limit(1);
+      
+      if (webpRows.length > 0) {
+        return { buffer: webpRows[0].content, mimeType: webpRows[0].mimeType };
+      }
+    }
+
+    // 3. Fallback to Local Storage for seed images
     const fullPath = path.join(LOCAL_STORAGE_DIR, objectId);
     const resolved = await resolveWithWebpFallback(fullPath);
     if (!resolved) throw new ObjectNotFoundError();

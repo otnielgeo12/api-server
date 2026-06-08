@@ -6,4 +6,4 @@ export * from "./site-info";
 export * from "./promotions";
 export * from "./beverages";
 export * from "./admin-users";
-
+export * from "./storage";

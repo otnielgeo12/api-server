@@ -46,6 +46,12 @@
       "@clerk/shared",
       "esbuild",
       "sharp"
-    ]
+    ],
+    "overrides": {
+      "esbuild": "^0.25.0"
+    }
+  },
+  "overrides": {
+    "esbuild": "^0.25.0"
   }
 }
